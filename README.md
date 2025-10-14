@@ -205,6 +205,18 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 7. Try the Interactive Demo
+
+Visit [http://localhost:3000/interactive](http://localhost:3000/interactive) to experience all components working together with mock data:
+
+- **ControlPanel**: Adjust simulation parameters with sliders and preset scenarios
+- **UploadPanel**: Test file upload functionality with drag-and-drop
+- **ResultsPanel**: View simulation results with interactive charts
+- **Language Toggle**: Switch between English and Spanish
+- **Live Updates**: See results update as you change parameters
+
+The interactive demo generates realistic mock data based on your selected parameters, perfect for understanding the platform before connecting to real data sources.
+
 ## Usage
 
 ### Running a Simulation
@@ -246,28 +258,32 @@ worldsim/
 │   │   │   ├── ingest/        # CSV upload endpoint
 │   │   │   ├── simulate/      # Simulation endpoint
 │   │   │   └── explain/       # AI explanation endpoint
-│   │   ├── demo/              # Demo page
+│   │   ├── demo/              # Feature overview page
+│   │   ├── interactive/       # Interactive demo page
 │   │   ├── layout.tsx         # Root layout
 │   │   ├── page.tsx           # Home page
 │   │   └── globals.css        # Global styles
 │   ├── components/            # React components
-│   │   ├── MapView.tsx
-│   │   ├── ControlPanel.tsx
-│   │   ├── UploadPanel.tsx
-│   │   ├── ResultsPanel.tsx
-│   │   └── Charts.tsx
+│   │   ├── MapView.tsx        # Mapbox map component
+│   │   ├── ControlPanel.tsx   # Simulation controls
+│   │   ├── UploadPanel.tsx    # CSV file upload
+│   │   ├── ResultsPanel.tsx   # Results display
+│   │   └── Charts.tsx         # Chart.js visualizations
 │   ├── lib/                   # Business logic
 │   │   ├── supabase.ts        # Database client
 │   │   ├── model.ts           # Simulation models
-│   │   └── regions.ts         # Region utilities
-│   └── types/                 # TypeScript types
-│       └── index.ts
+│   │   ├── regions.ts         # Region utilities
+│   │   └── types.ts           # TypeScript interfaces
+│   └── hooks/                 # Custom React hooks
 ├── public/
-│   └── regions.json           # GeoJSON data
+│   └── regions.json           # El Salvador GeoJSON data
+├── scripts/
+│   └── seed-regions.ts        # Database seeding script
 ├── package.json
 ├── tsconfig.json
 ├── tailwind.config.js
 ├── next.config.js
+├── CLAUDE.md                  # AI coding instructions
 └── README.md
 ```
 
@@ -279,6 +295,7 @@ npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Run ESLint
 npm run type-check   # Run TypeScript compiler check
+npm run seed         # Seed database with regions data
 npm test             # Run tests (when implemented)
 ```
 

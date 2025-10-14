@@ -1,143 +1,49 @@
-'use client';
-
-import { useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MapView } from '@/components/MapView';
-import { ControlPanel } from '@/components/ControlPanel';
-import { UploadPanel } from '@/components/UploadPanel';
-import { ResultsPanel } from '@/components/ResultsPanel';
-import { Charts } from '@/components/Charts';
-import { getAllRegions } from '@/lib/regions';
-import { SimulationParameters, SimulationOutput } from '@/types';
-
-const queryClient = new QueryClient();
+import type { Metadata } from 'next';
 
 /**
- * Home page - Main simulation interface
+ * Page metadata for SEO
+ */
+export const metadata: Metadata = {
+  title: 'WorldSim - El Salvador Digital Twin',
+  description:
+    'Digital twin simulation platform for El Salvador. Test infrastructure, energy, and climate scenarios before implementation.',
+  keywords: [
+    'El Salvador',
+    'digital twin',
+    'simulation',
+    'energy',
+    'climate',
+    'infrastructure',
+  ],
+};
+
+/**
+ * WorldSim Main Page
  *
  * Features:
- * - Interactive map of El Salvador
- * - Simulation controls
- * - Data upload
- * - Results visualization
+ * - Interactive map of El Salvador (placeholder)
+ * - Simulation controls panel (placeholder)
+ * - Responsive two-column layout
+ * - Clean, modern design with Tailwind CSS
  */
-function HomePage() {
-  const regions = getAllRegions();
-  const [selectedRegion, setSelectedRegion] = useState(regions[0] || null);
-  const [simulationResults, setSimulationResults] = useState<SimulationOutput | null>(null);
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [isExplaining, setIsExplaining] = useState(false);
-  const [explanation, setExplanation] = useState<string | undefined>();
-  const [activeTab, setActiveTab] = useState<'controls' | 'upload'>('controls');
-
-  const handleSimulate = async (params: SimulationParameters) => {
-    setIsSimulating(true);
-    setExplanation(undefined);
-
-    try {
-      const response = await fetch('/api/simulate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setSimulationResults(result.data.simulation);
-      } else {
-        alert(`Simulation failed: ${result.error}`);
-      }
-    } catch (error) {
-      console.error('Simulation error:', error);
-      alert('Failed to run simulation');
-    } finally {
-      setIsSimulating(false);
-    }
-  };
-
-  const handleUpload = async (file: File, dataType: string, regionId: string) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('dataType', dataType);
-    formData.append('regionId', regionId);
-
-    const response = await fetch('/api/ingest', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Upload failed');
-    }
-
-    alert(`Successfully uploaded ${result.data.recordsImported} records`);
-  };
-
-  const handleExplain = async (language: 'en' | 'es') => {
-    if (!simulationResults) return;
-
-    setIsExplaining(true);
-
-    try {
-      // For now, generate a simple explanation client-side
-      // In production, this would call /api/explain with a simulationId
-      const summary = simulationResults.summary;
-      const params = simulationResults.parameters;
-
-      const simpleExplanation =
-        language === 'en'
-          ? `This simulation analyzed energy patterns for the selected region over the specified period.
-
-Key Findings:
-- Total energy demand reached ${(summary.totalDemandKwh / 1000).toFixed(1)} MWh
-- Solar generation contributed ${summary.solarPercentage.toFixed(1)}% of total energy needs
-- ${summary.peakDeficit > 0 ? `Peak energy deficit of ${(summary.peakDeficit / 1000).toFixed(1)} MWh indicates potential supply challenges` : 'No energy deficits detected during the simulation period'}
-
-Recommendations:
-${params.solarGrowthRate > 0 ? '- Continue investing in solar infrastructure to increase renewable energy capacity' : '- Consider accelerating solar energy adoption'}
-- Monitor demand growth trends and plan infrastructure upgrades accordingly
-- Implement energy efficiency programs to manage demand peaks`
-          : `Esta simulación analizó patrones de energía para la región seleccionada durante el período especificado.
-
-Hallazgos Clave:
-- La demanda total de energía alcanzó ${(summary.totalDemandKwh / 1000).toFixed(1)} MWh
-- La generación solar contribuyó ${summary.solarPercentage.toFixed(1)}% de las necesidades totales de energía
-- ${summary.peakDeficit > 0 ? `Déficit máximo de energía de ${(summary.peakDeficit / 1000).toFixed(1)} MWh indica posibles desafíos de suministro` : 'No se detectaron déficits de energía durante el período de simulación'}
-
-Recomendaciones:
-${params.solarGrowthRate > 0 ? '- Continuar invirtiendo en infraestructura solar para aumentar la capacidad de energía renovable' : '- Considerar acelerar la adopción de energía solar'}
-- Monitorear tendencias de crecimiento de demanda y planificar actualizaciones de infraestructura
-- Implementar programas de eficiencia energética para gestionar picos de demanda`;
-
-      setExplanation(simpleExplanation);
-    } catch (error) {
-      console.error('Explanation error:', error);
-      alert('Failed to generate explanation');
-    } finally {
-      setIsExplaining(false);
-    }
-  };
-
+export default function Page() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-white shadow-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">WorldSim</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Digital Twin for El Salvador - Test the future before living it
+              <h1 className="text-4xl font-bold text-gray-900 tracking-tight">
+                WorldSim
+              </h1>
+              <p className="text-sm text-gray-600 mt-2">
+                El Salvador Digital Twin - Test the future before living it
               </p>
             </div>
             <a
               href="/demo"
-              className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+              className="inline-flex items-center px-5 py-2.5 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200"
             >
               View Demo
             </a>
@@ -145,72 +51,137 @@ ${params.solarGrowthRate > 0 ? '- Continuar invirtiendo en infraestructura solar
         </div>
       </header>
 
+      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Two-column layout: 2/3 Map, 1/3 Controls */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Map */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-4" style={{ height: '600px' }}>
-              <MapView
-                regions={regions}
-                selectedRegion={selectedRegion}
-                onRegionSelect={setSelectedRegion}
-              />
+          {/* Left Column - Map Container (2/3 width) */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Map Placeholder */}
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-dashed border-blue-300 flex items-center justify-center min-h-[600px]">
+                <div className="text-center p-8">
+                  <svg
+                    className="mx-auto h-24 w-24 text-blue-400 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+                    />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    Interactive Map
+                  </h3>
+                  <p className="text-gray-600 max-w-md">
+                    El Salvador's 14 departments will be displayed here with clickable regions for
+                    simulation
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* Charts */}
-            {simulationResults && (
-              <div className="mt-8">
-                <Charts results={simulationResults.results} />
+            {/* Charts Placeholder (appears after simulation) */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Simulation Results
+              </h3>
+              <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[300px]">
+                <div className="text-center p-6">
+                  <svg
+                    className="mx-auto h-16 w-16 text-gray-400 mb-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                  <p className="text-gray-600">
+                    Charts and graphs will appear here after running a simulation
+                  </p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Right Column - Controls and Results */}
+          {/* Right Column - Controls Panel (1/3 width) */}
           <div className="space-y-8">
-            {/* Tab Switcher */}
-            <div className="bg-white rounded-lg shadow-lg p-2 flex gap-2">
-              <button
-                onClick={() => setActiveTab('controls')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                  activeTab === 'controls'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Controls
-              </button>
-              <button
-                onClick={() => setActiveTab('upload')}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
-                  activeTab === 'upload'
-                    ? 'bg-primary-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                Upload Data
-              </button>
+            {/* Controls Placeholder */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Simulation Controls
+              </h3>
+              <div className="space-y-4">
+                {/* Region Selector Placeholder */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Region
+                  </label>
+                  <div className="w-full h-10 bg-gray-100 rounded-md border border-gray-300"></div>
+                </div>
+
+                {/* Date Range Placeholder */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Start Date
+                    </label>
+                    <div className="w-full h-10 bg-gray-100 rounded-md border border-gray-300"></div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      End Date
+                    </label>
+                    <div className="w-full h-10 bg-gray-100 rounded-md border border-gray-300"></div>
+                  </div>
+                </div>
+
+                {/* Sliders Placeholder */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Solar Growth Rate
+                  </label>
+                  <div className="w-full h-2 bg-gray-200 rounded-full"></div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Rainfall Change
+                  </label>
+                  <div className="w-full h-2 bg-gray-200 rounded-full"></div>
+                </div>
+
+                {/* Run Button Placeholder */}
+                <button className="w-full mt-6 px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200">
+                  Run Simulation
+                </button>
+              </div>
             </div>
 
-            {/* Control Panel or Upload Panel */}
-            {activeTab === 'controls' ? (
-              <ControlPanel regions={regions} onSimulate={handleSimulate} isLoading={isSimulating} />
-            ) : (
-              <UploadPanel regions={regions} onUpload={handleUpload} />
-            )}
-
-            {/* Results Panel */}
-            <ResultsPanel
-              results={simulationResults}
-              onExplain={handleExplain}
-              isExplaining={isExplaining}
-              explanation={explanation}
-            />
+            {/* Results Summary Placeholder */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Results Summary</h3>
+              <div className="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 p-6 min-h-[200px] flex items-center justify-center">
+                <p className="text-gray-600 text-center">
+                  Results will appear here after simulation
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-16">
+      <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-gray-600 text-sm">
             WorldSim &copy; 2024 - Empowering decision-makers with data-driven insights
@@ -218,16 +189,5 @@ ${params.solarGrowthRate > 0 ? '- Continuar invirtiendo en infraestructura solar
         </div>
       </footer>
     </div>
-  );
-}
-
-/**
- * Root page component wrapped with providers
- */
-export default function Page() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <HomePage />
-    </QueryClientProvider>
   );
 }

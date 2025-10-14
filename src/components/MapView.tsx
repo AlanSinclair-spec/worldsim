@@ -66,42 +66,108 @@ export function MapView({
     };
   }, [viewport]);
 
-  // Add regions as markers
+  // Add regions as GeoJSON polygon layers
   useEffect(() => {
-    if (!map.current || !mapLoaded || regions.length === 0) return;
+    if (!map.current || !mapLoaded) return;
 
-    // Clear existing markers
-    const markers = document.querySelectorAll('.mapboxgl-marker');
-    markers.forEach(marker => marker.remove());
+    // Load regions.json and add as GeoJSON source
+    fetch('/regions.json')
+      .then(response => response.json())
+      .then(geojson => {
+        const mapInstance = map.current!;
 
-    // Add markers for each region
-    regions.forEach(region => {
-      const el = document.createElement('div');
-      el.className = 'region-marker';
-      el.style.width = '20px';
-      el.style.height = '20px';
-      el.style.borderRadius = '50%';
-      el.style.backgroundColor = selectedRegion?.id === region.id ? '#0ea5e9' : '#94a3b8';
-      el.style.border = '2px solid white';
-      el.style.cursor = 'pointer';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+        // Add source if it doesn't exist
+        if (!mapInstance.getSource('regions')) {
+          mapInstance.addSource('regions', {
+            type: 'geojson',
+            data: geojson,
+          });
 
-      el.addEventListener('click', () => {
-        if (onRegionSelect) {
-          onRegionSelect(region);
+          // Add fill layer for polygons
+          mapInstance.addLayer({
+            id: 'regions-fill',
+            type: 'fill',
+            source: 'regions',
+            paint: {
+              'fill-color': '#0ea5e9',
+              'fill-opacity': [
+                'case',
+                ['==', ['get', 'id'], selectedRegion?.id || ''],
+                0.6,
+                0.2,
+              ],
+            },
+          });
+
+          // Add outline layer
+          mapInstance.addLayer({
+            id: 'regions-outline',
+            type: 'line',
+            source: 'regions',
+            paint: {
+              'line-color': '#0369a1',
+              'line-width': 2,
+            },
+          });
+
+          // Add labels
+          mapInstance.addLayer({
+            id: 'regions-labels',
+            type: 'symbol',
+            source: 'regions',
+            layout: {
+              'text-field': ['get', 'name'],
+              'text-size': 12,
+              'text-anchor': 'center',
+            },
+            paint: {
+              'text-color': '#1f2937',
+              'text-halo-color': '#ffffff',
+              'text-halo-width': 2,
+            },
+          });
+
+          // Add click handler
+          mapInstance.on('click', 'regions-fill', (e) => {
+            if (e.features && e.features.length > 0 && onRegionSelect) {
+              const feature = e.features[0];
+              const regionId = feature.properties?.id;
+              const region = regions.find(r => r.id === regionId);
+              if (region) {
+                onRegionSelect(region);
+              }
+            }
+          });
+
+          // Change cursor on hover
+          mapInstance.on('mouseenter', 'regions-fill', () => {
+            mapInstance.getCanvas().style.cursor = 'pointer';
+          });
+
+          mapInstance.on('mouseleave', 'regions-fill', () => {
+            mapInstance.getCanvas().style.cursor = '';
+          });
         }
+      })
+      .catch(error => {
+        console.error('Error loading regions.json:', error);
       });
+  }, [mapLoaded, regions, onRegionSelect]);
 
-      new mapboxgl.Marker(el)
-        .setLngLat(region.coordinates)
-        .setPopup(
-          new mapboxgl.Popup({ offset: 25 }).setHTML(
-            `<strong>${region.name}</strong><br/>${region.nameEs}`
-          )
-        )
-        .addTo(map.current!);
-    });
-  }, [mapLoaded, regions, selectedRegion, onRegionSelect]);
+  // Update fill color when selection changes
+  useEffect(() => {
+    if (!map.current || !mapLoaded) return;
+
+    const mapInstance = map.current;
+    if (mapInstance.getLayer('regions-fill')) {
+      mapInstance.setPaintProperty('regions-fill', 'fill-opacity', [
+        'case',
+        ['==', ['get', 'id'], selectedRegion?.id || ''],
+        0.6,
+        0.2,
+      ]);
+    }
+  }, [mapLoaded, selectedRegion]);
 
   // Update viewport when selectedRegion changes
   useEffect(() => {

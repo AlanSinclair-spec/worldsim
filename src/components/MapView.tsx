@@ -3,114 +3,146 @@
 import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { Region } from '@/lib/regions';
 
 interface MapViewProps {
-  regions: Region[];
-  selectedRegion?: Region | null;
-  onRegionSelect?: (region: Region) => void;
-  viewport?: {
-    longitude: number;
-    latitude: number;
-    zoom: number;
-  };
+  /** Optional callback when a region is clicked */
+  onRegionClick?: (regionId: string, regionName: string) => void;
+  /** Height of the map container (default: 600px) */
+  height?: string;
 }
 
 /**
- * Interactive map component using Mapbox GL JS
+ * MapView Component
  *
- * Displays El Salvador with clickable regions, supports:
- * - Region selection
- * - Custom viewport
- * - GeoJSON layer visualization
+ * Interactive Mapbox GL JS map displaying El Salvador's regions.
+ *
+ * Features:
+ * - Gray regions with hover effects
+ * - Click to show popup with region name
+ * - Responsive container
+ * - Loading and error states
+ * - Navigation controls
+ *
+ * @example
+ * <MapView onRegionClick={(id, name) => console.log(id, name)} />
  */
-export function MapView({
-  regions,
-  selectedRegion,
-  onRegionSelect,
-  viewport = { longitude: -88.89653, latitude: 13.794185, zoom: 8 },
-}: MapViewProps) {
+export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const popup = useRef<mapboxgl.Popup | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Initialize map
+  /**
+   * Initialize Mapbox GL JS map
+   */
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
 
+    // Check for Mapbox token
     const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
     if (!mapboxToken) {
-      console.error('Mapbox token not configured');
+      setError('Mapbox token not configured. Please add NEXT_PUBLIC_MAPBOX_TOKEN to your .env.local file.');
+      console.error('NEXT_PUBLIC_MAPBOX_TOKEN is missing');
       return;
     }
 
     mapboxgl.accessToken = mapboxToken;
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [viewport.longitude, viewport.latitude],
-      zoom: viewport.zoom,
-    });
+    try {
+      // Initialize map
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/light-v11',
+        center: [-88.9, 13.7], // El Salvador center
+        zoom: 8,
+      });
 
-    map.current.on('load', () => {
-      setMapLoaded(true);
-    });
+      // Create popup instance
+      popup.current = new mapboxgl.Popup({
+        closeButton: true,
+        closeOnClick: true,
+      });
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      map.current.on('load', () => {
+        setMapLoaded(true);
+        setError(null);
+      });
 
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+        setError('Failed to load map. Please check your internet connection.');
+      });
+
+      // Add navigation controls (zoom, rotate)
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    } catch (err) {
+      console.error('Error initializing map:', err);
+      setError('Failed to initialize map. Please refresh the page.');
+    }
+
+    // Cleanup on unmount
     return () => {
+      popup.current?.remove();
+      popup.current = null;
       map.current?.remove();
       map.current = null;
     };
-  }, [viewport]);
+  }, []); // Empty dependency array - only run once
 
-  // Add regions as GeoJSON polygon layers
+  /**
+   * Load regions GeoJSON and add map layers
+   */
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    // Load regions.json and add as GeoJSON source
-    fetch('/regions.json')
-      .then(response => response.json())
-      .then(geojson => {
-        const mapInstance = map.current!;
+    const mapInstance = map.current;
 
+    // Load regions from public directory
+    fetch('/regions.json')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to load regions.json: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(geojson => {
         // Add source if it doesn't exist
         if (!mapInstance.getSource('regions')) {
           mapInstance.addSource('regions', {
             type: 'geojson',
             data: geojson,
+            generateId: true, // Generate IDs for features to enable feature-state
           });
 
-          // Add fill layer for polygons
+          // Add fill layer for region polygons (gray with hover effect)
           mapInstance.addLayer({
             id: 'regions-fill',
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': '#0ea5e9',
+              'fill-color': '#9ca3af', // gray-400
               'fill-opacity': [
                 'case',
-                ['==', ['get', 'id'], selectedRegion?.id || ''],
-                0.6,
-                0.2,
+                ['boolean', ['feature-state', 'hover'], false],
+                0.5, // Lighter on hover
+                0.3, // Default opacity
               ],
             },
           });
 
-          // Add outline layer
+          // Add outline layer for region borders
           mapInstance.addLayer({
             id: 'regions-outline',
             type: 'line',
             source: 'regions',
             paint: {
-              'line-color': '#0369a1',
+              'line-color': '#4b5563', // gray-600
               'line-width': 2,
             },
           });
 
-          // Add labels
+          // Add labels for region names
           mapInstance.addLayer({
             id: 'regions-labels',
             type: 'symbol',
@@ -121,73 +153,142 @@ export function MapView({
               'text-anchor': 'center',
             },
             paint: {
-              'text-color': '#1f2937',
+              'text-color': '#1f2937', // gray-800
               'text-halo-color': '#ffffff',
               'text-halo-width': 2,
             },
           });
 
-          // Add click handler
-          mapInstance.on('click', 'regions-fill', (e) => {
-            if (e.features && e.features.length > 0 && onRegionSelect) {
-              const feature = e.features[0];
-              const regionId = feature.properties?.id;
-              const region = regions.find(r => r.id === regionId);
-              if (region) {
-                onRegionSelect(region);
+          let hoveredRegionId: string | number | null = null;
+
+          // Hover effect: lighten region on mouse enter
+          mapInstance.on('mouseenter', 'regions-fill', (e) => {
+            mapInstance.getCanvas().style.cursor = 'pointer';
+
+            if (e.features && e.features.length > 0) {
+              if (hoveredRegionId !== null) {
+                mapInstance.setFeatureState(
+                  { source: 'regions', id: hoveredRegionId },
+                  { hover: false }
+                );
               }
+              hoveredRegionId = e.features[0].id!;
+              mapInstance.setFeatureState(
+                { source: 'regions', id: hoveredRegionId },
+                { hover: true }
+              );
             }
           });
 
-          // Change cursor on hover
-          mapInstance.on('mouseenter', 'regions-fill', () => {
-            mapInstance.getCanvas().style.cursor = 'pointer';
-          });
-
+          // Hover effect: remove highlight on mouse leave
           mapInstance.on('mouseleave', 'regions-fill', () => {
             mapInstance.getCanvas().style.cursor = '';
+
+            if (hoveredRegionId !== null) {
+              mapInstance.setFeatureState(
+                { source: 'regions', id: hoveredRegionId },
+                { hover: false }
+              );
+              hoveredRegionId = null;
+            }
+          });
+
+          // Click handler: show popup with region name
+          mapInstance.on('click', 'regions-fill', (e) => {
+            if (e.features && e.features.length > 0) {
+              const feature = e.features[0];
+              const regionId = feature.properties?.id || '';
+              const regionName = feature.properties?.name || 'Unknown Region';
+              const regionNameEs = feature.properties?.nameEs || regionName;
+              const population = feature.properties?.population;
+              const areaKm2 = feature.properties?.areaKm2;
+
+              // Build popup content
+              let popupContent = `<div class="font-sans">
+                <h3 class="font-bold text-lg mb-2">${regionName}</h3>`;
+
+              if (regionNameEs && regionNameEs !== regionName) {
+                popupContent += `<p class="text-sm text-gray-600 mb-2">${regionNameEs}</p>`;
+              }
+
+              if (population) {
+                popupContent += `<p class="text-sm"><strong>Population:</strong> ${population.toLocaleString()}</p>`;
+              }
+
+              if (areaKm2) {
+                popupContent += `<p class="text-sm"><strong>Area:</strong> ${areaKm2.toLocaleString()} km²</p>`;
+              }
+
+              popupContent += `</div>`;
+
+              // Show popup at click location
+              if (popup.current) {
+                popup.current
+                  .setLngLat(e.lngLat)
+                  .setHTML(popupContent)
+                  .addTo(mapInstance);
+              }
+
+              // Call optional callback
+              if (onRegionClick) {
+                onRegionClick(regionId, regionName);
+              }
+
+              console.log('Region clicked:', regionId, regionName);
+            }
           });
         }
       })
-      .catch(error => {
-        console.error('Error loading regions.json:', error);
+      .catch(err => {
+        console.error('Error loading regions.json:', err);
+        setError(`Failed to load regions: ${err.message}`);
       });
-  }, [mapLoaded, regions, onRegionSelect]);
+  }, [mapLoaded, onRegionClick]);
 
-  // Update fill color when selection changes
-  useEffect(() => {
-    if (!map.current || !mapLoaded) return;
-
-    const mapInstance = map.current;
-    if (mapInstance.getLayer('regions-fill')) {
-      mapInstance.setPaintProperty('regions-fill', 'fill-opacity', [
-        'case',
-        ['==', ['get', 'id'], selectedRegion?.id || ''],
-        0.6,
-        0.2,
-      ]);
-    }
-  }, [mapLoaded, selectedRegion]);
-
-  // Update viewport when selectedRegion changes
-  useEffect(() => {
-    if (!map.current || !selectedRegion) return;
-
-    map.current.flyTo({
-      center: selectedRegion.coordinates,
-      zoom: 10,
-      duration: 1500,
-    });
-  }, [selectedRegion]);
-
+  // Render map container with loading and error states
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full" style={{ height }}>
+      {/* Map container */}
       <div ref={mapContainer} className="w-full h-full rounded-lg" />
-      {!mapLoaded && (
+
+      {/* Loading state */}
+      {!mapLoaded && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-lg">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading map...</p>
+            <p className="text-sm text-gray-600">Loading map...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-red-50 rounded-lg border-2 border-red-200">
+          <div className="text-center p-6 max-w-md">
+            <svg
+              className="mx-auto h-12 w-12 text-red-400 mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+            <h3 className="text-lg font-semibold text-red-900 mb-2">Map Error</h3>
+            <p className="text-sm text-red-700">{error}</p>
+            {error.includes('token') && (
+              <div className="mt-4 text-xs text-left bg-white p-3 rounded border border-red-300">
+                <p className="font-mono text-gray-700">
+                  Add to .env.local:
+                  <br />
+                  NEXT_PUBLIC_MAPBOX_TOKEN=your_token_here
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

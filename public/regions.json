@@ -1,0 +1,215 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "AH",
+        "name": "Ahuachapán",
+        "nameEs": "Ahuachapán",
+        "type": "department",
+        "population": 319503,
+        "areaKm2": 1239.6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.845, 13.921]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CA",
+        "name": "Cabañas",
+        "nameEs": "Cabañas",
+        "type": "department",
+        "population": 149326,
+        "areaKm2": 1103.5
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.741, 13.863]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CH",
+        "name": "Chalatenango",
+        "nameEs": "Chalatenango",
+        "type": "department",
+        "population": 192788,
+        "areaKm2": 2016.6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.935, 14.033]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CU",
+        "name": "Cuscatlán",
+        "nameEs": "Cuscatlán",
+        "type": "department",
+        "population": 231480,
+        "areaKm2": 756.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.049, 13.872]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "LI",
+        "name": "La Libertad",
+        "nameEs": "La Libertad",
+        "type": "department",
+        "population": 660652,
+        "areaKm2": 1652.9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.322, 13.688]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "LP",
+        "name": "La Paz",
+        "nameEs": "La Paz",
+        "type": "department",
+        "population": 308087,
+        "areaKm2": 1223.6
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.09, 13.502]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "LU",
+        "name": "La Unión",
+        "nameEs": "La Unión",
+        "type": "department",
+        "population": 238217,
+        "areaKm2": 2074.3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-87.844, 13.337]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "MO",
+        "name": "Morazán",
+        "nameEs": "Morazán",
+        "type": "department",
+        "population": 174406,
+        "areaKm2": 1447.4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.127, 13.769]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SA",
+        "name": "Santa Ana",
+        "nameEs": "Santa Ana",
+        "type": "department",
+        "population": 523655,
+        "areaKm2": 2023.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.559, 14.008]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SM",
+        "name": "San Miguel",
+        "nameEs": "San Miguel",
+        "type": "department",
+        "population": 434003,
+        "areaKm2": 2077.1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.177, 13.483]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SO",
+        "name": "Sonsonate",
+        "nameEs": "Sonsonate",
+        "type": "department",
+        "population": 438960,
+        "areaKm2": 1225.9
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.724, 13.719]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SS",
+        "name": "San Salvador",
+        "nameEs": "San Salvador",
+        "type": "department",
+        "population": 1740336,
+        "areaKm2": 886.2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-89.187, 13.699]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "SV",
+        "name": "San Vicente",
+        "nameEs": "San Vicente",
+        "type": "department",
+        "population": 161645,
+        "areaKm2": 1184.0
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.783, 13.639]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "US",
+        "name": "Usulután",
+        "nameEs": "Usulután",
+        "type": "department",
+        "population": 344235,
+        "areaKm2": 2130.4
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-88.435, 13.345]
+      }
+    }
+  ]
+}

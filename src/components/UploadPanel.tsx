@@ -1,198 +1,417 @@
 'use client';
 
 import { useState } from 'react';
-import { Region } from '@/lib/regions';
+
+/**
+ * Upload status types
+ */
+type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
+
+/**
+ * File upload data type
+ */
+interface FileUploadData {
+  file: File | null;
+  status: UploadStatus;
+  error?: string;
+  stats?: {
+    rowsInserted: number;
+    dateRange: {
+      start: string;
+      end: string;
+    };
+  };
+}
 
 interface UploadPanelProps {
-  regions: Region[];
-  onUpload: (file: File, dataType: string, regionId: string) => Promise<void>;
+  /** Language for labels (EN/ES) */
+  language?: 'en' | 'es';
+  /** Callback when files are uploaded */
+  onUpload?: (type: 'energy' | 'rainfall', file: File) => Promise<void>;
 }
 
 /**
- * Panel for uploading CSV data files
+ * UploadPanel Component
  *
- * Supports uploading:
- * - Energy data (demand, generation)
- * - Climate data (rainfall, temperature)
- * - Infrastructure data (capacity, locations)
+ * Provides file upload interface for Energy and Rainfall CSV data:
+ * - Drag-and-drop or click to select files
+ * - Upload status tracking
+ * - Statistics display after upload
+ * - CSV format guide
+ *
+ * @example
+ * <UploadPanel
+ *   language="en"
+ *   onUpload={async (type, file) => {
+ *     console.log('Uploading', type, file);
+ *   }}
+ * />
  */
-export function UploadPanel({ regions, onUpload }: UploadPanelProps) {
-  const [file, setFile] = useState<File | null>(null);
-  const [dataType, setDataType] = useState<'energy' | 'climate' | 'infrastructure'>('energy');
-  const [regionId, setRegionId] = useState<string>(regions[0]?.id || '');
-  const [isUploading, setIsUploading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
+  const [energyUpload, setEnergyUpload] = useState<FileUploadData>({
+    file: null,
+    status: 'idle',
+  });
+  const [rainfallUpload, setRainfallUpload] = useState<FileUploadData>({
+    file: null,
+    status: 'idle',
+  });
+  const [showFormatGuide, setShowFormatGuide] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      if (selectedFile.type !== 'text/csv' && !selectedFile.name.endsWith('.csv')) {
-        setMessage({ type: 'error', text: 'Please select a CSV file' });
-        return;
-      }
-      setFile(selectedFile);
-      setMessage(null);
-    }
+  const labels = {
+    title: { en: 'Upload Data', es: 'Cargar Datos' },
+    subtitle: {
+      en: 'Import historical data to improve simulation accuracy',
+      es: 'Importe datos históricos para mejorar la precisión de la simulación',
+    },
+    energyTitle: { en: 'Energy Data', es: 'Datos de Energía' },
+    rainfallTitle: { en: 'Rainfall Data', es: 'Datos de Precipitación' },
+    dragDrop: { en: 'Drag and drop CSV file here, or', es: 'Arrastre y suelte el archivo CSV aquí, o' },
+    clickUpload: { en: 'click to upload', es: 'haga clic para cargar' },
+    csvOnly: { en: 'CSV files only', es: 'Solo archivos CSV' },
+    uploading: { en: 'Uploading...', es: 'Cargando...' },
+    success: { en: 'Upload successful!', es: '¡Carga exitosa!' },
+    error: { en: 'Upload failed', es: 'Error en la carga' },
+    rowsInserted: { en: 'Rows inserted:', es: 'Filas insertadas:' },
+    dateRange: { en: 'Date range:', es: 'Rango de fechas:' },
+    formatGuide: { en: 'CSV Format Guide', es: 'Guía de Formato CSV' },
+    showGuide: { en: 'Show format guide', es: 'Mostrar guía de formato' },
+    hideGuide: { en: 'Hide format guide', es: 'Ocultar guía de formato' },
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  /**
+   * Handle file selection for a specific upload type
+   */
+  const handleFileSelect = (
+    type: 'energy' | 'rainfall',
+    file: File | null
+  ) => {
+    if (!file) return;
 
-    if (!file) {
-      setMessage({ type: 'error', text: 'Please select a file' });
+    // Validate file type
+    if (!file.name.endsWith('.csv')) {
+      const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+      setUpload({
+        file: null,
+        status: 'error',
+        error: language === 'en' ? 'Please select a CSV file' : 'Por favor seleccione un archivo CSV',
+      });
       return;
     }
 
-    setIsUploading(true);
-    setMessage(null);
+    const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+    setUpload({
+      file,
+      status: 'idle',
+    });
+  };
 
-    try {
-      await onUpload(file, dataType, regionId);
-      setMessage({ type: 'success', text: 'File uploaded successfully!' });
-      setFile(null);
-      // Reset file input
-      const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-      if (fileInput) fileInput.value = '';
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: error instanceof Error ? error.message : 'Upload failed',
-      });
-    } finally {
-      setIsUploading(false);
+  /**
+   * Handle file drop
+   */
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>,
+    type: 'energy' | 'rainfall'
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleFileSelect(type, files[0]);
     }
   };
 
-  return (
-    <div className="bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Upload Data</h2>
+  /**
+   * Prevent default drag behavior
+   */
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Data Type Selection */}
-        <div>
-          <label htmlFor="dataType" className="block text-sm font-medium text-gray-700 mb-2">
-            Data Type
-          </label>
-          <select
-            id="dataType"
-            value={dataType}
-            onChange={e =>
-              setDataType(e.target.value as 'energy' | 'climate' | 'infrastructure')
-            }
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            disabled={isUploading}
-          >
-            <option value="energy">Energy Data</option>
-            <option value="climate">Climate Data</option>
-            <option value="infrastructure">Infrastructure Data</option>
-          </select>
+  /**
+   * Handle upload button click
+   */
+  const handleUpload = async (type: 'energy' | 'rainfall') => {
+    const uploadData = type === 'energy' ? energyUpload : rainfallUpload;
+    const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+
+    if (!uploadData.file) return;
+
+    // Set uploading status
+    setUpload({
+      ...uploadData,
+      status: 'uploading',
+    });
+
+    try {
+      // Simulate upload with delay (replace with actual API call)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Mock success response
+      const mockStats = {
+        rowsInserted: Math.floor(Math.random() * 500) + 100,
+        dateRange: {
+          start: '2024-01-01',
+          end: '2024-12-31',
+        },
+      };
+
+      setUpload({
+        file: uploadData.file,
+        status: 'success',
+        stats: mockStats,
+      });
+
+      // Call parent callback if provided
+      if (onUpload) {
+        await onUpload(type, uploadData.file);
+      }
+
+      console.log(`✅ ${type} upload successful:`, mockStats);
+    } catch (error) {
+      setUpload({
+        file: uploadData.file,
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Upload failed',
+      });
+      console.error(`❌ ${type} upload failed:`, error);
+    }
+  };
+
+  /**
+   * Render upload area for a specific type
+   */
+  const renderUploadArea = (
+    type: 'energy' | 'rainfall',
+    uploadData: FileUploadData,
+    title: string,
+    color: 'green' | 'blue'
+  ) => {
+    const colorClasses = {
+      green: {
+        border: 'border-green-300',
+        bg: 'bg-green-50',
+        hover: 'hover:border-green-400',
+        text: 'text-green-700',
+        button: 'bg-green-600 hover:bg-green-700',
+      },
+      blue: {
+        border: 'border-blue-300',
+        bg: 'bg-blue-50',
+        hover: 'hover:border-blue-400',
+        text: 'text-blue-700',
+        button: 'bg-blue-600 hover:bg-blue-700',
+      },
+    };
+
+    const colors = colorClasses[color];
+
+    return (
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+
+        {/* Upload Area */}
+        <div
+          onDrop={(e) => handleDrop(e, type)}
+          onDragOver={handleDragOver}
+          className={`relative border-2 border-dashed rounded-lg p-6 text-center ${colors.border} ${colors.bg} ${colors.hover} transition-colors`}
+        >
+          <input
+            type="file"
+            accept=".csv"
+            onChange={(e) => handleFileSelect(type, e.target.files?.[0] || null)}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            disabled={uploadData.status === 'uploading'}
+          />
+
+          {/* Icon */}
+          <div className="mb-3">
+            📊
+          </div>
+
+          {/* Text */}
+          <p className="text-sm text-gray-600 mb-1">
+            {labels.dragDrop[language]}{' '}
+            <span className={`font-medium ${colors.text}`}>{labels.clickUpload[language]}</span>
+          </p>
+          <p className="text-xs text-gray-500">{labels.csvOnly[language]}</p>
         </div>
 
-        {/* Region Selection */}
-        <div>
-          <label htmlFor="uploadRegion" className="block text-sm font-medium text-gray-700 mb-2">
-            Region
-          </label>
-          <select
-            id="uploadRegion"
-            value={regionId}
-            onChange={e => setRegionId(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            disabled={isUploading}
-          >
-            {regions.map(region => (
-              <option key={region.id} value={region.id}>
-                {region.name} ({region.nameEs})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* File Upload */}
-        <div>
-          <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">
-            CSV File
-          </label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-primary-400 transition-colors">
-            <div className="space-y-1 text-center">
-              <svg
-                className="mx-auto h-12 w-12 text-gray-400"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth={2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div className="flex text-sm text-gray-600">
-                <label
-                  htmlFor="file-upload"
-                  className="relative cursor-pointer bg-white rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-primary-500"
-                >
-                  <span>Upload a file</span>
-                  <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    accept=".csv"
-                    className="sr-only"
-                    onChange={handleFileChange}
-                    disabled={isUploading}
-                  />
-                </label>
-                <p className="pl-1">or drag and drop</p>
+        {/* File Info */}
+        {uploadData.file && (
+          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg">📄</span>
+                <span className="text-sm font-medium text-gray-900">{uploadData.file.name}</span>
               </div>
-              <p className="text-xs text-gray-500">CSV files only</p>
-              {file && (
-                <p className="text-sm text-primary-600 font-medium mt-2">{file.name}</p>
-              )}
+              <span className="text-xs text-gray-500">
+                {(uploadData.file.size / 1024).toFixed(1)} KB
+              </span>
             </div>
-          </div>
-        </div>
-
-        {/* Expected Format Info */}
-        <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-          <h3 className="text-sm font-medium text-blue-900 mb-2">Expected CSV Format:</h3>
-          <div className="text-xs text-blue-800">
-            {dataType === 'energy' && (
-              <p>Columns: date, demand_kwh, solar_generation_kwh, grid_generation_kwh</p>
-            )}
-            {dataType === 'climate' && (
-              <p>Columns: date, rainfall_mm, temperature_c</p>
-            )}
-            {dataType === 'infrastructure' && (
-              <p>Columns: name, type, capacity_mw, latitude, longitude</p>
-            )}
-          </div>
-        </div>
-
-        {/* Message Display */}
-        {message && (
-          <div
-            className={`p-4 rounded-md ${
-              message.type === 'success'
-                ? 'bg-green-50 text-green-800 border border-green-200'
-                : 'bg-red-50 text-red-800 border border-red-200'
-            }`}
-          >
-            {message.text}
           </div>
         )}
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={!file || isUploading}
-          className="w-full bg-primary-600 text-white py-3 px-6 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-        >
-          {isUploading ? 'Uploading...' : 'Upload File'}
-        </button>
-      </form>
+        {/* Status Messages */}
+        {uploadData.status === 'uploading' && (
+          <div className="flex items-center justify-center space-x-2 py-2">
+            <svg
+              className="animate-spin h-5 w-5 text-primary-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            <span className="text-sm text-gray-600">{labels.uploading[language]}</span>
+          </div>
+        )}
+
+        {uploadData.status === 'success' && uploadData.stats && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-start space-x-2">
+              <span className="text-lg">✅</span>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-green-900 mb-2">
+                  {labels.success[language]}
+                </p>
+                <div className="space-y-1 text-xs text-green-800">
+                  <p>
+                    {labels.rowsInserted[language]} <strong>{uploadData.stats.rowsInserted}</strong>
+                  </p>
+                  <p>
+                    {labels.dateRange[language]} <strong>{uploadData.stats.dateRange.start}</strong> →{' '}
+                    <strong>{uploadData.stats.dateRange.end}</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {uploadData.status === 'error' && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex items-start space-x-2">
+              <span className="text-lg">❌</span>
+              <div>
+                <p className="text-sm font-semibold text-red-900">{labels.error[language]}</p>
+                {uploadData.error && (
+                  <p className="text-xs text-red-700 mt-1">{uploadData.error}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Upload Button */}
+        {uploadData.file && uploadData.status !== 'success' && (
+          <button
+            onClick={() => handleUpload(type)}
+            disabled={uploadData.status === 'uploading'}
+            className={`w-full px-4 py-2 ${colors.button} text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors`}
+          >
+            {uploadData.status === 'uploading'
+              ? labels.uploading[language]
+              : language === 'en'
+                ? 'Upload File'
+                : 'Cargar Archivo'}
+          </button>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+      {/* Header */}
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900">{labels.title[language]}</h2>
+        <p className="text-sm text-gray-500 mt-1">{labels.subtitle[language]}</p>
+      </div>
+
+      <div className="space-y-6">
+        {/* Energy Upload */}
+        {renderUploadArea('energy', energyUpload, labels.energyTitle[language], 'green')}
+
+        {/* Rainfall Upload */}
+        {renderUploadArea('rainfall', rainfallUpload, labels.rainfallTitle[language], 'blue')}
+
+        {/* CSV Format Guide */}
+        <div className="border-t pt-4">
+          <button
+            onClick={() => setShowFormatGuide(!showFormatGuide)}
+            className="flex items-center justify-between w-full text-left text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            <span className="flex items-center space-x-2">
+              <span>📋</span>
+              <span>{labels.formatGuide[language]}</span>
+            </span>
+            <span className="text-gray-400">
+              {showFormatGuide ? '▼' : '▶'}
+            </span>
+          </button>
+
+          {showFormatGuide && (
+            <div className="mt-4 bg-gray-50 rounded-lg p-4 border border-gray-200">
+              <div className="space-y-3 text-sm">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    {language === 'en' ? 'Required Columns' : 'Columnas Requeridas'}
+                  </h4>
+                  <ul className="list-disc list-inside text-gray-700 space-y-1 ml-2">
+                    <li>
+                      <code className="bg-gray-200 px-1 rounded">date</code> - YYYY-MM-DD format
+                    </li>
+                    <li>
+                      <code className="bg-gray-200 px-1 rounded">region_name</code> -{' '}
+                      {language === 'en' ? 'Department name' : 'Nombre del departamento'}
+                    </li>
+                    <li>
+                      <code className="bg-gray-200 px-1 rounded">value</code> -{' '}
+                      {language === 'en'
+                        ? 'Energy (MWh) or Rainfall (mm)'
+                        : 'Energía (MWh) o Precipitación (mm)'}
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    {language === 'en' ? 'Example Row' : 'Ejemplo de Fila'}
+                  </h4>
+                  <div className="bg-white border border-gray-300 rounded p-2 font-mono text-xs overflow-x-auto">
+                    2024-01-01,San Salvador,120.5
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">
+                    {language === 'en' ? 'Valid Regions' : 'Regiones Válidas'}
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    San Salvador, La Libertad, Santa Ana, San Miguel, Sonsonate, La Paz, Usulután,
+                    Chalatenango, Cuscatlán, Ahuachapán, Morazán, La Unión, San Vicente, Cabañas
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

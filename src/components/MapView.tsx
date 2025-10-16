@@ -51,10 +51,10 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
     mapboxgl.accessToken = mapboxToken;
 
     try {
-      // Initialize map with modern streets style
+      // Initialize map with light style for compatibility
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v12', // Clean, modern base map
+        style: 'mapbox://styles/mapbox/light-v11', // Clean, compatible base map
         center: [-88.9, 13.7], // El Salvador center
         zoom: 8.2,
         pitch: 0, // Flat view for clarity

@@ -223,12 +223,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             source: 'regions',
             layout: {
               'text-field': ['get', 'name'],
-              'text-size': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                14, // Larger on hover
-                12, // Default size
-              ],
+              'text-size': 12, // Static size (layout properties can't use feature-state)
               'text-anchor': 'center',
               'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
             },

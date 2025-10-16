@@ -115,30 +115,40 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             generateId: true, // Generate IDs for features to enable feature-state
           });
 
-          // Add fill layer for region polygons (gray with hover effect)
+          // Add fill layer for region polygons (gray with darker hover effect)
           mapInstance.addLayer({
             id: 'regions-fill',
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': '#9ca3af', // gray-400
-              'fill-opacity': [
+              'fill-color': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.5, // Lighter on hover
-                0.3, // Default opacity
+                '#6b7280', // gray-500 (darker on hover)
+                '#9ca3af', // gray-400 (default)
               ],
+              'fill-opacity': 0.6,
             },
           });
 
-          // Add outline layer for region borders
+          // Add outline layer for region borders (thicker on hover)
           mapInstance.addLayer({
             id: 'regions-outline',
             type: 'line',
             source: 'regions',
             paint: {
-              'line-color': '#4b5563', // gray-600
-              'line-width': 2,
+              'line-color': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                '#1f2937', // gray-800 (darker on hover)
+                '#4b5563', // gray-600 (default)
+              ],
+              'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                3, // Thicker on hover
+                2, // Default width
+              ],
             },
           });
 
@@ -161,17 +171,21 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
           let hoveredRegionId: string | number | null = null;
 
-          // Hover effect: lighten region on mouse enter
+          // Hover effect: darken region and outline on mouse enter
           mapInstance.on('mouseenter', 'regions-fill', (e) => {
+            // Change cursor to pointer
             mapInstance.getCanvas().style.cursor = 'pointer';
 
             if (e.features && e.features.length > 0) {
+              // Remove previous hover state
               if (hoveredRegionId !== null) {
                 mapInstance.setFeatureState(
                   { source: 'regions', id: hoveredRegionId },
                   { hover: false }
                 );
               }
+
+              // Set new hover state
               hoveredRegionId = e.features[0].id!;
               mapInstance.setFeatureState(
                 { source: 'regions', id: hoveredRegionId },
@@ -182,8 +196,10 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
           // Hover effect: remove highlight on mouse leave
           mapInstance.on('mouseleave', 'regions-fill', () => {
+            // Reset cursor
             mapInstance.getCanvas().style.cursor = '';
 
+            // Remove hover state
             if (hoveredRegionId !== null) {
               mapInstance.setFeatureState(
                 { source: 'regions', id: hoveredRegionId },

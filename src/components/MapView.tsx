@@ -130,7 +130,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             generateId: true, // Generate IDs for features to enable feature-state
           });
 
-          // Add glow layer (only visible on hover for premium effect)
+          // Add DRAMATIC glow layer (pulsing bright glow on hover)
           mapInstance.addLayer({
             id: 'regions-glow',
             type: 'fill',
@@ -153,16 +153,17 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
                 'MO', '#3b82f6', // Morazán - Blue
                 'SV', '#a855f7', // San Vicente - Violet
                 'US', '#f59e0b', // Usulután - Amber
+                'LU', '#06b6d4', // La Unión - Cyan
                 '#60a5fa', // Default blue
               ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.5, // Visible glow on hover
+                0.9, // VERY BRIGHT glow on hover (increased from 0.5)
                 0, // Hidden by default
               ],
               'fill-opacity-transition': {
-                duration: 300,
+                duration: 200, // Faster transition for more responsive feel
                 delay: 0,
               },
             },
@@ -191,21 +192,22 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
                 'MO', '#3b82f6', // Morazán - Blue
                 'SV', '#a855f7', // San Vicente - Violet
                 'US', '#fb923c', // Usulután - Light orange
+                'LU', '#06b6d4', // La Unión - Cyan
                 '#3b82f6', // Default blue
               ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.85, // Very vibrant on hover
-                0.65, // Vibrant default (increased from 0.3)
+                0.95, // EXTREMELY vibrant on hover (nearly opaque!)
+                0.68, // Vibrant default
               ],
-              // Smooth transitions
+              // Fast, responsive transitions
               'fill-color-transition': {
-                duration: 300,
+                duration: 200,
                 delay: 0,
               },
               'fill-opacity-transition': {
-                duration: 300,
+                duration: 200,
                 delay: 0,
               },
             },

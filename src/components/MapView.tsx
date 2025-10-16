@@ -136,37 +136,68 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             type: 'fill',
             source: 'regions',
             paint: {
-              'fill-color': '#60a5fa', // blue-400 glow
+              'fill-color': [
+                'match',
+                ['get', 'id'],
+                'SS', '#fbbf24', // San Salvador - Vibrant amber
+                'SM', '#ec4899', // San Miguel - Hot pink
+                'LI', '#8b5cf6', // La Libertad - Purple
+                'SA', '#10b981', // Santa Ana - Emerald green
+                'SO', '#f97316', // Sonsonate - Orange
+                'AH', '#06b6d4', // Ahuachapán - Cyan
+                'CA', '#ef4444', // Cabañas - Red
+                'CH', '#14b8a6', // Chalatenango - Teal
+                'CU', '#6366f1', // Cuscatlán - Indigo
+                'LL', '#22c55e', // La Libertad - Green
+                'LP', '#eab308', // La Paz - Yellow
+                'MO', '#3b82f6', // Morazán - Blue
+                'SV', '#a855f7', // San Vicente - Violet
+                'US', '#f59e0b', // Usulután - Amber
+                '#60a5fa', // Default blue
+              ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.4, // Visible glow on hover
+                0.5, // Visible glow on hover
                 0, // Hidden by default
               ],
               'fill-opacity-transition': {
-                duration: 300, // Smooth 300ms transition
+                duration: 300,
                 delay: 0,
               },
             },
           });
 
-          // Add main fill layer with modern blue gradient
+          // Add main fill layer with vibrant gradient colors per region
           mapInstance.addLayer({
             id: 'regions-fill',
             type: 'fill',
             source: 'regions',
             paint: {
               'fill-color': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                '#60a5fa', // blue-400 (brighter on hover)
-                '#3b82f6', // blue-500 (default)
+                'match',
+                ['get', 'id'],
+                'SS', '#f59e0b', // San Salvador - Amber
+                'SM', '#ec4899', // San Miguel - Pink
+                'LI', '#8b5cf6', // La Libertad - Purple
+                'SA', '#10b981', // Santa Ana - Emerald
+                'SO', '#f97316', // Sonsonate - Orange
+                'AH', '#06b6d4', // Ahuachapán - Cyan
+                'CA', '#ef4444', // Cabañas - Red
+                'CH', '#14b8a6', // Chalatenango - Teal
+                'CU', '#6366f1', // Cuscatlán - Indigo
+                'LL', '#22c55e', // La Libertad - Green
+                'LP', '#eab308', // La Paz - Yellow
+                'MO', '#3b82f6', // Morazán - Blue
+                'SV', '#a855f7', // San Vicente - Violet
+                'US', '#fb923c', // Usulután - Light orange
+                '#3b82f6', // Default blue
               ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.5, // More visible on hover
-                0.3, // Semi-transparent default
+                0.85, // Very vibrant on hover
+                0.65, // Vibrant default (increased from 0.3)
               ],
               // Smooth transitions
               'fill-color-transition': {
@@ -180,30 +211,38 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             },
           });
 
-          // Add outline layer for crisp borders
+          // Add outline layer with vibrant matching borders
           mapInstance.addLayer({
             id: 'regions-outline',
             type: 'line',
             source: 'regions',
             paint: {
               'line-color': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                '#2563eb', // blue-600 (darker on hover for contrast)
-                '#ffffff', // white (clean default)
+                'match',
+                ['get', 'id'],
+                'SS', '#d97706', // San Salvador - Dark amber
+                'SM', '#db2777', // San Miguel - Dark pink
+                'LI', '#7c3aed', // La Libertad - Dark purple
+                'SA', '#059669', // Santa Ana - Dark emerald
+                'SO', '#ea580c', // Sonsonate - Dark orange
+                'AH', '#0891b2', // Ahuachapán - Dark cyan
+                'CA', '#dc2626', // Cabañas - Dark red
+                'CH', '#0d9488', // Chalatenango - Dark teal
+                'CU', '#4f46e5', // Cuscatlán - Dark indigo
+                'LL', '#16a34a', // La Libertad - Dark green
+                'LP', '#ca8a04', // La Paz - Dark yellow
+                'MO', '#2563eb', // Morazán - Dark blue
+                'SV', '#9333ea', // San Vicente - Dark violet
+                'US', '#f97316', // Usulután - Orange
+                '#ffffff', // Default white
               ],
               'line-width': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                3, // Thicker on hover
-                2, // Default width
+                4, // Much thicker on hover
+                2.5, // Slightly thicker default
               ],
-              'line-opacity': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                1.0, // Full opacity on hover
-                0.8, // Slightly transparent default
-              ],
+              'line-opacity': 1.0, // Always full opacity for vibrant look
               // Smooth transitions
               'line-color-transition': {
                 duration: 300,
@@ -223,22 +262,22 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
             source: 'regions',
             layout: {
               'text-field': ['get', 'name'],
-              'text-size': 12, // Static size (layout properties can't use feature-state)
+              'text-size': 13, // Slightly larger for better visibility
               'text-anchor': 'center',
-              'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
+              'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
             },
             paint: {
-              'text-color': [
+              'text-color': '#ffffff', // White text for contrast on colorful regions
+              'text-halo-color': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                '#1e3a8a', // blue-900 (darker on hover)
-                '#1f2937', // gray-800 (default)
+                '#000000', // Black halo on hover
+                'rgba(0, 0, 0, 0.8)', // Dark semi-transparent halo
               ],
-              'text-halo-color': '#ffffff',
-              'text-halo-width': 2,
+              'text-halo-width': 2.5, // Wider halo for better contrast
               'text-halo-blur': 1,
               // Smooth transitions
-              'text-color-transition': {
+              'text-halo-color-transition': {
                 duration: 300,
                 delay: 0,
               },

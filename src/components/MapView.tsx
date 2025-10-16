@@ -56,18 +56,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11', // Clean, compatible base map
         center: [-88.9, 13.7], // El Salvador center
-        zoom: 8.2,
-        pitch: 0, // Flat view for clarity
-        bearing: 0,
-        // Optimized bounds to fit El Salvador perfectly
-        maxBounds: [
-          [-90.5, 12.8], // Southwest
-          [-87.0, 14.5], // Northeast
-        ],
-        minZoom: 7,
-        maxZoom: 14,
-        // Smooth animations
-        attributionControl: false, // We'll add it back in a better position
+        zoom: 8,
       });
 
       // Create custom styled popup
@@ -80,52 +69,28 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
       });
 
       map.current.on('load', () => {
+        console.log('✅ Map loaded successfully');
         setMapLoaded(true);
         setError(null);
-
-        // Fit to El Salvador bounds with padding
-        if (map.current) {
-          map.current.fitBounds(
-            [
-              [-90.2, 13.0], // Southwest
-              [-87.5, 14.45], // Northeast
-            ],
-            {
-              padding: { top: 40, bottom: 40, left: 40, right: 40 },
-              duration: 1000, // Smooth 1s animation on load
-            }
-          );
-        }
       });
 
       map.current.on('error', (e) => {
-        console.error('Mapbox error:', e);
-        setError('Failed to load map. Please check your internet connection.');
+        console.error('❌ Mapbox error:', e);
+        console.error('Error details:', {
+          error: e.error,
+          message: e.error?.message,
+          status: e.error?.status,
+        });
+
+        const errorMsg = e.error?.message || 'Failed to load map';
+        setError(`Map Error: ${errorMsg}. Check console for details.`);
       });
 
-      // Add professional controls
+      // Add additional logging
+      console.log('🗺️ Initializing Mapbox with token:', mapboxToken?.substring(0, 20) + '...');
 
-      // Navigation controls (zoom, compass) - top right
-      const nav = new mapboxgl.NavigationControl({
-        showCompass: true,
-        showZoom: true,
-        visualizePitch: true,
-      });
-      map.current.addControl(nav, 'top-right');
-
-      // Scale bar - bottom left
-      const scale = new mapboxgl.ScaleControl({
-        maxWidth: 100,
-        unit: 'metric', // kilometers
-      });
-      map.current.addControl(scale, 'bottom-left');
-
-      // Attribution - bottom right (compact)
-      const attribution = new mapboxgl.AttributionControl({
-        compact: true,
-        customAttribution: '© WorldSim',
-      });
-      map.current.addControl(attribution, 'bottom-right');
+      // Add navigation controls (zoom, rotate)
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
     } catch (err) {
       console.error('Error initializing map:', err);
       setError('Failed to initialize map. Please refresh the page.');

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { MapView } from '@/components/MapView';
 import { ControlPanel, SimulationParams } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanel } from '@/components/ResultsPanel';
@@ -138,17 +139,18 @@ export default function InteractivePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
       {/* Header */}
-      <header className="bg-white shadow-md border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="bg-white/80 backdrop-blur-md shadow-lg border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   WorldSim
                 </h1>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-600 to-green-600 text-white shadow-lg">
                   {labels.title[language]}
                 </span>
               </div>
@@ -158,12 +160,12 @@ export default function InteractivePage() {
             </div>
             <div className="flex items-center space-x-3">
               {/* Language Toggle */}
-              <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1">
+              <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1 shadow-inner">
                 <button
                   onClick={() => setLanguage('en')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
                     language === 'en'
-                      ? 'bg-white text-gray-900 shadow-sm'
+                      ? 'bg-white text-blue-600 shadow-md transform scale-105'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -171,9 +173,9 @@ export default function InteractivePage() {
                 </button>
                 <button
                   onClick={() => setLanguage('es')}
-                  className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-4 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
                     language === 'es'
-                      ? 'bg-white text-gray-900 shadow-sm'
+                      ? 'bg-white text-blue-600 shadow-md transform scale-105'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -182,7 +184,7 @@ export default function InteractivePage() {
               </div>
               <Link
                 href="/"
-                className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                className="inline-flex items-center px-5 py-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 font-semibold rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105"
               >
                 {language === 'en' ? 'Back Home' : 'Volver'}
               </Link>
@@ -192,67 +194,72 @@ export default function InteractivePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column - Configuration */}
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                {labels.leftColumn[language]}
-              </h2>
+      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Three-column layout */}
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+          {/* Left Column - Configuration (40%) */}
+          <div className="xl:col-span-5 space-y-6">
+            {/* Upload Panel */}
+            <div className="transform hover:scale-[1.01] transition-all duration-200">
+              <UploadPanel
+                language={language}
+                onUpload={handleFileUpload}
+              />
+            </div>
 
-              {/* Control Panel */}
+            {/* Control Panel */}
+            <div className="transform hover:scale-[1.01] transition-all duration-200">
               <ControlPanel
                 language={language}
                 onRunSimulation={handleRunSimulation}
               />
             </div>
-
-            {/* Upload Panel */}
-            <UploadPanel
-              language={language}
-              onUpload={handleFileUpload}
-            />
           </div>
 
-          {/* Right Column - Results */}
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {labels.rightColumn[language]}
-            </h2>
+          {/* Middle Column - Map (35%) */}
+          <div className="xl:col-span-4">
+            <div className="relative">
+              <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-xl opacity-20"></div>
+              <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transform hover:scale-[1.01] transition-all duration-300">
+                <div className="p-2">
+                  <MapView height="700px" />
+                </div>
+              </div>
+            </div>
+          </div>
 
-            {/* Results Panel */}
-            <ResultsPanel
-              results={results}
-              isLoading={isLoading}
-              language={language}
-            />
+          {/* Right Column - Results (25%) */}
+          <div className="xl:col-span-3">
+            <div className="transform hover:scale-[1.01] transition-all duration-200">
+              <ResultsPanel
+                results={results}
+                isLoading={isLoading}
+                language={language}
+              />
+            </div>
           </div>
         </div>
 
         {/* Info Banner */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <div className="flex items-start space-x-3">
-            <svg
-              className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <div>
-              <h3 className="text-sm font-semibold text-blue-900 mb-1">
-                {language === 'en' ? 'Demo Mode' : 'Modo de Demostración'}
+        <div className="mt-8 bg-gradient-to-r from-blue-50 to-green-50 border-2 border-blue-200 rounded-xl p-6 shadow-lg">
+          <div className="flex items-start space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-base font-bold text-gray-900 mb-2">
+                {language === 'en' ? '🎯 Demo Mode' : '🎯 Modo de Demostración'}
               </h3>
-              <p className="text-sm text-blue-800">
+              <p className="text-sm text-gray-700 leading-relaxed">
                 {language === 'en'
-                  ? 'This page uses mock data to demonstrate functionality. In production, simulations would connect to the backend API and use real data from the database.'
-                  : 'Esta página utiliza datos simulados para demostrar la funcionalidad. En producción, las simulaciones se conectarían a la API del backend y utilizarían datos reales de la base de datos.'}
+                  ? 'This interactive demo uses mock data to showcase all features. Upload files, adjust parameters, run simulations, and view results with charts. In production, simulations connect to the backend API with real infrastructure data.'
+                  : 'Esta demostración interactiva utiliza datos simulados para mostrar todas las funciones. Cargue archivos, ajuste parámetros, ejecute simulaciones y vea resultados con gráficos. En producción, las simulaciones se conectan a la API del backend con datos reales de infraestructura.'}
               </p>
             </div>
           </div>
@@ -260,24 +267,27 @@ export default function InteractivePage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 mt-16 py-12 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <p className="text-sm text-gray-600">
-              WorldSim &copy; 2024 - {language === 'en' ? 'El Salvador Digital Twin' : 'Gemelo Digital de El Salvador'}
-            </p>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
+              <p className="text-sm text-gray-300">
+                <span className="font-bold text-white">WorldSim</span> &copy; 2024 - {language === 'en' ? 'El Salvador Digital Twin' : 'Gemelo Digital de El Salvador'}
+              </p>
+            </div>
             <div className="flex items-center space-x-6">
-              <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
+              <Link href="/" className="text-sm text-gray-400 hover:text-white transition-colors">
                 {language === 'en' ? 'Home' : 'Inicio'}
               </Link>
-              <Link href="/demo" className="text-sm text-gray-600 hover:text-gray-900">
+              <Link href="/demo" className="text-sm text-gray-400 hover:text-white transition-colors">
                 {language === 'en' ? 'About' : 'Acerca de'}
               </Link>
               <a
                 href="https://github.com/AlanSinclair-spec/worldsim"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 GitHub
               </a>

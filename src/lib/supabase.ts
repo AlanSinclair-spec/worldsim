@@ -7,18 +7,28 @@ import { createClient } from '@supabase/supabase-js';
  * Server-side variables (without prefix) are only available in server components and API routes.
  *
  * We use NEXT_PUBLIC_ versions for client-side access and fall back to server-side versions.
+ *
+ * During build time, env vars may not be available. We use placeholder values to allow
+ * the build to succeed, and validate at runtime in API routes.
  */
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  process.env.SUPABASE_URL;
+  process.env.SUPABASE_URL ||
+  'https://placeholder.supabase.co'; // Placeholder for build time
 
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  process.env.SUPABASE_ANON_KEY;
+  process.env.SUPABASE_ANON_KEY ||
+  'placeholder-key'; // Placeholder for build time
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    'Missing Supabase environment variables. Please ensure SUPABASE_URL and SUPABASE_ANON_KEY are set in .env.local'
+// Warn if credentials are missing (but don't throw - let it fail at runtime if needed)
+if (
+  typeof window === 'undefined' && // Only log on server side
+  (supabaseUrl === 'https://placeholder.supabase.co' || supabaseAnonKey === 'placeholder-key')
+) {
+  console.warn(
+    '⚠️ Supabase environment variables not set. Database operations will fail at runtime. ' +
+    'Please ensure SUPABASE_URL and SUPABASE_ANON_KEY are set in .env.local'
   );
 }
 
@@ -26,6 +36,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
  * Supabase client instance for database operations
  *
  * This client is configured to work with the WorldSim database schema.
+ *
+ * Note: During build time, this may use placeholder credentials. API routes should
+ * validate the connection before use.
  *
  * Usage examples:
  *
@@ -56,6 +69,29 @@ if (!supabaseUrl || !supabaseAnonKey) {
  *   .order('created_at', { ascending: false });
  */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+/**
+ * Check if Supabase is properly configured
+ * Use this in API routes to ensure database is available
+ *
+ * @returns true if Supabase credentials are configured
+ *
+ * @example
+ * if (!isSupabaseConfigured()) {
+ *   return NextResponse.json(
+ *     { success: false, error: 'Database not configured' },
+ *     { status: 500 }
+ *   );
+ * }
+ */
+export function isSupabaseConfigured(): boolean {
+  return (
+    supabaseUrl !== 'https://placeholder.supabase.co' &&
+    supabaseAnonKey !== 'placeholder-key' &&
+    supabaseUrl.length > 0 &&
+    supabaseAnonKey.length > 0
+  );
+}
 
 /**
  * Database table types for type-safe queries

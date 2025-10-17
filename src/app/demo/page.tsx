@@ -110,7 +110,7 @@ export default function DemoPage() {
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Interactive Maps</h3>
             <p className="text-gray-600">
-              Visualize data across El Salvador's 14 departments with interactive Mapbox maps.
+              Visualize data across El Salvador&apos;s 14 departments with interactive Mapbox maps.
             </p>
           </div>
 
@@ -224,7 +224,7 @@ export default function DemoPage() {
                 1
               </span>
               <div>
-                <strong>Select a Region:</strong> Choose from El Salvador's 14 departments on the
+                <strong>Select a Region:</strong> Choose from El Salvador&apos;s 14 departments on the
                 interactive map.
               </div>
             </li>

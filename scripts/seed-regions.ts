@@ -103,7 +103,7 @@ async function seedRegions() {
       }
 
       // Upsert region into database
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('regions')
         .upsert(
           {

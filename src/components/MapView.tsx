@@ -1,40 +1,86 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxglImport from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import type { SimulationResponse } from '@/lib/types';
+
+// Type workaround for mapbox-gl module export issues with TypeScript
+// eslint-disable-next-line
+const mapboxgl: any = mapboxglImport;
 
 interface MapViewProps {
   /** Optional callback when a region is clicked */
   onRegionClick?: (regionId: string, regionName: string) => void;
   /** Height of the map container (default: 600px) */
   height?: string;
+  /** Simulation results to visualize on the map */
+  simulationResults?: SimulationResponse | null;
 }
 
 /**
- * MapView Component - Professional Government Edition
+ * MapView Component - Professional Government Edition with Stress Visualization
  *
- * Enterprise-grade interactive map displaying El Salvador's administrative divisions.
+ * Enterprise-grade interactive map displaying El Salvador's administrative divisions
+ * with real-time infrastructure stress visualization.
  *
  * Features:
  * - Clean, professional base map style
- * - Authoritative blue color scheme
- * - Custom government-style popups
+ * - Dynamic stress-based region coloring (green → yellow → orange → red)
+ * - Interactive popups showing stress levels and region data
+ * - Custom government-style popups with color-coded headers
  * - Professional map controls (navigation, scale bar)
  * - Smooth animations and transitions (300ms)
  * - Optimized bounds to perfectly fit El Salvador
  * - WCAG AA compliant contrast ratios
  * - Keyboard accessible
  *
+ * Stress Color Scale:
+ * - Green (#10b981): 0-15% stress (Healthy)
+ * - Yellow (#f59e0b): 15-35% stress (Caution)
+ * - Orange (#f97316): 35-60% stress (Warning)
+ * - Red (#ef4444): 60-100% stress (Critical)
+ *
  * @example
- * <MapView onRegionClick={(id, name) => console.log(id, name)} />
+ * <MapView
+ *   onRegionClick={(id, name) => console.log(id, name)}
+ *   simulationResults={results}
+ * />
  */
-export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
+export function MapView({ onRegionClick, height = '600px', simulationResults }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const popup = useRef<mapboxgl.Popup | null>(null);
+  // Mapbox GL types are not properly exported in the module, using Record type as a workaround
+  const map = useRef<Record<string, unknown> | null>(null);
+  const popup = useRef<Record<string, unknown> | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  /**
+   * Calculate average stress per region from simulation results
+   */
+  const getRegionStress = (regionId: string): number => {
+    if (!simulationResults) return 0;
+
+    const regionResults = simulationResults.daily_results.filter(r => r.region_id === regionId);
+    if (regionResults.length === 0) return 0;
+
+    const totalStress = regionResults.reduce((sum, r) => sum + r.stress, 0);
+    return totalStress / regionResults.length;
+  };
+
+  /**
+   * Get color based on stress level
+   * - 0.0-0.15: Green (healthy)
+   * - 0.15-0.35: Yellow (caution)
+   * - 0.35-0.60: Orange (warning)
+   * - 0.60-1.0: Red (critical)
+   */
+  const getStressColor = (stress: number): string => {
+    if (stress < 0.15) return '#10b981'; // Green
+    if (stress < 0.35) return '#f59e0b'; // Yellow/Amber
+    if (stress < 0.60) return '#f97316'; // Orange
+    return '#ef4444'; // Red
+  };
 
   /**
    * Initialize Mapbox GL JS map with premium styling and controls
@@ -54,7 +100,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
     try {
       // Initialize map with professional government styling
-      map.current = new mapboxgl.Map({
+      const mapInstance = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11', // Clean, professional base
         center: [-88.9, 13.7], // El Salvador center
@@ -69,6 +115,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
         ],
         attributionControl: false, // Will add custom attribution
       });
+      map.current = mapInstance;
 
       // Create professional government-style popup
       popup.current = new mapboxgl.Popup({
@@ -80,28 +127,26 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
         focusAfterOpen: true, // Accessibility
       });
 
-      map.current.on('load', () => {
+      mapInstance.on('load', () => {
         console.log('✅ Map loaded successfully');
         setMapLoaded(true);
         setError(null);
 
         // Fit to El Salvador bounds with smooth animation
-        if (map.current) {
-          map.current.fitBounds(
-            [
-              [-90.2, 13.0], // Southwest
-              [-87.5, 14.45], // Northeast
-            ],
-            {
-              padding: { top: 50, bottom: 50, left: 50, right: 50 },
-              duration: 1500, // Smooth 1.5s animation
-              essential: true,
-            }
-          );
-        }
+        mapInstance.fitBounds(
+          [
+            [-90.2, 13.0], // Southwest
+            [-87.5, 14.45], // Northeast
+          ],
+          {
+            padding: { top: 50, bottom: 50, left: 50, right: 50 },
+            duration: 1500, // Smooth 1.5s animation
+            essential: true,
+          }
+        );
       });
 
-      map.current.on('error', (e) => {
+      mapInstance.on('error', (e: any) => {
         console.error('❌ Mapbox error:', e);
         console.error('Error details:', {
           error: e.error,
@@ -124,21 +169,21 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
         showZoom: true,
         visualizePitch: false, // Disabled for flat view
       });
-      map.current.addControl(nav, 'top-right');
+      mapInstance.addControl(nav, 'top-right');
 
       // Scale bar - bottom left (metric units)
       const scale = new mapboxgl.ScaleControl({
         maxWidth: 120,
         unit: 'metric',
       });
-      map.current.addControl(scale, 'bottom-left');
+      mapInstance.addControl(scale, 'bottom-left');
 
       // Professional attribution - bottom right
       const attribution = new mapboxgl.AttributionControl({
         compact: true,
         customAttribution: '© WorldSim | Government of El Salvador',
       });
-      map.current.addControl(attribution, 'bottom-right');
+      mapInstance.addControl(attribution, 'bottom-right');
     } catch (err) {
       console.error('Error initializing map:', err);
       setError('Failed to initialize map. Please refresh the page.');
@@ -146,9 +191,9 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
     // Cleanup on unmount
     return () => {
-      popup.current?.remove();
+      (popup.current as any)?.remove();
       popup.current = null;
-      map.current?.remove();
+      (map.current as any)?.remove();
       map.current = null;
     };
   }, []); // Empty dependency array - only run once
@@ -159,7 +204,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
-    const mapInstance = map.current;
+    const mapInstance = map.current as any;
 
     // Load regions from public directory
     fetch('/regions.json')
@@ -253,7 +298,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
           let hoveredRegionId: string | number | null = null;
 
           // Hover effect: darken region and outline on mouse enter
-          mapInstance.on('mouseenter', 'regions-fill', (e) => {
+          mapInstance.on('mouseenter', 'regions-fill', (e: any) => {
             // Change cursor to pointer
             mapInstance.getCanvas().style.cursor = 'pointer';
 
@@ -291,7 +336,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
           });
 
           // Click handler: show professional government-style popup
-          mapInstance.on('click', 'regions-fill', (e) => {
+          mapInstance.on('click', 'regions-fill', (e: any) => {
             if (e.features && e.features.length > 0) {
               const feature = e.features[0];
               const regionId = feature.properties?.id || '';
@@ -300,11 +345,31 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
               const population = feature.properties?.population;
               const areaKm2 = feature.properties?.areaKm2;
 
+              // Get stress data if available
+              const stress = getRegionStress(regionId);
+              const hasStressData = simulationResults !== null && simulationResults !== undefined;
+              const stressColor = getStressColor(stress);
+              const stressPercentage = (stress * 100).toFixed(1);
+
+              // Determine header gradient based on stress
+              let headerGradient = 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)'; // Default blue
+              if (hasStressData) {
+                if (stress < 0.15) {
+                  headerGradient = 'linear-gradient(135deg, #059669 0%, #10b981 100%)'; // Green
+                } else if (stress < 0.35) {
+                  headerGradient = 'linear-gradient(135deg, #d97706 0%, #f59e0b 100%)'; // Amber
+                } else if (stress < 0.60) {
+                  headerGradient = 'linear-gradient(135deg, #ea580c 0%, #f97316 100%)'; // Orange
+                } else {
+                  headerGradient = 'linear-gradient(135deg, #dc2626 0%, #ef4444 100%)'; // Red
+                }
+              }
+
               // Professional government-style popup with clean design
               let popupContent = `
                 <div style="font-family: system-ui, -apple-system, sans-serif; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden; max-width: 280px;">
                   <!-- Professional header -->
-                  <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 16px; position: relative;">
+                  <div style="background: ${headerGradient}; padding: 16px; position: relative;">
                     <button
                       onclick="this.closest('.mapboxgl-popup').remove()"
                       style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); border: none; border-radius: 6px; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"
@@ -326,6 +391,21 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
                   <!-- Clean stats section -->
                   <div style="padding: 16px;">`;
+
+              // Show stress data if available (priority #1)
+              if (hasStressData) {
+                let stressLabel = 'Healthy';
+                if (stress >= 0.60) stressLabel = 'Critical';
+                else if (stress >= 0.35) stressLabel = 'Warning';
+                else if (stress >= 0.15) stressLabel = 'Caution';
+
+                popupContent += `
+                    <div style="margin-bottom: 16px; padding: 12px; background: ${stressColor}15; border-left: 4px solid ${stressColor}; border-radius: 6px;">
+                      <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 4px;">Infrastructure Stress</div>
+                      <div style="font-size: 24px; font-weight: 700; color: ${stressColor};">${stressPercentage}%</div>
+                      <div style="font-size: 12px; font-weight: 500; color: #6b7280; margin-top: 4px;">${stressLabel}</div>
+                    </div>`;
+              }
 
               if (population) {
                 popupContent += `
@@ -353,7 +433,7 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
 
               // Show popup at click location
               if (popup.current) {
-                popup.current
+                (popup.current as any)
                   .setLngLat(e.lngLat)
                   .setHTML(popupContent)
                   .addTo(mapInstance);
@@ -374,6 +454,63 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
         setError(`Failed to load regions: ${err.message}`);
       });
   }, [mapLoaded, onRegionClick]);
+
+  /**
+   * Update region colors when simulation results change
+   */
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !simulationResults) return;
+
+    const mapInstance = map.current as any;
+
+    // Wait for the source to be loaded
+    if (!mapInstance.getSource('regions')) return;
+
+    // Fetch regions.json to get all region IDs
+    fetch('/regions.json')
+      .then(response => response.json())
+      .then(geojson => {
+        // Update the paint property to use stress-based colors
+        geojson.features.forEach((feature: any) => {
+          const regionId = feature.properties.id;
+          const stress = getRegionStress(regionId);
+          const color = getStressColor(stress);
+
+          // Set feature state for this region
+          const features = mapInstance.querySourceFeatures('regions', {
+            sourceLayer: undefined,
+            filter: ['==', 'id', regionId]
+          });
+
+          if (features.length > 0 && features[0].id !== undefined) {
+            mapInstance.setFeatureState(
+              { source: 'regions', id: features[0].id },
+              { stress, stressColor: color }
+            );
+          }
+        });
+
+        // Update the fill-color paint property to use feature-state
+        if (mapInstance.getLayer('regions-fill')) {
+          mapInstance.setPaintProperty('regions-fill', 'fill-color', [
+            'case',
+            ['!=', ['feature-state', 'stressColor'], null],
+            ['feature-state', 'stressColor'],
+            [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              '#2563eb', // Hover: darker professional blue
+              '#3b82f6', // Default: professional blue
+            ]
+          ]);
+        }
+
+        console.log('✅ Region colors updated based on stress levels');
+      })
+      .catch(err => {
+        console.error('Error updating region colors:', err);
+      });
+  }, [simulationResults, mapLoaded]);
 
   // Render map container with loading and error states
   return (
@@ -425,6 +562,45 @@ export function MapView({ onRegionClick, height = '600px' }: MapViewProps) {
       <div className="relative w-full h-full">
         {/* Map container */}
         <div ref={mapContainer} className="w-full h-full rounded-lg overflow-hidden" />
+
+        {/* Stress Level Legend - only show when simulation results are available */}
+        {simulationResults && (
+          <div className="absolute bottom-16 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-4 max-w-[200px]">
+            <h4 className="text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
+              Infrastructure Stress
+            </h4>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#10b981' }}></div>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-gray-800">Healthy</div>
+                  <div className="text-xs text-gray-500">0-15%</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f59e0b' }}></div>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-gray-800">Caution</div>
+                  <div className="text-xs text-gray-500">15-35%</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f97316' }}></div>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-gray-800">Warning</div>
+                  <div className="text-xs text-gray-500">35-60%</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ef4444' }}></div>
+                <div className="flex-1">
+                  <div className="text-xs font-semibold text-gray-800">Critical</div>
+                  <div className="text-xs text-gray-500">60-100%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Premium loading state */}
         {!mapLoaded && !error && (

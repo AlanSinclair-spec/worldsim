@@ -2,14 +2,12 @@
  * Central type definitions for WorldSim application
  */
 
-import { SimulationParameters, SimulationResult, SimulationOutput } from '@/lib/model';
 import { Region } from '@/lib/regions';
+import { SimulationResult } from '@/lib/types';
 
 // Re-export commonly used types
 export type {
-  SimulationParameters,
   SimulationResult,
-  SimulationOutput,
   Region,
 };
 

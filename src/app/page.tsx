@@ -292,7 +292,7 @@ export default function Page() {
                 <span className="text-2xl font-bold text-white">WorldSim</span>
               </div>
               <p className="text-gray-400 mb-4">
-                Digital twin simulation platform for El Salvador's infrastructure, energy, and climate planning.
+                Digital twin simulation platform for El Salvador&apos;s infrastructure, energy, and climate planning.
               </p>
             </div>
 

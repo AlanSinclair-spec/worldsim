@@ -22,8 +22,7 @@ export interface Region {
   /** Display name of the region */
   name: string;
   /** GeoJSON geometry data for map visualization */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  geojson: any;
+  geojson: Record<string, unknown>;
   /** Population count for the region */
   population: number;
 }
@@ -177,4 +176,86 @@ export interface SimulationResponse {
     /** List of regions with highest average stress (sorted descending) */
     top_stressed_regions: TopStressedRegion[];
   };
+}
+
+/**
+ * IngestStats contains statistics about a successful CSV data ingestion
+ *
+ * Returned by the /api/ingest endpoint after successful upload.
+ *
+ * @example
+ * const stats: IngestStats = {
+ *   rows_inserted: 365,
+ *   date_range: {
+ *     min: '2024-01-01',
+ *     max: '2024-12-31'
+ *   },
+ *   regions_affected: ['San Salvador', 'Santa Ana', 'San Miguel'],
+ *   errors: []
+ * };
+ */
+export interface IngestStats {
+  /** Number of rows successfully inserted into the database */
+  rows_inserted: number;
+  /** Date range of the uploaded data */
+  date_range: {
+    /** Earliest date in the dataset (YYYY-MM-DD) */
+    min: string;
+    /** Latest date in the dataset (YYYY-MM-DD) */
+    max: string;
+  };
+  /** List of region names that were affected by this upload */
+  regions_affected: string[];
+  /** Any validation errors encountered (partial uploads may have errors) */
+  errors: string[];
+}
+
+/**
+ * IngestRequest is the request body for the /api/ingest endpoint
+ *
+ * @example
+ * const request: IngestRequest = {
+ *   csv_text: 'date,region_name,value\n2024-01-01,San Salvador,1250.5\n...',
+ *   data_type: 'energy'
+ * };
+ */
+export interface IngestRequest {
+  /** Raw CSV text content */
+  csv_text: string;
+  /** Type of data being uploaded */
+  data_type: 'energy' | 'rainfall';
+}
+
+/**
+ * IngestResponse is the response from the /api/ingest endpoint
+ *
+ * @example
+ * // Success response:
+ * const successResponse: IngestResponse = {
+ *   success: true,
+ *   data: {
+ *     rows_inserted: 365,
+ *     date_range: { min: '2024-01-01', max: '2024-12-31' },
+ *     regions_affected: ['San Salvador'],
+ *     errors: []
+ *   }
+ * };
+ *
+ * // Error response:
+ * const errorResponse: IngestResponse = {
+ *   success: false,
+ *   error: 'CSV parsing failed'
+ * };
+ */
+export interface IngestResponse {
+  /** Whether the ingestion was successful */
+  success: boolean;
+  /** Statistics about the ingestion (only present on success) */
+  data?: IngestStats;
+  /** Error message (only present on failure) */
+  error?: string;
+  /** Additional error details or hints */
+  details?: string;
+  /** Specific validation errors for individual rows */
+  errors?: string[];
 }

@@ -1,141 +1,105 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { MapView } from '@/components/MapView';
-import { ControlPanel, SimulationParams } from '@/components/ControlPanel';
+import { ControlPanel } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanel } from '@/components/ResultsPanel';
-import { SimulationResponse } from '@/lib/types';
+import type { SimulationResponse, IngestStats } from '@/lib/types';
 import Link from 'next/link';
 
 /**
  * Interactive Demo Page
  *
- * Showcases all WorldSim components working together:
- * - ControlPanel: Configure simulation parameters
- * - UploadPanel: Upload energy and rainfall data
- * - ResultsPanel: View simulation results with charts
+ * Full end-to-end workflow demonstration:
+ * 1. Upload CSVs via UploadPanel → /api/ingest
+ * 2. Configure parameters via ControlPanel
+ * 3. Run simulation → /api/simulate
+ * 4. Display results on MapView (colored by stress)
+ * 5. Show charts and stats in Results Panel
  *
- * Uses mock data to demonstrate functionality without backend.
+ * Features:
+ * - Real API integration (no mock data)
+ * - Smooth animations and transitions
+ * - Auto-scroll to results after simulation
+ * - Loading states and error handling
+ * - Bilingual support (EN/ES)
  */
 export default function InteractivePage() {
+  // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
   const [results, setResults] = useState<SimulationResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [uploadedData, setUploadedData] = useState<{
+    energy?: IngestStats;
+    rainfall?: IngestStats;
+  }>({});
+
+  // Refs for scrolling
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
 
   /**
-   * Generate mock simulation results based on parameters
+   * Handle simulation completion
+   * Called when ControlPanel finishes a simulation
    */
-  const generateMockResults = (params: SimulationParams): SimulationResponse => {
-    const days = Math.ceil(
-      (new Date(params.end_date).getTime() - new Date(params.start_date).getTime()) /
-        (1000 * 60 * 60 * 24)
-    );
-
-    const regions = [
-      { id: 'SS', name: 'San Salvador' },
-      { id: 'SM', name: 'San Miguel' },
-      { id: 'LI', name: 'La Libertad' },
-      { id: 'SA', name: 'Santa Ana' },
-      { id: 'SO', name: 'Sonsonate' },
-    ];
-
-    const daily_results = [];
-
-    // Generate daily results for each region
-    for (let i = 0; i < days; i++) {
-      const date = new Date(params.start_date);
-      date.setDate(date.getDate() + i);
-      const dateStr = date.toISOString().split('T')[0];
-
-      for (const region of regions) {
-        // Base demand with some random variation
-        const baseDemand = 1000 + Math.random() * 500;
-
-        // Apply solar growth (reduces demand from grid)
-        const solarOffset = (params.solar_growth_pct / 100) * baseDemand * 0.3;
-
-        // Apply rainfall change (affects hydro, impacts supply)
-        const rainfallFactor = 1 + (params.rainfall_change_pct / 100) * 0.2;
-
-        const demand = baseDemand - solarOffset;
-        const supply = (baseDemand * 0.9 * rainfallFactor) + (Math.random() * 200 - 100);
-        const stress = demand / supply;
-
-        daily_results.push({
-          date: dateStr,
-          region_id: region.id,
-          region_name: region.name,
-          demand: Math.round(demand),
-          supply: Math.round(supply),
-          stress: Number(stress.toFixed(2)),
-        });
-      }
-    }
-
-    // Calculate summary statistics
-    const stressList = daily_results.map(r => r.stress);
-    const avg_stress = stressList.reduce((a, b) => a + b, 0) / stressList.length;
-    const max_stress = Math.max(...stressList);
-
-    // Calculate top stressed regions
-    const regionAvgStress = regions.map(region => {
-      const regionResults = daily_results.filter(r => r.region_id === region.id);
-      const regionStress = regionResults.reduce((sum, r) => sum + r.stress, 0) / regionResults.length;
-      return {
-        region_id: region.id,
-        region_name: region.name,
-        avg_stress: Number(regionStress.toFixed(2)),
-      };
+  const handleSimulationComplete = (simulationResults: SimulationResponse) => {
+    console.log('🎉 Simulation complete! Updating UI...', {
+      daily_results: simulationResults.daily_results.length,
+      avg_stress: simulationResults.summary.avg_stress,
     });
 
-    regionAvgStress.sort((a, b) => b.avg_stress - a.avg_stress);
+    setResults(simulationResults);
+    setIsSimulating(false);
 
-    return {
-      daily_results,
-      summary: {
-        avg_stress: Number(avg_stress.toFixed(2)),
-        max_stress: Number(max_stress.toFixed(2)),
-        top_stressed_regions: regionAvgStress,
-      },
-    };
+    // Smooth scroll to results section after a short delay
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }, 500);
+
+    // Pulse the map to draw attention
+    if (mapRef.current) {
+      mapRef.current.classList.add('animate-pulse-once');
+      setTimeout(() => {
+        mapRef.current?.classList.remove('animate-pulse-once');
+      }, 1000);
+    }
   };
 
   /**
-   * Handle simulation run
+   * Handle CSV upload completion
+   * Called when UploadPanel successfully uploads data
    */
-  const handleRunSimulation = async (params: SimulationParams) => {
-    console.log('🚀 Running simulation with params:', params);
+  const handleUploadComplete = (type: 'energy' | 'rainfall', stats: IngestStats) => {
+    console.log(`📊 ${type} data uploaded:`, {
+      rows: stats.rows_inserted,
+      date_range: stats.date_range,
+      regions: stats.regions_affected.length,
+    });
 
-    setIsLoading(true);
-    setResults(null);
-
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    const mockResults = generateMockResults(params);
-    setResults(mockResults);
-    setIsLoading(false);
-
-    console.log('✅ Simulation complete:', mockResults);
+    setUploadedData(prev => ({
+      ...prev,
+      [type]: stats,
+    }));
   };
 
   /**
-   * Handle file upload
+   * Check if user has uploaded data
    */
-  const handleFileUpload = async (type: 'energy' | 'rainfall', file: File) => {
-    console.log(`📁 Uploading ${type} file:`, file.name);
-    // Mock upload - in production, would send to API
-  };
+  const hasUploadedData = uploadedData.energy || uploadedData.rainfall;
 
   const labels = {
-    title: { en: 'Interactive Demo', es: 'Demo Interactivo' },
+    title: { en: 'Interactive Simulator', es: 'Simulador Interactivo' },
     subtitle: {
-      en: 'Experience all WorldSim features with live controls and mock data',
-      es: 'Experimente todas las funciones de WorldSim con controles en vivo y datos simulados',
+      en: 'Upload data, configure scenarios, and visualize results in real-time',
+      es: 'Cargue datos, configure escenarios y visualice resultados en tiempo real',
     },
-    leftColumn: { en: 'Configuration', es: 'Configuración' },
-    rightColumn: { en: 'Results', es: 'Resultados' },
+    dataUploaded: { en: 'Data Uploaded', es: 'Datos Cargados' },
+    noResults: { en: 'No simulation results yet', es: 'Sin resultados de simulación aún' },
+    runSimulation: { en: 'Run a simulation to see results here', es: 'Ejecute una simulación para ver resultados aquí' },
   };
 
   return (
@@ -159,6 +123,22 @@ export default function InteractivePage() {
               </p>
             </div>
             <div className="flex items-center space-x-3">
+              {/* Upload Status Indicator */}
+              {hasUploadedData && (
+                <div className="flex items-center space-x-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                  <svg className="h-4 w-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  <span className="text-xs font-medium text-green-900">
+                    {labels.dataUploaded[language]}
+                  </span>
+                </div>
+              )}
+
               {/* Language Toggle */}
               <div className="flex items-center space-x-1 bg-gray-100 rounded-lg p-1 shadow-inner">
                 <button
@@ -203,7 +183,7 @@ export default function InteractivePage() {
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
                 language={language}
-                onUpload={handleFileUpload}
+                onUpload={handleUploadComplete}
               />
             </div>
 
@@ -211,32 +191,89 @@ export default function InteractivePage() {
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <ControlPanel
                 language={language}
-                onRunSimulation={handleRunSimulation}
+                onSimulationComplete={handleSimulationComplete}
               />
             </div>
           </div>
 
           {/* Middle Column - Map (35%) */}
-          <div className="xl:col-span-4">
+          <div className="xl:col-span-4" ref={mapRef}>
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transform hover:scale-[1.01] transition-all duration-300">
                 <div className="p-2">
-                  <MapView height="700px" />
+                  <MapView
+                    height="700px"
+                    simulationResults={results}
+                  />
                 </div>
+
+                {/* Map Overlay - Show results summary */}
+                {results && (
+                  <div className="absolute top-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-semibold text-gray-700">
+                          {language === 'en' ? 'Average Stress' : 'Estrés Promedio'}
+                        </p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {(results.summary.avg_stress * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-700">
+                          {language === 'en' ? 'Max Stress' : 'Estrés Máximo'}
+                        </p>
+                        <p className="text-2xl font-bold text-red-600">
+                          {(results.summary.max_stress * 100).toFixed(1)}%
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-700">
+                          {language === 'en' ? 'Most Stressed' : 'Más Estresado'}
+                        </p>
+                        <p className="text-sm font-bold text-orange-600">
+                          {results.summary.top_stressed_regions[0]?.region_name || 'N/A'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* Right Column - Results (25%) */}
-          <div className="xl:col-span-3">
+          <div className="xl:col-span-3" ref={resultsRef}>
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <ResultsPanel
                 results={results}
-                isLoading={isLoading}
+                isLoading={isSimulating}
                 language={language}
               />
             </div>
+
+            {/* No results state */}
+            {!results && !isSimulating && (
+              <div className="mt-6 bg-gradient-to-br from-blue-50 to-green-50 border-2 border-dashed border-blue-300 rounded-xl p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  {labels.noResults[language]}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {labels.runSimulation[language]}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -254,13 +291,68 @@ export default function InteractivePage() {
             </div>
             <div className="flex-1">
               <h3 className="text-base font-bold text-gray-900 mb-2">
-                {language === 'en' ? '🎯 Demo Mode' : '🎯 Modo de Demostración'}
+                {language === 'en' ? '🚀 Full Workflow' : '🚀 Flujo Completo'}
               </h3>
               <p className="text-sm text-gray-700 leading-relaxed">
                 {language === 'en'
-                  ? 'This interactive demo uses mock data to showcase all features. Upload files, adjust parameters, run simulations, and view results with charts. In production, simulations connect to the backend API with real infrastructure data.'
-                  : 'Esta demostración interactiva utiliza datos simulados para mostrar todas las funciones. Cargue archivos, ajuste parámetros, ejecute simulaciones y vea resultados con gráficos. En producción, las simulaciones se conectan a la API del backend con datos reales de infraestructura.'}
+                  ? 'Complete end-to-end demonstration: (1) Upload energy/rainfall CSVs → (2) Configure simulation parameters → (3) Run simulation via API → (4) View stress levels on interactive map → (5) Analyze charts and statistics. All components connect to real backend APIs with actual data processing.'
+                  : 'Demostración completa de principio a fin: (1) Cargue CSVs de energía/lluvia → (2) Configure parámetros de simulación → (3) Ejecute simulación vía API → (4) Vea niveles de estrés en mapa interactivo → (5) Analice gráficos y estadísticas. Todos los componentes se conectan a APIs reales con procesamiento de datos real.'}
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Sample Data Download Section */}
+        <div className="mt-6 bg-white border-2 border-gray-200 rounded-xl p-6 shadow-lg">
+          <div className="flex items-start space-x-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-base font-bold text-gray-900 mb-2">
+                {language === 'en' ? '📥 Need Sample Data?' : '📥 ¿Necesita Datos de Ejemplo?'}
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                {language === 'en'
+                  ? 'Download our sample CSV files with 30 days of realistic data for all 14 El Salvador departments:'
+                  : 'Descargue nuestros archivos CSV de ejemplo con 30 días de datos realistas para los 14 departamentos de El Salvador:'}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href="/sample_data/energy_sample.csv"
+                  download
+                  className="inline-flex items-center px-4 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors shadow-md"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {language === 'en' ? 'Energy Sample CSV' : 'CSV de Ejemplo - Energía'}
+                </a>
+                <a
+                  href="/sample_data/rainfall_sample.csv"
+                  download
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md"
+                >
+                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                      fillRule="evenodd"
+                      d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {language === 'en' ? 'Rainfall Sample CSV' : 'CSV de Ejemplo - Lluvia'}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -295,6 +387,23 @@ export default function InteractivePage() {
           </div>
         </div>
       </footer>
+
+      {/* Add CSS for pulse animation */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes pulse-once {
+            0%, 100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.02);
+            }
+          }
+          .animate-pulse-once {
+            animation: pulse-once 0.6s ease-in-out;
+          }
+        `
+      }} />
     </div>
   );
 }

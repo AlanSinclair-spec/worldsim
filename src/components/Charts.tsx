@@ -166,6 +166,7 @@ export function StressChart({ data, language = 'en', height = 300 }: StressChart
             const label = context.dataset.label || '';
             const value = context.parsed.y;
             const stressLabel = labels.stress[language];
+            if (value === null || value === undefined) return label;
             return `${label}: ${stressLabel} ${(value * 100).toFixed(1)}%`;
           },
         },

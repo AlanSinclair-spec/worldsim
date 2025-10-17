@@ -21,6 +21,14 @@ const supabaseAnonKey =
   process.env.SUPABASE_ANON_KEY ||
   'placeholder-key'; // Placeholder for build time
 
+// Debug: Log what we're using (server-side only)
+if (typeof window === 'undefined') {
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] URL: ${supabaseUrl.substring(0, 30)}...`);
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Key: ${supabaseAnonKey.substring(0, 20)}...`);
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Is placeholder URL: ${supabaseUrl === 'https://placeholder.supabase.co'}`);
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Is placeholder key: ${supabaseAnonKey === 'placeholder-key'}`);
+}
+
 // Warn if credentials are missing (but don't throw - let it fail at runtime if needed)
 if (
   typeof window === 'undefined' && // Only log on server side

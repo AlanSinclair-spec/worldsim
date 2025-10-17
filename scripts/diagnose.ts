@@ -91,7 +91,7 @@ async function checkDatabaseConnectivity() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     
     // Test basic connection
-    const { data, error } = await supabase.from('regions').select('count').limit(1);
+    const { error } = await supabase.from('regions').select('count').limit(1);
     
     checkResult(
       !error,

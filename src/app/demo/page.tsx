@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 /**
  * Demo page showcasing WorldSim capabilities
@@ -17,15 +18,26 @@ export default function DemoPage() {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">WorldSim Demo</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Explore the power of digital twin simulation
-              </p>
+            <div className="flex items-center space-x-4">
+              <Link href="/" className="group">
+                <Image
+                  src="/logo-icon.svg"
+                  alt="WorldSim"
+                  width={48}
+                  height={48}
+                  className="transition-transform group-hover:scale-105"
+                />
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">WorldSim Demo</h1>
+                <p className="text-sm text-gray-600 mt-1">
+                  Explore the power of digital twin simulation
+                </p>
+              </div>
             </div>
             <Link
               href="/"
-              className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
+              className="bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105"
             >
               Back to App
             </Link>

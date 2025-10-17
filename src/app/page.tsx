@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapView } from '@/components/MapView';
 
 /**
@@ -20,12 +21,28 @@ export default function Page() {
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-                WorldSim
-              </span>
-            </div>
+            <Link href="/" className="flex items-center space-x-3 group">
+              {/* Mobile: Icon only */}
+              <div className="sm:hidden">
+                <Image
+                  src="/logo-icon.svg"
+                  alt="WorldSim"
+                  width={40}
+                  height={40}
+                  className="transition-transform group-hover:scale-105"
+                />
+              </div>
+              {/* Desktop: Full logo */}
+              <div className="hidden sm:block">
+                <Image
+                  src="/logo.svg"
+                  alt="WorldSim - El Salvador Digital Twin"
+                  width={180}
+                  height={48}
+                  className="h-10 w-auto transition-transform group-hover:scale-105"
+                />
+              </div>
+            </Link>
             <div className="flex items-center space-x-4">
               <Link
                 href="/demo"
@@ -287,10 +304,16 @@ export default function Page() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
+              <Link href="/" className="flex items-center space-x-3 mb-4 group inline-block">
+                <Image
+                  src="/logo-icon.svg"
+                  alt="WorldSim"
+                  width={32}
+                  height={32}
+                  className="transition-transform group-hover:scale-105"
+                />
                 <span className="text-2xl font-bold text-white">WorldSim</span>
-              </div>
+              </Link>
               <p className="text-gray-400 mb-4">
                 Digital twin simulation platform for El Salvador&apos;s infrastructure, energy, and climate planning.
               </p>

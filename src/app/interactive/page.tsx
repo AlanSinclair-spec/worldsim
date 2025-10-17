@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 import { MapView } from '@/components/MapView';
 import { ControlPanel } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanel } from '@/components/ResultsPanel';
 import type { SimulationResponse, IngestStats } from '@/lib/types';
-import Link from 'next/link';
 
 /**
  * Interactive Demo Page
@@ -110,7 +111,15 @@ export default function InteractivePage() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
+                <Link href="/" className="group">
+                  <Image
+                    src="/logo-icon.svg"
+                    alt="WorldSim"
+                    width={40}
+                    height={40}
+                    className="transition-transform group-hover:scale-105"
+                  />
+                </Link>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   WorldSim
                 </h1>
@@ -362,8 +371,16 @@ export default function InteractivePage() {
       <footer className="bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 mt-16 py-12 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-green-600 rounded-lg"></div>
+            <div className="flex items-center space-x-3">
+              <Link href="/" className="group">
+                <Image
+                  src="/logo-icon.svg"
+                  alt="WorldSim"
+                  width={32}
+                  height={32}
+                  className="transition-transform group-hover:scale-105"
+                />
+              </Link>
               <p className="text-sm text-gray-300">
                 <span className="font-bold text-white">WorldSim</span> &copy; 2024 - {language === 'en' ? 'El Salvador Digital Twin' : 'Gemelo Digital de El Salvador'}
               </p>

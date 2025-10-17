@@ -110,14 +110,18 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
     start_date: string;
     end_date: string;
   }) => {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] [ControlPanel] 🚀 Starting simulation with parameters:`, params);
+
     setIsRunning(true);
     setError(null);
     setSuccessMessage(null);
     setExecutionTime(null);
 
-    console.log('🚀 Running simulation with parameters:', params);
-
     try {
+      console.log(`[${new Date().toISOString()}] [ControlPanel] 📤 Sending POST request to /api/simulate`);
+      console.log(`[${new Date().toISOString()}] [ControlPanel] Request payload:`, JSON.stringify(params, null, 2));
+
       const response = await fetch('/api/simulate', {
         method: 'POST',
         headers: {
@@ -126,13 +130,22 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
         body: JSON.stringify(params),
       });
 
+      console.log(`[${new Date().toISOString()}] [ControlPanel] 📥 Received response with status:`, response.status);
+
       const result = await response.json();
+      console.log(`[${new Date().toISOString()}] [ControlPanel] 📋 Parsed response:`, {
+        success: result.success,
+        hasData: !!result.data,
+        error: result.error,
+        details: result.details,
+      });
 
       if (!result.success) {
         // Handle error response
         const errorMsg = result.details || result.error || 'Simulation failed';
         setError(errorMsg);
-        console.error('❌ Simulation failed:', errorMsg);
+        console.error(`[${new Date().toISOString()}] [ControlPanel] ❌ Simulation failed with error:`, errorMsg);
+        console.error(`[${new Date().toISOString()}] [ControlPanel] Full error response:`, result);
         clearMessages();
         return;
       }
@@ -146,18 +159,25 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           : `Simulación completada en ${(execTime / 1000).toFixed(2)}s`
       );
 
-      console.log('✅ Simulation successful:', {
+      console.log(`[${new Date().toISOString()}] [ControlPanel] ✅ Simulation successful! Summary:`, {
         run_id: result.data.run_id,
-        avg_stress: result.data.summary.avg_stress,
+        daily_results_count: result.data.daily_results?.length || 0,
+        avg_stress: result.data.summary?.avg_stress,
+        max_stress: result.data.summary?.max_stress,
         execution_time_ms: execTime,
       });
 
+      console.log(`[${new Date().toISOString()}] [ControlPanel] 📊 Full response data:`, result.data);
+
       // Pass results to parent via callback
       if (onSimulationComplete && result.data) {
+        console.log(`[${new Date().toISOString()}] [ControlPanel] 🔔 Calling onSimulationComplete callback`);
         onSimulationComplete({
           daily_results: result.data.daily_results,
           summary: result.data.summary,
         });
+      } else {
+        console.warn(`[${new Date().toISOString()}] [ControlPanel] ⚠️ No callback provided or no data to pass`);
       }
 
       clearMessages();
@@ -169,9 +189,11 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           : 'Error al conectar con el servidor. Por favor intente de nuevo.';
 
       setError(errorMsg);
-      console.error('❌ Network error:', err);
+      console.error(`[${new Date().toISOString()}] [ControlPanel] ❌ Network error:`, err);
+      console.error(`[${new Date().toISOString()}] [ControlPanel] Error stack:`, err instanceof Error ? err.stack : 'No stack trace');
       clearMessages();
     } finally {
+      console.log(`[${new Date().toISOString()}] [ControlPanel] 🏁 Simulation complete, setting isRunning to false`);
       setIsRunning(false);
     }
   };

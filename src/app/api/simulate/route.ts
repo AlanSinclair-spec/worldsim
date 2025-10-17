@@ -63,13 +63,15 @@ interface SimulateResponse {
  */
 export async function POST(req: NextRequest): Promise<NextResponse<SimulateResponse>> {
   const startTime = Date.now();
+  console.log(`[${new Date().toISOString()}] [API /api/simulate] ========== NEW SIMULATION REQUEST ==========`);
 
   try {
     // Parse request body
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📥 Parsing request body...`);
     const body = await req.json() as SimulateRequest;
     const { solar_growth_pct, rainfall_change_pct, start_date, end_date } = body;
 
-    console.log('📥 Simulation request received:', {
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📋 Received parameters:`, {
       solar_growth_pct,
       rainfall_change_pct,
       start_date,
@@ -77,7 +79,10 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     });
 
     // Validate required fields
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🔍 Validating required fields...`);
+
     if (solar_growth_pct === undefined || solar_growth_pct === null) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing solar_growth_pct`);
       return NextResponse.json(
         {
           success: false,
@@ -88,6 +93,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     }
 
     if (rainfall_change_pct === undefined || rainfall_change_pct === null) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing rainfall_change_pct`);
       return NextResponse.json(
         {
           success: false,
@@ -98,6 +104,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     }
 
     if (!start_date) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing start_date`);
       return NextResponse.json(
         {
           success: false,
@@ -108,6 +115,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     }
 
     if (!end_date) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing end_date`);
       return NextResponse.json(
         {
           success: false,
@@ -117,18 +125,23 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
       );
     }
 
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ All required fields present`);
+
     // Create scenario object
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🏗️ Creating scenario object...`);
     const scenario: SimulationScenario = {
       solar_growth_pct,
       rainfall_change_pct,
       start_date,
       end_date,
     };
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📦 Scenario object:`, scenario);
 
     // Validate scenario parameters
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🔍 Validating scenario parameters...`);
     const validation = validateScenarioParams(scenario);
     if (!validation.isValid) {
-      console.warn('❌ Validation failed:', validation.error);
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Validation failed:`, validation.error);
       return NextResponse.json(
         {
           success: false,
@@ -139,14 +152,25 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
       );
     }
 
-    console.log('✓ Parameters validated successfully');
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ Parameters validated successfully`);
 
     // Run simulation
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🚀 Calling simulateScenario()...`);
     let simulationResults: SimulationResponse;
     try {
       simulationResults = await simulateScenario(scenario);
+      console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ simulateScenario() completed successfully`);
+      console.log(`[${new Date().toISOString()}] [API /api/simulate] 📊 Results summary:`, {
+        daily_results_count: simulationResults.daily_results?.length || 0,
+        avg_stress: simulationResults.summary?.avg_stress,
+        max_stress: simulationResults.summary?.max_stress,
+      });
     } catch (simulationError) {
-      console.error('❌ Simulation failed:', simulationError);
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Simulation failed:`, simulationError);
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] Error details:`, {
+        message: simulationError instanceof Error ? simulationError.message : 'Unknown error',
+        stack: simulationError instanceof Error ? simulationError.stack : 'No stack trace',
+      });
 
       // Check for common errors
       if (simulationError instanceof Error) {
@@ -176,12 +200,12 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
       throw simulationError;
     }
 
-    console.log('✓ Simulation completed successfully');
-
     // Calculate execution time
     const executionTime = Date.now() - startTime;
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] ⏱️ Simulation execution time: ${executionTime}ms`);
 
     // Store run in database
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 💾 Storing run in database...`);
     let runId: string | null = null;
     try {
       const { data: runRecord, error: insertError } = await supabase
@@ -195,26 +219,29 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
         .single();
 
       if (insertError) {
-        console.error('⚠️ Failed to store run in database:', insertError);
+        console.error(`[${new Date().toISOString()}] [API /api/simulate] ⚠️ Failed to store run in database:`, insertError);
         // Continue anyway - return results even if storage fails
       } else if (runRecord) {
         runId = runRecord.id;
-        console.log(`✓ Run stored in database with ID: ${runId}`);
+        console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ Run stored in database with ID: ${runId}`);
       }
     } catch (storageError) {
-      console.error('⚠️ Error storing run:', storageError);
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ⚠️ Error storing run:`, storageError);
       // Continue anyway - return results even if storage fails
     }
 
     // Log performance metrics
-    console.log('📊 Performance metrics:', {
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📊 Final performance metrics:`, {
       execution_time_ms: executionTime,
       total_results: simulationResults.daily_results.length,
       avg_stress: simulationResults.summary.avg_stress,
+      max_stress: simulationResults.summary.max_stress,
+      run_id: runId || 'not-stored',
     });
 
     // Return successful response
-    return NextResponse.json({
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📤 Returning successful response`);
+    const response = {
       success: true,
       data: {
         run_id: runId || 'not-stored',
@@ -223,13 +250,18 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
         scenario: scenario,
         execution_time_ms: executionTime,
       },
-    });
+    };
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] ========== REQUEST COMPLETED SUCCESSFULLY ==========`);
+
+    return NextResponse.json(response);
   } catch (error) {
-    console.error('💥 Simulate API Error:', error);
+    console.error(`[${new Date().toISOString()}] [API /api/simulate] 💥 UNHANDLED ERROR:`, error);
+    console.error(`[${new Date().toISOString()}] [API /api/simulate] Error stack:`, error instanceof Error ? error.stack : 'No stack');
 
     // Calculate execution time even for errors
     const executionTime = Date.now() - startTime;
-    console.error(`❌ Request failed after ${executionTime}ms`);
+    console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Request failed after ${executionTime}ms`);
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] ========== REQUEST FAILED ==========`);
 
     return NextResponse.json(
       {

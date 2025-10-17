@@ -156,7 +156,8 @@ export async function simulateScenario(
 ): Promise<SimulationResponse> {
   const { solar_growth_pct, rainfall_change_pct, start_date, end_date } = params;
 
-  console.log('🔬 Starting simulation:', {
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ========== SIMULATION START ==========`);
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🔬 Parameters:`, {
     solar_growth_pct,
     rainfall_change_pct,
     start_date,
@@ -164,24 +165,29 @@ export async function simulateScenario(
   });
 
   // Step 1: Fetch all regions
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📍 Step 1: Fetching regions from database...`);
   const { data: regions, error: regionsError } = await supabase
     .from('regions')
     .select('id, name');
 
   if (regionsError) {
+    console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ Failed to fetch regions:`, regionsError);
     throw new Error(`Failed to fetch regions: ${regionsError.message}`);
   }
 
   if (!regions || regions.length === 0) {
+    console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ No regions found in database`);
     throw new Error('No regions found in database');
   }
 
-  console.log(`✓ Loaded ${regions.length} regions`);
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Loaded ${regions.length} regions:`, regions.map(r => r.name).join(', '));
 
   // Create region lookup map
   const regionMap = new Map(regions.map(r => [r.id, r.name]));
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🗺️ Created region lookup map with ${regionMap.size} entries`);
 
   // Step 2: Fetch energy demand data
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ⚡ Step 2: Fetching energy data from ${start_date} to ${end_date}...`);
   const { data: energyData, error: energyError } = await supabase
     .from('energy_daily')
     .select('region_id, date, demand_kwh')
@@ -190,12 +196,19 @@ export async function simulateScenario(
     .order('date', { ascending: true });
 
   if (energyError) {
+    console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ Failed to fetch energy data:`, energyError);
     throw new Error(`Failed to fetch energy data: ${energyError.message}`);
   }
 
-  console.log(`✓ Loaded ${energyData?.length || 0} energy records`);
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Loaded ${energyData?.length || 0} energy records`);
+  if (energyData && energyData.length > 0) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📋 Sample energy data (first record):`, energyData[0]);
+  } else {
+    console.warn(`[${new Date().toISOString()}] [Model simulateScenario] ⚠️ No energy data found for date range`);
+  }
 
   // Step 3: Fetch rainfall data
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🌧️ Step 3: Fetching rainfall data from ${start_date} to ${end_date}...`);
   const { data: rainfallData, error: rainfallError } = await supabase
     .from('rain_daily')
     .select('region_id, date, rainfall_mm')
@@ -204,12 +217,19 @@ export async function simulateScenario(
     .order('date', { ascending: true });
 
   if (rainfallError) {
+    console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ Failed to fetch rainfall data:`, rainfallError);
     throw new Error(`Failed to fetch rainfall data: ${rainfallError.message}`);
   }
 
-  console.log(`✓ Loaded ${rainfallData?.length || 0} rainfall records`);
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Loaded ${rainfallData?.length || 0} rainfall records`);
+  if (rainfallData && rainfallData.length > 0) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📋 Sample rainfall data (first record):`, rainfallData[0]);
+  } else {
+    console.warn(`[${new Date().toISOString()}] [Model simulateScenario] ⚠️ No rainfall data found for date range`);
+  }
 
   // Step 4: Create rainfall lookup map (region_id + date -> rainfall)
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🗂️ Step 4: Creating rainfall lookup map...`);
   const rainfallMap = new Map<string, number>();
   if (rainfallData) {
     rainfallData.forEach(record => {
@@ -217,12 +237,23 @@ export async function simulateScenario(
       rainfallMap.set(key, record.rainfall_mm);
     });
   }
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Rainfall map created with ${rainfallMap.size} entries`);
 
   // Step 5: Calculate daily results
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🧮 Step 5: Calculating daily simulation results...`);
   const daily_results: SimulationResult[] = [];
 
   if (energyData) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🔄 Processing ${energyData.length} energy records...`);
+    let processedCount = 0;
+
     for (const energyRecord of energyData) {
+      processedCount++;
+
+      // Log progress every 100 records
+      if (processedCount % 100 === 0) {
+        console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📊 Progress: ${processedCount}/${energyData.length} records processed`);
+      }
       const region_id = energyRecord.region_id;
       const region_name = regionMap.get(region_id) || 'Unknown';
       const date = energyRecord.date;
@@ -274,13 +305,17 @@ export async function simulateScenario(
         stress,
       });
     }
+
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Finished processing all ${processedCount} energy records`);
+  } else {
+    console.warn(`[${new Date().toISOString()}] [Model simulateScenario] ⚠️ No energy data to process`);
   }
 
-  console.log(`✓ Calculated ${daily_results.length} daily results`);
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📊 Calculated ${daily_results.length} daily results`);
 
   // Handle case where no data was found
   if (daily_results.length === 0) {
-    console.warn('⚠️ No simulation results generated - no energy data in date range');
+    console.warn(`[${new Date().toISOString()}] [Model simulateScenario] ⚠️ No simulation results generated - no energy data in date range`);
     return {
       daily_results: [],
       summary: {
@@ -291,15 +326,31 @@ export async function simulateScenario(
     };
   }
 
+  // Log sample results
+  if (daily_results.length > 0) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📋 Sample result (first entry):`, {
+      date: daily_results[0].date,
+      region: daily_results[0].region_name,
+      demand: daily_results[0].demand,
+      supply: daily_results[0].supply,
+      stress: daily_results[0].stress,
+    });
+  }
+
   // Step 6: Calculate summary statistics
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] 📈 Step 6: Calculating summary statistics...`);
   const summary = calculateSummary(daily_results);
 
-  console.log('✓ Simulation complete:', {
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Summary calculated:`, {
     total_results: daily_results.length,
     avg_stress: summary.avg_stress,
     max_stress: summary.max_stress,
+    top_stressed_regions_count: summary.top_stressed_regions.length,
     top_region: summary.top_stressed_regions[0]?.region_name,
+    top_region_stress: summary.top_stressed_regions[0]?.avg_stress,
   });
+
+  console.log(`[${new Date().toISOString()}] [Model simulateScenario] ========== SIMULATION COMPLETE ==========`);
 
   return {
     daily_results,

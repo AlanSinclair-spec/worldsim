@@ -1,0 +1,421 @@
+date,region_name,value
+2025-09-16,San Salvador,12.5
+2025-09-16,La Libertad,15.3
+2025-09-16,Santa Ana,18.7
+2025-09-16,San Miguel,14.2
+2025-09-16,Sonsonate,22.4
+2025-09-16,La Paz,11.8
+2025-09-16,Usulután,16.9
+2025-09-16,Chalatenango,25.6
+2025-09-16,Cuscatlán,13.4
+2025-09-16,Ahuachapán,28.3
+2025-09-16,Morazán,19.7
+2025-09-16,La Unión,17.5
+2025-09-16,San Vicente,14.8
+2025-09-16,Cabañas,16.2
+2025-09-17,San Salvador,8.3
+2025-09-17,La Libertad,10.7
+2025-09-17,Santa Ana,12.4
+2025-09-17,San Miguel,9.8
+2025-09-17,Sonsonate,14.6
+2025-09-17,La Paz,7.9
+2025-09-17,Usulután,11.3
+2025-09-17,Chalatenango,16.8
+2025-09-17,Cuscatlán,9.2
+2025-09-17,Ahuachapán,18.5
+2025-09-17,Morazán,13.4
+2025-09-17,La Unión,12.1
+2025-09-17,San Vicente,10.3
+2025-09-17,Cabañas,11.7
+2025-09-18,San Salvador,0
+2025-09-18,La Libertad,0
+2025-09-18,Santa Ana,2.3
+2025-09-18,San Miguel,0
+2025-09-18,Sonsonate,3.7
+2025-09-18,La Paz,0
+2025-09-18,Usulután,1.5
+2025-09-18,Chalatenango,5.4
+2025-09-18,Cuscatlán,1.8
+2025-09-18,Ahuachapán,6.2
+2025-09-18,Morazán,4.3
+2025-09-18,La Unión,2.7
+2025-09-18,San Vicente,1.2
+2025-09-18,Cabañas,3.1
+2025-09-19,San Salvador,24.7
+2025-09-19,La Libertad,28.5
+2025-09-19,Santa Ana,32.4
+2025-09-19,San Miguel,26.8
+2025-09-19,Sonsonate,35.9
+2025-09-19,La Paz,23.5
+2025-09-19,Usulután,29.7
+2025-09-19,Chalatenango,38.6
+2025-09-19,Cuscatlán,25.9
+2025-09-19,Ahuachapán,42.3
+2025-09-19,Morazán,31.4
+2025-09-19,La Unión,30.2
+2025-09-19,San Vicente,27.6
+2025-09-19,Cabañas,29.8
+2025-09-20,San Salvador,18.9
+2025-09-20,La Libertad,22.3
+2025-09-20,Santa Ana,25.8
+2025-09-20,San Miguel,20.4
+2025-09-20,Sonsonate,27.6
+2025-09-20,La Paz,17.9
+2025-09-20,Usulután,23.1
+2025-09-20,Chalatenango,30.2
+2025-09-20,Cuscatlán,19.8
+2025-09-20,Ahuachapán,33.5
+2025-09-20,Morazán,24.9
+2025-09-20,La Unión,23.7
+2025-09-20,San Vicente,21.4
+2025-09-20,Cabañas,23.5
+2025-09-21,San Salvador,5.4
+2025-09-21,La Libertad,7.8
+2025-09-21,Santa Ana,9.3
+2025-09-21,San Miguel,6.7
+2025-09-21,Sonsonate,11.2
+2025-09-21,La Paz,5.1
+2025-09-21,Usulután,8.4
+2025-09-21,Chalatenango,12.7
+2025-09-21,Cuscatlán,6.9
+2025-09-21,Ahuachapán,14.8
+2025-09-21,Morazán,10.3
+2025-09-21,La Unión,9.1
+2025-09-21,San Vicente,7.6
+2025-09-21,Cabañas,8.9
+2025-09-22,San Salvador,0
+2025-09-22,La Libertad,1.2
+2025-09-22,Santa Ana,2.7
+2025-09-22,San Miguel,0.8
+2025-09-22,Sonsonate,4.3
+2025-09-22,La Paz,0
+2025-09-22,Usulután,2.1
+2025-09-22,Chalatenango,5.6
+2025-09-22,Cuscatlán,1.4
+2025-09-22,Ahuachapán,7.2
+2025-09-22,Morazán,4.8
+2025-09-22,La Unión,3.5
+2025-09-22,San Vicente,1.9
+2025-09-22,Cabañas,3.3
+2025-09-23,San Salvador,14.6
+2025-09-23,La Libertad,18.2
+2025-09-23,Santa Ana,21.5
+2025-09-23,San Miguel,16.3
+2025-09-23,Sonsonate,24.8
+2025-09-23,La Paz,13.7
+2025-09-23,Usulután,19.4
+2025-09-23,Chalatenango,26.9
+2025-09-23,Cuscatlán,15.8
+2025-09-23,Ahuachapán,29.7
+2025-09-23,Morazán,22.3
+2025-09-23,La Unión,20.6
+2025-09-23,San Vicente,17.9
+2025-09-23,Cabañas,19.8
+2025-09-24,San Salvador,9.7
+2025-09-24,La Libertad,12.4
+2025-09-24,Santa Ana,14.9
+2025-09-24,San Miguel,11.2
+2025-09-24,Sonsonate,17.3
+2025-09-24,La Paz,9.1
+2025-09-24,Usulután,13.6
+2025-09-24,Chalatenango,18.8
+2025-09-24,Cuscatlán,10.9
+2025-09-24,Ahuachapán,20.6
+2025-09-24,Morazán,15.7
+2025-09-24,La Unión,14.3
+2025-09-24,San Vicente,12.4
+2025-09-24,Cabañas,13.9
+2025-09-25,San Salvador,0
+2025-09-25,La Libertad,0
+2025-09-25,Santa Ana,1.8
+2025-09-25,San Miguel,0
+2025-09-25,Sonsonate,3.2
+2025-09-25,La Paz,0
+2025-09-25,Usulután,1.7
+2025-09-25,Chalatenango,4.9
+2025-09-25,Cuscatlán,1.3
+2025-09-25,Ahuachapán,5.8
+2025-09-25,Morazán,3.7
+2025-09-25,La Unión,2.5
+2025-09-25,San Vicente,1.1
+2025-09-25,Cabañas,2.8
+2025-09-26,San Salvador,21.3
+2025-09-26,La Libertad,25.7
+2025-09-26,Santa Ana,29.4
+2025-09-26,San Miguel,23.8
+2025-09-26,Sonsonate,32.6
+2025-09-26,La Paz,20.4
+2025-09-26,Usulután,26.3
+2025-09-26,Chalatenango,35.1
+2025-09-26,Cuscatlán,22.7
+2025-09-26,Ahuachapán,38.9
+2025-09-26,Morazán,28.6
+2025-09-26,La Unión,27.4
+2025-09-26,San Vicente,24.8
+2025-09-26,Cabañas,26.7
+2025-09-27,San Salvador,16.8
+2025-09-27,La Libertad,20.3
+2025-09-27,Santa Ana,23.7
+2025-09-27,San Miguel,18.9
+2025-09-27,Sonsonate,26.4
+2025-09-27,La Paz,15.8
+2025-09-27,Usulután,21.5
+2025-09-27,Chalatenango,28.3
+2025-09-27,Cuscatlán,18.2
+2025-09-27,Ahuachapán,31.2
+2025-09-27,Morazán,23.9
+2025-09-27,La Unión,22.6
+2025-09-27,San Vicente,20.1
+2025-09-27,Cabañas,21.9
+2025-09-28,San Salvador,7.2
+2025-09-28,La Libertad,9.6
+2025-09-28,Santa Ana,11.8
+2025-09-28,San Miguel,8.4
+2025-09-28,Sonsonate,13.7
+2025-09-28,La Paz,6.8
+2025-09-28,Usulután,10.2
+2025-09-28,Chalatenango,14.6
+2025-09-28,Cuscatlán,8.7
+2025-09-28,Ahuachapán,16.3
+2025-09-28,Morazán,12.1
+2025-09-28,La Unión,10.8
+2025-09-28,San Vicente,9.3
+2025-09-28,Cabañas,10.7
+2025-09-29,San Salvador,0
+2025-09-29,La Libertad,0.7
+2025-09-29,Santa Ana,2.1
+2025-09-29,San Miguel,0.3
+2025-09-29,Sonsonate,3.8
+2025-09-29,La Paz,0
+2025-09-29,Usulután,1.4
+2025-09-29,Chalatenango,4.9
+2025-09-29,Cuscatlán,0.9
+2025-09-29,Ahuachapán,6.1
+2025-09-29,Morazán,3.6
+2025-09-29,La Unión,2.3
+2025-09-29,San Vicente,1.2
+2025-09-29,Cabañas,2.7
+2025-09-30,San Salvador,19.4
+2025-09-30,La Libertad,23.1
+2025-09-30,Santa Ana,26.8
+2025-09-30,San Miguel,21.7
+2025-09-30,Sonsonate,29.5
+2025-09-30,La Paz,18.6
+2025-09-30,Usulután,24.2
+2025-09-30,Chalatenango,31.7
+2025-09-30,Cuscatlán,20.9
+2025-09-30,Ahuachapán,35.4
+2025-09-30,Morazán,26.3
+2025-09-30,La Unión,25.1
+2025-09-30,San Vicente,22.8
+2025-09-30,Cabañas,24.6
+2025-10-01,San Salvador,11.3
+2025-10-01,La Libertad,14.7
+2025-10-01,Santa Ana,17.2
+2025-10-01,San Miguel,13.1
+2025-10-01,Sonsonate,19.8
+2025-10-01,La Paz,10.9
+2025-10-01,Usulután,15.6
+2025-10-01,Chalatenango,21.4
+2025-10-01,Cuscatlán,13.8
+2025-10-01,Ahuachapán,23.7
+2025-10-01,Morazán,17.9
+2025-10-01,La Unión,16.4
+2025-10-01,San Vicente,14.6
+2025-10-01,Cabañas,16.1
+2025-10-02,San Salvador,0
+2025-10-02,La Libertad,1.4
+2025-10-02,Santa Ana,3.2
+2025-10-02,San Miguel,0.6
+2025-10-02,Sonsonate,4.9
+2025-10-02,La Paz,0
+2025-10-02,Usulután,2.3
+2025-10-02,Chalatenango,6.1
+2025-10-02,Cuscatlán,1.7
+2025-10-02,Ahuachapán,7.6
+2025-10-02,Morazán,5.2
+2025-10-02,La Unión,3.8
+2025-10-02,San Vicente,2.1
+2025-10-02,Cabañas,3.6
+2025-10-03,San Salvador,26.8
+2025-10-03,La Libertad,31.2
+2025-10-03,Santa Ana,35.6
+2025-10-03,San Miguel,29.4
+2025-10-03,Sonsonate,38.7
+2025-10-03,La Paz,25.9
+2025-10-03,Usulután,32.1
+2025-10-03,Chalatenango,41.3
+2025-10-03,Cuscatlán,28.6
+2025-10-03,Ahuachapán,45.2
+2025-10-03,Morazán,34.7
+2025-10-03,La Unión,33.4
+2025-10-03,San Vicente,30.9
+2025-10-03,Cabañas,32.8
+2025-10-04,San Salvador,22.6
+2025-10-04,La Libertad,26.9
+2025-10-04,Santa Ana,30.3
+2025-10-04,San Miguel,25.2
+2025-10-04,Sonsonate,33.1
+2025-10-04,La Paz,21.7
+2025-10-04,Usulután,27.8
+2025-10-04,Chalatenango,35.6
+2025-10-04,Cuscatlán,24.3
+2025-10-04,Ahuachapán,39.1
+2025-10-04,Morazán,29.8
+2025-10-04,La Unión,28.7
+2025-10-04,San Vicente,26.4
+2025-10-04,Cabañas,28.1
+2025-10-05,San Salvador,8.9
+2025-10-05,La Libertad,11.6
+2025-10-05,Santa Ana,13.9
+2025-10-05,San Miguel,10.2
+2025-10-05,Sonsonate,16.1
+2025-10-05,La Paz,8.3
+2025-10-05,Usulután,12.4
+2025-10-05,Chalatenango,17.2
+2025-10-05,Cuscatlán,10.7
+2025-10-05,Ahuachapán,19.3
+2025-10-05,Morazán,14.6
+2025-10-05,La Unión,13.1
+2025-10-05,San Vicente,11.4
+2025-10-05,Cabañas,12.8
+2025-10-06,San Salvador,0
+2025-10-06,La Libertad,0
+2025-10-06,Santa Ana,1.6
+2025-10-06,San Miguel,0
+2025-10-06,Sonsonate,2.9
+2025-10-06,La Paz,0
+2025-10-06,Usulután,1.3
+2025-10-06,Chalatenango,4.2
+2025-10-06,Cuscatlán,0.8
+2025-10-06,Ahuachapán,5.4
+2025-10-06,Morazán,3.1
+2025-10-06,La Unión,2.2
+2025-10-06,San Vicente,0.9
+2025-10-06,Cabañas,2.4
+2025-10-07,San Salvador,15.7
+2025-10-07,La Libertad,19.4
+2025-10-07,Santa Ana,22.6
+2025-10-07,San Miguel,17.8
+2025-10-07,Sonsonate,25.9
+2025-10-07,La Paz,14.9
+2025-10-07,Usulután,20.7
+2025-10-07,Chalatenango,27.8
+2025-10-07,Cuscatlán,17.1
+2025-10-07,Ahuachapán,30.6
+2025-10-07,Morazán,23.4
+2025-10-07,La Unión,21.9
+2025-10-07,San Vicente,19.3
+2025-10-07,Cabañas,21.2
+2025-10-08,San Salvador,10.4
+2025-10-08,La Libertad,13.8
+2025-10-08,Santa Ana,16.1
+2025-10-08,San Miguel,12.3
+2025-10-08,Sonsonate,18.6
+2025-10-08,La Paz,9.7
+2025-10-08,Usulután,14.9
+2025-10-08,Chalatenango,20.1
+2025-10-08,Cuscatlán,12.6
+2025-10-08,Ahuachapán,22.4
+2025-10-08,Morazán,16.8
+2025-10-08,La Unión,15.3
+2025-10-08,San Vicente,13.7
+2025-10-08,Cabañas,15.1
+2025-10-09,San Salvador,0
+2025-10-09,La Libertad,0.9
+2025-10-09,Santa Ana,2.4
+2025-10-09,San Miguel,0.4
+2025-10-09,Sonsonate,3.6
+2025-10-09,La Paz,0
+2025-10-09,Usulután,1.8
+2025-10-09,Chalatenango,5.3
+2025-10-09,Cuscatlán,1.2
+2025-10-09,Ahuachapán,6.7
+2025-10-09,Morazán,4.1
+2025-10-09,La Unión,3.1
+2025-10-09,San Vicente,1.6
+2025-10-09,Cabañas,2.9
+2025-10-10,San Salvador,18.2
+2025-10-10,La Libertad,22.1
+2025-10-10,Santa Ana,25.4
+2025-10-10,San Miguel,20.6
+2025-10-10,Sonsonate,28.2
+2025-10-10,La Paz,17.3
+2025-10-10,Usulután,23.6
+2025-10-10,Chalatenango,30.9
+2025-10-10,Cuscatlán,19.8
+2025-10-10,Ahuachapán,34.1
+2025-10-10,Morazán,25.7
+2025-10-10,La Unión,24.3
+2025-10-10,San Vicente,21.9
+2025-10-10,Cabañas,23.7
+2025-10-11,San Salvador,13.6
+2025-10-11,La Libertad,17.2
+2025-10-11,Santa Ana,19.8
+2025-10-11,San Miguel,15.7
+2025-10-11,Sonsonate,22.3
+2025-10-11,La Paz,12.9
+2025-10-11,Usulután,18.4
+2025-10-11,Chalatenango,24.6
+2025-10-11,Cuscatlán,15.9
+2025-10-11,Ahuachapán,27.2
+2025-10-11,Morazán,20.8
+2025-10-11,La Unión,19.1
+2025-10-11,San Vicente,17.3
+2025-10-11,Cabañas,18.9
+2025-10-12,San Salvador,6.3
+2025-10-12,La Libertad,8.9
+2025-10-12,Santa Ana,10.7
+2025-10-12,San Miguel,7.6
+2025-10-12,Sonsonate,12.4
+2025-10-12,La Paz,5.9
+2025-10-12,Usulután,9.3
+2025-10-12,Chalatenango,13.2
+2025-10-12,Cuscatlán,7.8
+2025-10-12,Ahuachapán,14.9
+2025-10-12,Morazán,11.3
+2025-10-12,La Unión,9.7
+2025-10-12,San Vicente,8.6
+2025-10-12,Cabañas,9.9
+2025-10-13,San Salvador,0
+2025-10-13,La Libertad,0
+2025-10-13,Santa Ana,1.3
+2025-10-13,San Miguel,0
+2025-10-13,Sonsonate,2.6
+2025-10-13,La Paz,0
+2025-10-13,Usulután,0.9
+2025-10-13,Chalatenango,3.7
+2025-10-13,Cuscatlán,0.5
+2025-10-13,Ahuachapán,4.8
+2025-10-13,Morazán,2.9
+2025-10-13,La Unión,1.8
+2025-10-13,San Vicente,0.7
+2025-10-13,Cabañas,2.1
+2025-10-14,San Salvador,20.9
+2025-10-14,La Libertad,24.8
+2025-10-14,Santa Ana,28.1
+2025-10-14,San Miguel,23.4
+2025-10-14,Sonsonate,31.2
+2025-10-14,La Paz,19.7
+2025-10-14,Usulután,25.9
+2025-10-14,Chalatenango,33.4
+2025-10-14,Cuscatlán,22.6
+2025-10-14,Ahuachapán,36.8
+2025-10-14,Morazán,27.9
+2025-10-14,La Unión,26.7
+2025-10-14,San Vicente,24.2
+2025-10-14,Cabañas,26.1
+2025-10-15,San Salvador,16.1
+2025-10-15,La Libertad,19.8
+2025-10-15,Santa Ana,22.9
+2025-10-15,San Miguel,18.3
+2025-10-15,Sonsonate,26.1
+2025-10-15,La Paz,15.2
+2025-10-15,Usulután,21.3
+2025-10-15,Chalatenango,28.1
+2025-10-15,Cuscatlán,17.6
+2025-10-15,Ahuachapán,31.4
+2025-10-15,Morazán,23.7
+2025-10-15,La Unión,22.3
+2025-10-15,San Vicente,19.9
+2025-10-15,Cabañas,21.6

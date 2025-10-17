@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { IngestStats, IngestRequest, IngestResponse } from '@/lib/types';
 
 /**
  * Upload status types
@@ -14,36 +15,33 @@ interface FileUploadData {
   file: File | null;
   status: UploadStatus;
   error?: string;
-  stats?: {
-    rowsInserted: number;
-    dateRange: {
-      start: string;
-      end: string;
-    };
-  };
+  stats?: IngestStats;
 }
 
 interface UploadPanelProps {
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
-  /** Callback when files are uploaded */
-  onUpload?: (type: 'energy' | 'rainfall', file: File) => Promise<void>;
+  /** Callback when files are uploaded successfully */
+  onUpload?: (type: 'energy' | 'rainfall', stats: IngestStats) => void;
 }
 
 /**
  * UploadPanel Component
  *
- * Provides file upload interface for Energy and Rainfall CSV data:
+ * Provides production-ready file upload interface for Energy and Rainfall CSV data:
  * - Drag-and-drop or click to select files
- * - Upload status tracking
- * - Statistics display after upload
- * - CSV format guide
+ * - Real-time upload status with spinner
+ * - Comprehensive statistics display
+ * - Error handling with detailed messages
+ * - CSV format guide with examples
+ *
+ * Connects to /api/ingest endpoint for server-side processing.
  *
  * @example
  * <UploadPanel
  *   language="en"
- *   onUpload={async (type, file) => {
- *     console.log('Uploading', type, file);
+ *   onUpload={(type, stats) => {
+ *     console.log('Upload complete:', type, stats);
  *   }}
  * />
  */
@@ -72,11 +70,85 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
     uploading: { en: 'Uploading...', es: 'Cargando...' },
     success: { en: 'Upload successful!', es: '¡Carga exitosa!' },
     error: { en: 'Upload failed', es: 'Error en la carga' },
-    rowsInserted: { en: 'Rows inserted:', es: 'Filas insertadas:' },
+    rowsInserted: { en: 'rows uploaded', es: 'filas cargadas' },
     dateRange: { en: 'Date range:', es: 'Rango de fechas:' },
+    regions: { en: 'Regions:', es: 'Regiones:' },
     formatGuide: { en: 'CSV Format Guide', es: 'Guía de Formato CSV' },
-    showGuide: { en: 'Show format guide', es: 'Mostrar guía de formato' },
-    hideGuide: { en: 'Hide format guide', es: 'Ocultar guía de formato' },
+    uploadButton: { en: 'Upload File', es: 'Cargar Archivo' },
+    uploadAgain: { en: 'Upload Another File', es: 'Cargar Otro Archivo' },
+    invalidFile: { en: 'Please select a CSV file', es: 'Por favor seleccione un archivo CSV' },
+    readError: { en: 'Failed to read file', es: 'Error al leer el archivo' },
+  };
+
+  /**
+   * Format number with thousands separators
+   */
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString('en-US');
+  };
+
+  /**
+   * Read file content as text
+   */
+  const readFileAsText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        resolve(text);
+      };
+      reader.onerror = () => {
+        reject(new Error(labels.readError[language]));
+      };
+      reader.readAsText(file);
+    });
+  };
+
+  /**
+   * Upload file to /api/ingest endpoint
+   */
+  const uploadToAPI = async (
+    csvText: string,
+    dataType: 'energy' | 'rainfall'
+  ): Promise<IngestStats> => {
+    const requestBody: IngestRequest = {
+      csv_text: csvText,
+      data_type: dataType,
+    };
+
+    const response = await fetch('/api/ingest', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const result: IngestResponse = await response.json();
+
+    if (!result.success) {
+      // Construct detailed error message
+      let errorMessage = result.error || 'Upload failed';
+
+      if (result.details) {
+        errorMessage += `\n${result.details}`;
+      }
+
+      if (result.errors && result.errors.length > 0) {
+        errorMessage += `\n\nValidation errors:\n${result.errors.slice(0, 5).join('\n')}`;
+        if (result.errors.length > 5) {
+          errorMessage += `\n... and ${result.errors.length - 5} more errors`;
+        }
+      }
+
+      throw new Error(errorMessage);
+    }
+
+    if (!result.data) {
+      throw new Error('No data returned from server');
+    }
+
+    return result.data;
   };
 
   /**
@@ -88,18 +160,19 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
   ) => {
     if (!file) return;
 
+    const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+
     // Validate file type
     if (!file.name.endsWith('.csv')) {
-      const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
       setUpload({
         file: null,
         status: 'error',
-        error: language === 'en' ? 'Please select a CSV file' : 'Por favor seleccione un archivo CSV',
+        error: labels.invalidFile[language],
       });
       return;
     }
 
-    const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+    // Set file with idle status
     setUpload({
       file,
       status: 'idle',
@@ -143,34 +216,31 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
     setUpload({
       ...uploadData,
       status: 'uploading',
+      error: undefined,
     });
 
     try {
-      // Simulate upload with delay (replace with actual API call)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Read file content
+      const csvText = await readFileAsText(uploadData.file);
 
-      // Mock success response
-      const mockStats = {
-        rowsInserted: Math.floor(Math.random() * 500) + 100,
-        dateRange: {
-          start: '2024-01-01',
-          end: '2024-12-31',
-        },
-      };
+      // Upload to API
+      const stats = await uploadToAPI(csvText, type);
 
+      // Set success status
       setUpload({
         file: uploadData.file,
         status: 'success',
-        stats: mockStats,
+        stats,
       });
 
       // Call parent callback if provided
       if (onUpload) {
-        await onUpload(type, uploadData.file);
+        onUpload(type, stats);
       }
 
-      console.log(`✅ ${type} upload successful:`, mockStats);
+      console.log(`✅ ${type} upload successful:`, stats);
     } catch (error) {
+      // Set error status
       setUpload({
         file: uploadData.file,
         status: 'error',
@@ -178,6 +248,17 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
       });
       console.error(`❌ ${type} upload failed:`, error);
     }
+  };
+
+  /**
+   * Clear upload and allow re-upload
+   */
+  const handleReset = (type: 'energy' | 'rainfall') => {
+    const setUpload = type === 'energy' ? setEnergyUpload : setRainfallUpload;
+    setUpload({
+      file: null,
+      status: 'idle',
+    });
   };
 
   /**
@@ -196,6 +277,7 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
         hover: 'hover:border-green-400',
         text: 'text-green-700',
         button: 'bg-green-600 hover:bg-green-700',
+        icon: '⚡',
       },
       blue: {
         border: 'border-blue-300',
@@ -203,32 +285,52 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
         hover: 'hover:border-blue-400',
         text: 'text-blue-700',
         button: 'bg-blue-600 hover:bg-blue-700',
+        icon: '🌧️',
       },
     };
 
     const colors = colorClasses[color];
+    const isDisabled = uploadData.status === 'uploading';
 
     return (
       <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+        <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+          <span className="text-lg">{colors.icon}</span>
+          {title}
+        </h3>
 
         {/* Upload Area */}
         <div
           onDrop={(e) => handleDrop(e, type)}
           onDragOver={handleDragOver}
-          className={`relative border-2 border-dashed rounded-lg p-6 text-center ${colors.border} ${colors.bg} ${colors.hover} transition-colors`}
+          className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all ${colors.border} ${colors.bg} ${
+            isDisabled ? 'opacity-50 cursor-not-allowed' : `${colors.hover} cursor-pointer`
+          }`}
         >
           <input
             type="file"
             accept=".csv"
             onChange={(e) => handleFileSelect(type, e.target.files?.[0] || null)}
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            disabled={uploadData.status === 'uploading'}
+            disabled={isDisabled}
           />
 
           {/* Icon */}
           <div className="mb-3">
-            📊
+            <svg
+              className={`mx-auto h-12 w-12 ${colors.text}`}
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 48 48"
+              aria-hidden="true"
+            >
+              <path
+                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </div>
 
           {/* Text */}
@@ -241,24 +343,40 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
 
         {/* File Info */}
         {uploadData.file && (
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+          <div className="bg-white rounded-lg p-3 border-2 border-gray-200 shadow-sm">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">📄</span>
-                <span className="text-sm font-medium text-gray-900">{uploadData.file.name}</span>
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-8 w-8 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {uploadData.file.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {formatNumber(uploadData.file.size)} bytes ({(uploadData.file.size / 1024).toFixed(1)} KB)
+                  </p>
+                </div>
               </div>
-              <span className="text-xs text-gray-500">
-                {(uploadData.file.size / 1024).toFixed(1)} KB
-              </span>
             </div>
           </div>
         )}
 
         {/* Status Messages */}
         {uploadData.status === 'uploading' && (
-          <div className="flex items-center justify-center space-x-2 py-2">
+          <div className="flex items-center justify-center space-x-3 py-4 bg-blue-50 rounded-lg border border-blue-200">
             <svg
-              className="animate-spin h-5 w-5 text-primary-600"
+              className="animate-spin h-6 w-6 text-blue-600"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -277,26 +395,72 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span className="text-sm text-gray-600">{labels.uploading[language]}</span>
+            <span className="text-sm font-medium text-blue-900">{labels.uploading[language]}</span>
           </div>
         )}
 
         {uploadData.status === 'success' && uploadData.stats && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-start space-x-2">
-              <span className="text-lg">✅</span>
+          <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-green-900 mb-2">
+                <p className="text-sm font-semibold text-green-900 mb-3">
                   {labels.success[language]}
                 </p>
-                <div className="space-y-1 text-xs text-green-800">
-                  <p>
-                    {labels.rowsInserted[language]} <strong>{uploadData.stats.rowsInserted}</strong>
-                  </p>
-                  <p>
-                    {labels.dateRange[language]} <strong>{uploadData.stats.dateRange.start}</strong> →{' '}
-                    <strong>{uploadData.stats.dateRange.end}</strong>
-                  </p>
+                <div className="space-y-2">
+                  {/* Rows Inserted */}
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xl font-bold text-green-900">
+                      ✓ {formatNumber(uploadData.stats.rows_inserted)}
+                    </span>
+                    <span className="text-sm text-green-700">{labels.rowsInserted[language]}</span>
+                  </div>
+
+                  {/* Date Range */}
+                  <div className="text-xs text-green-800">
+                    <span className="font-medium">{labels.dateRange[language]}</span>{' '}
+                    <span className="font-mono">{uploadData.stats.date_range.min}</span>
+                    {' → '}
+                    <span className="font-mono">{uploadData.stats.date_range.max}</span>
+                  </div>
+
+                  {/* Regions */}
+                  <div className="text-xs text-green-800">
+                    <span className="font-medium">{labels.regions[language]}</span>{' '}
+                    <span className="font-normal">
+                      {uploadData.stats.regions_affected.join(', ')}
+                    </span>
+                  </div>
+
+                  {/* Warnings (if any errors but upload succeeded) */}
+                  {uploadData.stats.errors && uploadData.stats.errors.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-green-300">
+                      <p className="text-xs font-medium text-yellow-800 mb-1">
+                        ⚠️ {uploadData.stats.errors.length} validation{' '}
+                        {uploadData.stats.errors.length === 1 ? 'warning' : 'warnings'} (rows skipped)
+                      </p>
+                      <div className="text-xs text-yellow-700 space-y-1 max-h-20 overflow-y-auto">
+                        {uploadData.stats.errors.slice(0, 3).map((err, idx) => (
+                          <div key={idx} className="truncate">
+                            • {err}
+                          </div>
+                        ))}
+                        {uploadData.stats.errors.length > 3 && (
+                          <div className="italic">
+                            ... and {uploadData.stats.errors.length - 3} more
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -304,31 +468,52 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
         )}
 
         {uploadData.status === 'error' && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <div className="flex items-start space-x-2">
-              <span className="text-lg">❌</span>
-              <div>
-                <p className="text-sm font-semibold text-red-900">{labels.error[language]}</p>
+          <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 shadow-sm">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-red-900 mb-1">{labels.error[language]}</p>
                 {uploadData.error && (
-                  <p className="text-xs text-red-700 mt-1">{uploadData.error}</p>
+                  <p className="text-xs text-red-700 whitespace-pre-line">{uploadData.error}</p>
                 )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Upload Button */}
-        {uploadData.file && uploadData.status !== 'success' && (
+        {/* Action Buttons */}
+        {uploadData.file && uploadData.status === 'idle' && (
           <button
             onClick={() => handleUpload(type)}
-            disabled={uploadData.status === 'uploading'}
-            className={`w-full px-4 py-2 ${colors.button} text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors`}
+            className={`w-full px-4 py-3 ${colors.button} text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm`}
           >
-            {uploadData.status === 'uploading'
-              ? labels.uploading[language]
-              : language === 'en'
-                ? 'Upload File'
-                : 'Cargar Archivo'}
+            {labels.uploadButton[language]}
+          </button>
+        )}
+
+        {uploadData.status === 'success' && (
+          <button
+            onClick={() => handleReset(type)}
+            className="w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm"
+          >
+            {labels.uploadAgain[language]}
+          </button>
+        )}
+
+        {uploadData.status === 'error' && (
+          <button
+            onClick={() => handleReset(type)}
+            className="w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm"
+          >
+            {labels.uploadAgain[language]}
           </button>
         )}
       </div>
@@ -383,27 +568,30 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
                     <li>
                       <code className="bg-gray-200 px-1 rounded">value</code> -{' '}
                       {language === 'en'
-                        ? 'Energy (MWh) or Rainfall (mm)'
-                        : 'Energía (MWh) o Precipitación (mm)'}
+                        ? 'Energy (kWh) or Rainfall (mm)'
+                        : 'Energía (kWh) o Precipitación (mm)'}
                     </li>
                   </ul>
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">
-                    {language === 'en' ? 'Example Row' : 'Ejemplo de Fila'}
+                    {language === 'en' ? 'Example CSV' : 'Ejemplo de CSV'}
                   </h4>
-                  <div className="bg-white border border-gray-300 rounded p-2 font-mono text-xs overflow-x-auto">
-                    2024-01-01,San Salvador,120.5
+                  <div className="bg-white border border-gray-300 rounded p-3 font-mono text-xs overflow-x-auto">
+                    <div>date,region_name,value</div>
+                    <div>2024-01-01,San Salvador,50000</div>
+                    <div>2024-01-01,Santa Ana,25000</div>
+                    <div>2024-01-02,San Salvador,52000</div>
                   </div>
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">
-                    {language === 'en' ? 'Valid Regions' : 'Regiones Válidas'}
+                    {language === 'en' ? 'Valid Regions (14 Departments)' : 'Regiones Válidas (14 Departamentos)'}
                   </h4>
-                  <p className="text-xs text-gray-600">
-                    San Salvador, La Libertad, Santa Ana, San Miguel, Sonsonate, La Paz, Usulután,
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    San Salvador, Santa Ana, San Miguel, La Libertad, Sonsonate, La Paz, Usulután,
                     Chalatenango, Cuscatlán, Ahuachapán, Morazán, La Unión, San Vicente, Cabañas
                   </p>
                 </div>

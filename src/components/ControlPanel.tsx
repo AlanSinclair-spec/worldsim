@@ -1,99 +1,225 @@
 'use client';
 
 import { useState } from 'react';
+import type { SimulationResponse } from '@/lib/types';
 
 /**
  * Preset simulation scenarios
  */
-const SCENARIOS = {
+const PRESETS = {
   baseline: {
     name: { en: 'Baseline', es: 'Línea Base' },
+    description: { en: 'Current conditions', es: 'Condiciones actuales' },
     solar_growth_pct: 0,
     rainfall_change_pct: 0,
+    color: 'gray',
   },
   solarBoom: {
     name: { en: 'Solar Boom', es: 'Auge Solar' },
-    solar_growth_pct: 150,
+    description: { en: '+50% solar capacity', es: '+50% capacidad solar' },
+    solar_growth_pct: 50,
     rainfall_change_pct: 0,
+    color: 'yellow',
   },
   drought: {
     name: { en: 'Drought Year', es: 'Año de Sequía' },
+    description: { en: '-25% rainfall', es: '-25% precipitación' },
     solar_growth_pct: 0,
-    rainfall_change_pct: -40,
+    rainfall_change_pct: -25,
+    color: 'orange',
+  },
+  greenFuture: {
+    name: { en: 'Green Future', es: 'Futuro Verde' },
+    description: { en: '+100% solar, +10% rain', es: '+100% solar, +10% lluvia' },
+    solar_growth_pct: 100,
+    rainfall_change_pct: 10,
+    color: 'green',
+  },
+  climateStress: {
+    name: { en: 'Climate Stress', es: 'Estrés Climático' },
+    description: { en: '+20% solar, -15% rain', es: '+20% solar, -15% lluvia' },
+    solar_growth_pct: 20,
+    rainfall_change_pct: -15,
+    color: 'red',
   },
 } as const;
+
+type PresetKey = keyof typeof PRESETS;
 
 interface ControlPanelProps {
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
-  /** Callback when simulation is triggered */
-  onRunSimulation?: (params: SimulationParams) => void;
-}
-
-export interface SimulationParams {
-  solar_growth_pct: number;
-  rainfall_change_pct: number;
-  start_date: string;
-  end_date: string;
+  /** Callback when simulation completes successfully */
+  onSimulationComplete?: (results: SimulationResponse) => void;
 }
 
 /**
  * ControlPanel Component
  *
- * Provides interactive controls for configuring simulation parameters:
+ * Provides interactive controls for configuring and running energy infrastructure simulations:
  * - Solar growth rate slider (-50% to +200%)
  * - Rainfall change slider (-50% to +50%)
- * - Date range selection
- * - Preset scenario buttons
- * - Run simulation trigger
+ * - Date range selection (last 30 days default)
+ * - 5 preset scenario buttons with auto-run
+ * - Real-time API integration with /api/simulate
+ * - Loading states and error handling
+ * - Execution time display
  *
  * @example
  * <ControlPanel
  *   language="en"
- *   onRunSimulation={(params) => console.log(params)}
+ *   onSimulationComplete={(results) => {
+ *     console.log('Simulation complete:', results);
+ *     updateMapWithResults(results);
+ *   }}
  * />
  */
-export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelProps) {
+export function ControlPanel({ language = 'en', onSimulationComplete }: ControlPanelProps) {
   // Calculate default dates (last 30 days)
   const today = new Date();
   const thirtyDaysAgo = new Date(today);
   thirtyDaysAgo.setDate(today.getDate() - 30);
 
+  // State
   const [solarGrowth, setSolarGrowth] = useState(0);
   const [rainfallChange, setRainfallChange] = useState(0);
   const [startDate, setStartDate] = useState(thirtyDaysAgo.toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
   const [isRunning, setIsRunning] = useState(false);
+  const [activePreset, setActivePreset] = useState<PresetKey | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [executionTime, setExecutionTime] = useState<number | null>(null);
 
   /**
-   * Apply a preset scenario
+   * Clear messages after timeout
    */
-  const applyScenario = (scenarioKey: keyof typeof SCENARIOS) => {
-    const scenario = SCENARIOS[scenarioKey];
-    setSolarGrowth(scenario.solar_growth_pct);
-    setRainfallChange(scenario.rainfall_change_pct);
+  const clearMessages = () => {
+    setTimeout(() => {
+      setError(null);
+      setSuccessMessage(null);
+    }, 5000);
   };
 
   /**
-   * Handle run simulation button click
+   * Run simulation by calling /api/simulate
+   */
+  const runSimulation = async (params: {
+    solar_growth_pct: number;
+    rainfall_change_pct: number;
+    start_date: string;
+    end_date: string;
+  }) => {
+    setIsRunning(true);
+    setError(null);
+    setSuccessMessage(null);
+    setExecutionTime(null);
+
+    console.log('🚀 Running simulation with parameters:', params);
+
+    try {
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        // Handle error response
+        const errorMsg = result.details || result.error || 'Simulation failed';
+        setError(errorMsg);
+        console.error('❌ Simulation failed:', errorMsg);
+        clearMessages();
+        return;
+      }
+
+      // Success!
+      const execTime = result.data.execution_time_ms;
+      setExecutionTime(execTime);
+      setSuccessMessage(
+        language === 'en'
+          ? `Simulation complete in ${(execTime / 1000).toFixed(2)}s`
+          : `Simulación completada en ${(execTime / 1000).toFixed(2)}s`
+      );
+
+      console.log('✅ Simulation successful:', {
+        run_id: result.data.run_id,
+        avg_stress: result.data.summary.avg_stress,
+        execution_time_ms: execTime,
+      });
+
+      // Pass results to parent via callback
+      if (onSimulationComplete && result.data) {
+        onSimulationComplete({
+          daily_results: result.data.daily_results,
+          summary: result.data.summary,
+        });
+      }
+
+      clearMessages();
+    } catch (err) {
+      // Network or parsing error
+      const errorMsg =
+        language === 'en'
+          ? 'Failed to connect to server. Please try again.'
+          : 'Error al conectar con el servidor. Por favor intente de nuevo.';
+
+      setError(errorMsg);
+      console.error('❌ Network error:', err);
+      clearMessages();
+    } finally {
+      setIsRunning(false);
+    }
+  };
+
+  /**
+   * Handle manual simulation run
    */
   const handleRunSimulation = () => {
-    const params: SimulationParams = {
+    runSimulation({
       solar_growth_pct: solarGrowth,
       rainfall_change_pct: rainfallChange,
       start_date: startDate,
       end_date: endDate,
-    };
+    });
+  };
 
-    console.log('🚀 Running simulation with parameters:', params);
+  /**
+   * Apply preset and auto-run simulation
+   */
+  const applyPreset = (presetKey: PresetKey) => {
+    const preset = PRESETS[presetKey];
 
-    // Simulate loading state
-    setIsRunning(true);
-    setTimeout(() => setIsRunning(false), 2000);
+    // Update state
+    setSolarGrowth(preset.solar_growth_pct);
+    setRainfallChange(preset.rainfall_change_pct);
+    setActivePreset(presetKey);
 
-    // Call parent callback if provided
-    if (onRunSimulation) {
-      onRunSimulation(params);
+    // Auto-run simulation with preset values
+    runSimulation({
+      solar_growth_pct: preset.solar_growth_pct,
+      rainfall_change_pct: preset.rainfall_change_pct,
+      start_date: startDate,
+      end_date: endDate,
+    });
+  };
+
+  /**
+   * Check if manual changes have been made (deactivate preset)
+   */
+  const checkPresetMatch = () => {
+    if (!activePreset) return;
+
+    const preset = PRESETS[activePreset];
+    if (
+      solarGrowth !== preset.solar_growth_pct ||
+      rainfallChange !== preset.rainfall_change_pct
+    ) {
+      setActivePreset(null);
     }
   };
 
@@ -113,6 +239,34 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
     running: { en: 'Running...', es: 'Ejecutando...' },
   };
 
+  // Get preset button colors
+  const getPresetColors = (color: string, isActive: boolean) => {
+    const colors = {
+      gray: {
+        default: 'text-gray-700 bg-gray-100 hover:bg-gray-200 ring-gray-400',
+        active: 'text-white bg-gray-600 ring-gray-600',
+      },
+      yellow: {
+        default: 'text-yellow-700 bg-yellow-100 hover:bg-yellow-200 ring-yellow-400',
+        active: 'text-white bg-yellow-600 ring-yellow-600',
+      },
+      orange: {
+        default: 'text-orange-700 bg-orange-100 hover:bg-orange-200 ring-orange-400',
+        active: 'text-white bg-orange-600 ring-orange-600',
+      },
+      green: {
+        default: 'text-green-700 bg-green-100 hover:bg-green-200 ring-green-400',
+        active: 'text-white bg-green-600 ring-green-600',
+      },
+      red: {
+        default: 'text-red-700 bg-red-100 hover:bg-red-200 ring-red-400',
+        active: 'text-white bg-red-600 ring-red-600',
+      },
+    };
+
+    return isActive ? colors[color as keyof typeof colors].active : colors[color as keyof typeof colors].default;
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
       {/* Header */}
@@ -126,6 +280,83 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
       </div>
 
       <div className="space-y-6">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-lg p-3 animate-fade-in">
+            <svg className="h-5 w-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-green-900">{successMessage}</p>
+              {executionTime && (
+                <p className="text-xs text-green-700 mt-0.5">
+                  {language === 'en' ? 'Processing time:' : 'Tiempo de procesamiento:'}{' '}
+                  {executionTime}ms
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="flex items-start gap-3 bg-red-50 border-2 border-red-200 rounded-lg p-3 animate-fade-in">
+            <svg className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-red-900">
+                {language === 'en' ? 'Error' : 'Error'}
+              </p>
+              <p className="text-xs text-red-700 mt-1">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Preset Scenarios */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            {labels.presets[language]}
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {(Object.keys(PRESETS) as PresetKey[]).map((key) => {
+              const preset = PRESETS[key];
+              const isActive = activePreset === key;
+
+              return (
+                <button
+                  key={key}
+                  onClick={() => applyPreset(key)}
+                  disabled={isRunning}
+                  className={`relative px-3 py-3 text-xs font-medium rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ${getPresetColors(
+                    preset.color,
+                    isActive
+                  )} ${isActive ? 'ring-2 scale-105 shadow-md' : ''}`}
+                >
+                  {isActive && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                    </span>
+                  )}
+                  <div className="font-semibold">{preset.name[language]}</div>
+                  <div className={`text-[10px] mt-0.5 ${isActive ? 'text-white/90' : 'opacity-75'}`}>
+                    {preset.description[language]}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Solar Growth Slider */}
         <div>
           <div className="flex justify-between items-center mb-2">
@@ -144,7 +375,10 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
             max="200"
             step="5"
             value={solarGrowth}
-            onChange={(e) => setSolarGrowth(Number(e.target.value))}
+            onChange={(e) => {
+              setSolarGrowth(Number(e.target.value));
+              checkPresetMatch();
+            }}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
             disabled={isRunning}
           />
@@ -173,7 +407,10 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
             max="50"
             step="5"
             value={rainfallChange}
-            onChange={(e) => setRainfallChange(Number(e.target.value))}
+            onChange={(e) => {
+              setRainfallChange(Number(e.target.value));
+              checkPresetMatch();
+            }}
             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
             disabled={isRunning}
           />
@@ -211,36 +448,6 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
               disabled={isRunning}
             />
-          </div>
-        </div>
-
-        {/* Preset Scenarios */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            {labels.presets[language]}
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => applyScenario('baseline')}
-              disabled={isRunning}
-              className="px-3 py-2 text-xs font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {SCENARIOS.baseline.name[language]}
-            </button>
-            <button
-              onClick={() => applyScenario('solarBoom')}
-              disabled={isRunning}
-              className="px-3 py-2 text-xs font-medium text-green-700 bg-green-100 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {SCENARIOS.solarBoom.name[language]}
-            </button>
-            <button
-              onClick={() => applyScenario('drought')}
-              disabled={isRunning}
-              className="px-3 py-2 text-xs font-medium text-orange-700 bg-orange-100 rounded-md hover:bg-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              {SCENARIOS.drought.name[language]}
-            </button>
           </div>
         </div>
 
@@ -283,7 +490,7 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
         <button
           onClick={handleRunSimulation}
           disabled={isRunning || !isValidDateRange}
-          className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center"
+          className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center shadow-md hover:shadow-lg"
         >
           {isRunning ? (
             <>
@@ -323,6 +530,25 @@ export function ControlPanel({ language = 'en', onRunSimulation }: ControlPanelP
           </p>
         )}
       </div>
+
+      {/* Add CSS for fade-in animation */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .animate-fade-in {
+            animation: fade-in 0.3s ease-out;
+          }
+        `
+      }} />
     </div>
   );
 }

@@ -17,7 +17,7 @@ import { join } from 'path';
 import { parse } from 'csv-parse/sync';
 
 // Import model functions for testing
-import { calculateStress, calculateSummary, simulateScenario, validateScenarioParams } from '../src/lib/model';
+import { calculateStress, calculateSummary, validateScenarioParams } from '../src/lib/model';
 import type { SimulationScenario, SimulationResult } from '../src/lib/types';
 
 // ANSI color codes for output formatting

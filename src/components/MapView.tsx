@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import mapboxglImport from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { SimulationResponse } from '@/lib/types';
@@ -57,8 +57,9 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
 
   /**
    * Calculate average stress per region from simulation results
+   * Wrapped in useCallback to prevent unnecessary re-renders
    */
-  const getRegionStress = (regionId: string): number => {
+  const getRegionStress = useCallback((regionId: string): number => {
     if (!simulationResults) return 0;
 
     const regionResults = simulationResults.daily_results.filter(r => r.region_id === regionId);
@@ -66,7 +67,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
 
     const totalStress = regionResults.reduce((sum, r) => sum + r.stress, 0);
     return totalStress / regionResults.length;
-  };
+  }, [simulationResults]);
 
   /**
    * Get color based on stress level
@@ -453,7 +454,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
         console.error('Error loading regions.json:', err);
         setError(`Failed to load regions: ${err.message}`);
       });
-  }, [mapLoaded, onRegionClick]);
+  }, [mapLoaded, onRegionClick, getRegionStress, simulationResults]);
 
   /**
    * Update region colors when simulation results change
@@ -510,7 +511,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
       .catch(err => {
         console.error('Error updating region colors:', err);
       });
-  }, [simulationResults, mapLoaded]);
+  }, [simulationResults, mapLoaded, getRegionStress]);
 
   // Render map container with loading and error states
   return (

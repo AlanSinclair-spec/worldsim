@@ -224,23 +224,36 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
             generateId: true, // Generate IDs for features to enable feature-state
           });
 
-          // Professional government blue fill layer
+          // Distinct color fill layer - each department gets a unique color
           mapInstance.addLayer({
             id: 'regions-fill',
             type: 'fill',
             source: 'regions',
             paint: {
               'fill-color': [
-                'case',
-                ['boolean', ['feature-state', 'hover'], false],
-                '#2563eb', // Hover: darker professional blue
-                '#3b82f6', // Default: professional blue
+                'match',
+                ['get', 'NAM'], // Use department name from official data
+                'La Union', '#10b981',        // Green
+                'Usulutan', '#3b82f6',        // Blue
+                'San Miguel', '#f59e0b',      // Amber
+                'Morazan', '#8b5cf6',         // Purple
+                'La Paz', '#ec4899',          // Pink
+                'San Vicente', '#06b6d4',     // Cyan
+                'La Libertad', '#f97316',     // Orange
+                'San Salvador', '#14b8a6',    // Teal
+                'Sonsonate', '#84cc16',       // Lime
+                'Cuscatlan', '#eab308',       // Yellow
+                'Ahuachapan', '#6366f1',      // Indigo
+                'Cabañas', '#a855f7',         // Violet
+                'Santa Ana', '#22c55e',       // Emerald
+                'Chalatenango', '#0ea5e9',    // Sky Blue
+                '#94a3b8' // Default gray for any unmapped regions
               ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.45, // Hover: medium opacity for visibility
-                0.25, // Default: subtle, professional
+                0.85, // Hover: more opaque
+                0.7, // Default: solid but not overwhelming
               ],
               'fill-opacity-transition': {
                 duration: 300,
@@ -255,14 +268,14 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
             type: 'line',
             source: 'regions',
             paint: {
-              'line-color': '#1e40af', // Dark professional blue
+              'line-color': '#ffffff', // White borders for clear separation
               'line-width': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
                 3, // Thicker on hover
                 2, // Standard width
               ],
-              'line-opacity': 0.8,
+              'line-opacity': 0.9,
               'line-width-transition': {
                 duration: 300,
                 delay: 0,
@@ -457,61 +470,12 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
   }, [mapLoaded, onRegionClick, getRegionStress, simulationResults]);
 
   /**
-   * Update region colors when simulation results change
+   * Note: Region colors are now fixed by department name
+   * Simulation results are shown in popups and the legend,
+   * but colors remain distinct per department for easy identification
    */
-  useEffect(() => {
-    if (!map.current || !mapLoaded || !simulationResults) return;
-
-    const mapInstance = map.current as any;
-
-    // Wait for the source to be loaded
-    if (!mapInstance.getSource('regions')) return;
-
-    // Fetch regions.json to get all region IDs
-    fetch('/regions.json')
-      .then(response => response.json())
-      .then(geojson => {
-        // Update the paint property to use stress-based colors
-        geojson.features.forEach((feature: any) => {
-          const regionId = feature.properties.id;
-          const stress = getRegionStress(regionId);
-          const color = getStressColor(stress);
-
-          // Set feature state for this region
-          const features = mapInstance.querySourceFeatures('regions', {
-            sourceLayer: undefined,
-            filter: ['==', 'id', regionId]
-          });
-
-          if (features.length > 0 && features[0].id !== undefined) {
-            mapInstance.setFeatureState(
-              { source: 'regions', id: features[0].id },
-              { stress, stressColor: color }
-            );
-          }
-        });
-
-        // Update the fill-color paint property to use feature-state
-        if (mapInstance.getLayer('regions-fill')) {
-          mapInstance.setPaintProperty('regions-fill', 'fill-color', [
-            'case',
-            ['!=', ['feature-state', 'stressColor'], null],
-            ['feature-state', 'stressColor'],
-            [
-              'case',
-              ['boolean', ['feature-state', 'hover'], false],
-              '#2563eb', // Hover: darker professional blue
-              '#3b82f6', // Default: professional blue
-            ]
-          ]);
-        }
-
-        console.log('✅ Region colors updated based on stress levels');
-      })
-      .catch(err => {
-        console.error('Error updating region colors:', err);
-      });
-  }, [simulationResults, mapLoaded, getRegionStress]);
+  // Removed dynamic color changing based on simulation results
+  // Each department keeps its unique color for visual distinction
 
   // Render map container with loading and error states
   return (

@@ -212,7 +212,7 @@ export function MapView3D({ onRegionClick, height = '600px', simulationResults }
             'hillshade-highlight-color': '#f1f5f9',
             'hillshade-illumination-direction': 315
           }
-        }, 'regions-fill'); // Add before regions so it doesn't cover data
+        }); // Hillshade added first, regions will be added on top later
 
         // Add sky layer for 3D atmosphere
         mapInstance.addLayer({

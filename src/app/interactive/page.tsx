@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapView3D } from '@/components/MapView3D';
+import { MapView } from '@/components/MapView';
 import { ControlPanel } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
@@ -221,7 +221,7 @@ export default function InteractivePage() {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transform hover:scale-[1.01] transition-all duration-300">
                 <div className="p-2">
-                  <MapView3D
+                  <MapView
                     height="700px"
                     simulationResults={results}
                   />

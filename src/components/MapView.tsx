@@ -289,22 +289,23 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
             type: 'symbol',
             source: 'regions',
             layout: {
-              'text-field': ['get', 'name'],
-              'text-size': 12,
+              'text-field': ['get', 'NAM'], // Use NAM field from official El Salvador GeoJSON
+              'text-size': 13,
               'text-anchor': 'center',
               'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
               'text-letter-spacing': 0.05, // Professional spacing
+              'text-transform': 'uppercase', // Professional government style
             },
             paint: {
-              'text-color': '#1e3a8a', // Deep professional blue
+              'text-color': '#1f2937', // Dark gray for strong contrast
               'text-halo-color': '#ffffff',
-              'text-halo-width': 2,
+              'text-halo-width': 2.5,
               'text-halo-blur': 0.5,
               'text-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
                 1.0, // Full opacity on hover
-                0.9, // Slight transparency default
+                0.95, // High visibility by default
               ],
             },
           });

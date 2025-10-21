@@ -3,11 +3,11 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapView } from '@/components/MapView';
+import { MapView3D } from '@/components/MapView3D';
 import { ControlPanel } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
-import { ResultsPanel } from '@/components/ResultsPanel';
-import type { SimulationResponse, IngestStats } from '@/lib/types';
+import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
+import type { SimulationResponse, SimulationScenario, IngestStats } from '@/lib/types';
 
 /**
  * Interactive Demo Page
@@ -30,6 +30,8 @@ export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
   const [results, setResults] = useState<SimulationResponse | null>(null);
+  const [scenario, setScenario] = useState<SimulationScenario | null>(null);
+  const [executionTime, setExecutionTime] = useState<number | undefined>(undefined);
   const [isSimulating, setIsSimulating] = useState(false);
   const [uploadedData, setUploadedData] = useState<{
     energy?: IngestStats;
@@ -44,13 +46,21 @@ export default function InteractivePage() {
    * Handle simulation completion
    * Called when ControlPanel finishes a simulation
    */
-  const handleSimulationComplete = (simulationResults: SimulationResponse) => {
+  const handleSimulationComplete = (
+    simulationResults: SimulationResponse,
+    simulationScenario?: SimulationScenario,
+    execTime?: number
+  ) => {
     console.log('🎉 Simulation complete! Updating UI...', {
       daily_results: simulationResults.daily_results.length,
       avg_stress: simulationResults.summary.avg_stress,
+      scenario: simulationScenario,
+      executionTime: execTime,
     });
 
     setResults(simulationResults);
+    setScenario(simulationScenario || null);
+    setExecutionTime(execTime);
     setIsSimulating(false);
 
     // Smooth scroll to results section after a short delay
@@ -211,7 +221,7 @@ export default function InteractivePage() {
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transform hover:scale-[1.01] transition-all duration-300">
                 <div className="p-2">
-                  <MapView
+                  <MapView3D
                     height="700px"
                     simulationResults={results}
                   />
@@ -255,8 +265,10 @@ export default function InteractivePage() {
           {/* Right Column - Results (25%) */}
           <div className="xl:col-span-3" ref={resultsRef}>
             <div className="transform hover:scale-[1.01] transition-all duration-200">
-              <ResultsPanel
+              <ResultsPanelEnhanced
                 results={results}
+                scenario={scenario}
+                executionTime={executionTime}
                 isLoading={isSimulating}
                 language={language}
               />

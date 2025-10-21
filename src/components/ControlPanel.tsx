@@ -50,7 +50,12 @@ interface ControlPanelProps {
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
   /** Callback when simulation completes successfully */
-  onSimulationComplete?: (results: SimulationResponse) => void;
+  onSimulationComplete?: (results: SimulationResponse, scenario?: {
+    solar_growth_pct: number;
+    rainfall_change_pct: number;
+    start_date: string;
+    end_date: string;
+  }, executionTime?: number) => void;
 }
 
 /**
@@ -172,10 +177,14 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
       // Pass results to parent via callback
       if (onSimulationComplete && result.data) {
         console.log(`[${new Date().toISOString()}] [ControlPanel] 🔔 Calling onSimulationComplete callback`);
-        onSimulationComplete({
-          daily_results: result.data.daily_results,
-          summary: result.data.summary,
-        });
+        onSimulationComplete(
+          {
+            daily_results: result.data.daily_results,
+            summary: result.data.summary,
+          },
+          params,
+          execTime
+        );
       } else {
         console.warn(`[${new Date().toISOString()}] [ControlPanel] ⚠️ No callback provided or no data to pass`);
       }

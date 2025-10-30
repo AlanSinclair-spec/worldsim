@@ -147,16 +147,16 @@ export default function InteractivePage() {
   const hasUploadedData = uploadedData.energy || uploadedData.rainfall;
 
   const labels = {
-    title: { en: 'Interactive Simulator', es: 'Simulador Interactivo' },
+    title: { en: 'Policy Decision Platform', es: 'Plataforma de Decisiones' },
     subtitle: {
-      en: 'Upload data, configure scenarios, and visualize results in real-time',
-      es: 'Cargue datos, configure escenarios y visualice resultados en tiempo real',
+      en: 'Test critical policies and see which regions fail first - in 10 seconds',
+      es: 'Pruebe políticas críticas y vea qué regiones fallan primero - en 10 segundos',
     },
-    dataUploaded: { en: 'Data Uploaded', es: 'Datos Cargados' },
-    noResults: { en: 'No simulation results yet', es: 'Sin resultados de simulación aún' },
-    runSimulation: { en: 'Run a simulation to see results here', es: 'Ejecute una simulación para ver resultados aquí' },
-    energyTab: { en: 'Energy Simulation', es: 'Simulación de Energía' },
-    waterTab: { en: 'Water Simulation', es: 'Simulación de Agua' },
+    dataUploaded: { en: 'Data Ready', es: 'Datos Listos' },
+    noResults: { en: 'No policy tested yet', es: 'Sin políticas probadas aún' },
+    runSimulation: { en: 'Test a policy scenario to get cabinet-ready recommendations', es: 'Pruebe un escenario de política para obtener recomendaciones' },
+    energyTab: { en: 'Energy Policy', es: 'Política Energética' },
+    waterTab: { en: 'Water Policy', es: 'Política Hídrica' },
   };
 
   return (
@@ -410,12 +410,12 @@ export default function InteractivePage() {
             </div>
             <div className="flex-1">
               <h3 className="text-base font-bold text-gray-900 mb-2">
-                {language === 'en' ? '🚀 Full Workflow' : '🚀 Flujo Completo'}
+                {language === 'en' ? '🎯 Policy Flight Simulator' : '🎯 Simulador de Políticas'}
               </h3>
               <p className="text-sm text-gray-700 leading-relaxed">
                 {language === 'en'
-                  ? 'Complete end-to-end demonstration: (1) Upload energy/rainfall CSVs → (2) Configure simulation parameters → (3) Run simulation via API → (4) View stress levels on interactive map → (5) Analyze charts and statistics. All components connect to real backend APIs with actual data processing.'
-                  : 'Demostración completa de principio a fin: (1) Cargue CSVs de energía/lluvia → (2) Configure parámetros de simulación → (3) Ejecute simulación vía API → (4) Vea niveles de estrés en mapa interactivo → (5) Analice gráficos y estadísticas. Todos los componentes se conectan a APIs reales con procesamiento de datos real.'}
+                  ? 'Test billion-dollar decisions before implementation: Upload your government data or use our El Salvador dataset → Ask critical questions like "What if drought reduces rainfall 30%?" → Get instant answers showing which regions fail first, investment costs, and ROI. Every recommendation is cabinet-ready with action items and timelines.'
+                  : 'Pruebe decisiones de miles de millones antes de implementarlas: Cargue datos gubernamentales o use nuestro conjunto de datos de El Salvador → Haga preguntas críticas como "¿Qué pasa si la sequía reduce las lluvias un 30%?" → Obtenga respuestas instantáneas mostrando qué regiones fallan primero, costos de inversión y ROI. Cada recomendación está lista para el gabinete con elementos de acción y cronogramas.'}
               </p>
             </div>
           </div>

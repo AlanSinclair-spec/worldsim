@@ -31,29 +31,43 @@ export function ExecutiveSummary({ results, scenario, language = 'en' }: Executi
     return 'good';
   }, [results.summary.avg_stress]);
 
-  // Calculate investment needed (simplified estimation)
+  // Use comprehensive economic analysis from API if available, otherwise fall back to heuristics
+  const economicAnalysis = results.economic_analysis;
+
+  // Calculate investment needed
   const investmentNeeded = useMemo(() => {
+    if (economicAnalysis) {
+      return Math.round(economicAnalysis.infrastructure_investment_usd / 1_000_000);
+    }
+
+    // Fallback: Simple heuristic
     const avgStress = results.summary.avg_stress;
     const stressedRegions = results.summary.top_stressed_regions.filter(r => r.avg_stress > 0.6).length;
-
-    // Simple heuristic: $10M per highly stressed region + $2M per 10% above 50% stress
     const baseInvestment = stressedRegions * 10;
     const stressInvestment = avgStress > 0.5 ? (avgStress - 0.5) * 20 * 10 : 0;
-
     return Math.round(baseInvestment + stressInvestment);
-  }, [results.summary]);
+  }, [results.summary, economicAnalysis]);
 
-  // Calculate economic loss prevented (simplified)
+  // Calculate economic loss prevented
   const lossPrevent = useMemo(() => {
-    // Rule of thumb: Each $1M invested prevents $4-5M in economic losses
+    if (economicAnalysis) {
+      return Math.round(economicAnalysis.cost_of_inaction_5_year_usd / 1_000_000);
+    }
+    // Fallback: Rule of thumb
     return Math.round(investmentNeeded * 4.2);
-  }, [investmentNeeded]);
+  }, [investmentNeeded, economicAnalysis]);
 
   // Calculate ROI
   const roi = useMemo(() => {
-    if (investmentNeeded === 0) return 0;
+    if (economicAnalysis) {
+      return (economicAnalysis.roi_5_year * 100).toFixed(1);
+    }
+    if (investmentNeeded === 0) return '0.0';
     return ((lossPrevent - investmentNeeded) / investmentNeeded * 100).toFixed(1);
-  }, [investmentNeeded, lossPrevent]);
+  }, [investmentNeeded, lossPrevent, economicAnalysis]);
+
+  // Get payback period
+  const paybackPeriod = economicAnalysis?.payback_period_months || 22; // Default 22 months
 
   // Determine timeline based on severity
   const timeline = status === 'critical' ? '30 days' : status === 'warning' ? '90 days' : '12 months';
@@ -250,7 +264,10 @@ ${new Date().toISOString().split('T')[0]}
 
       {/* Payback Period Note */}
       <div className="mt-4 text-xs text-gray-500 text-center">
-        {labels.payback[language]}: 18-24 {language === 'en' ? 'months' : 'meses'} • {language === 'en' ? 'Based on historical infrastructure ROI data' : 'Basado en datos históricos de ROI de infraestructura'}
+        {labels.payback[language]}: {paybackPeriod} {language === 'en' ? 'months' : 'meses'} •{' '}
+        {economicAnalysis
+          ? (language === 'en' ? 'NPV-based calculation' : 'Cálculo basado en VPN')
+          : (language === 'en' ? 'Based on historical infrastructure ROI data' : 'Basado en datos históricos de ROI de infraestructura')}
       </div>
     </div>
   );

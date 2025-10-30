@@ -10,6 +10,7 @@ import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
 import { WaterResultsPanel } from '@/components/WaterResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
+import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
 
@@ -53,10 +54,19 @@ export default function InteractivePage() {
     energy?: IngestStats;
     rainfall?: IngestStats;
   }>({});
+  const [selectedScenario, setSelectedScenario] = useState<SimulationScenario | null>(null);
 
   // Refs for scrolling
   const resultsRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * Handle scenario selection from PolicyScenarios component
+   */
+  const handleScenarioSelect = useCallback((scenario: SimulationScenario) => {
+    console.log('📋 Scenario selected:', scenario);
+    setSelectedScenario(scenario);
+  }, []);
 
   /**
    * Handle energy simulation completion
@@ -275,6 +285,15 @@ export default function InteractivePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 md:gap-6">
           {/* Left Column - Configuration */}
           <div className="md:col-span-1 xl:col-span-5 space-y-4 md:space-y-6">
+            {/* Policy Scenarios - Quick Start */}
+            <div className="transform hover:scale-[1.01] transition-all duration-200">
+              <PolicyScenarios
+                category={activeTab}
+                language={language}
+                onScenarioSelect={handleScenarioSelect}
+              />
+            </div>
+
             {/* Upload Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
@@ -289,6 +308,7 @@ export default function InteractivePage() {
                 <ControlPanel
                   language={language}
                   onSimulationComplete={handleEnergySimulationComplete}
+                  initialScenario={selectedScenario}
                 />
               ) : (
                 <WaterControlPanel

@@ -1,6 +1,6 @@
 'use client';
 
-import { SimulationScenario } from '@/lib/types';
+import { SimulationScenario, WaterSimulationScenario } from '@/lib/types';
 
 interface PolicyScenario {
   id: string;
@@ -9,7 +9,7 @@ interface PolicyScenario {
   icon: string;
   category: 'energy' | 'water';
   impact: 'critical' | 'high' | 'moderate';
-  parameters: SimulationScenario;
+  parameters: SimulationScenario | WaterSimulationScenario;
 }
 
 interface PolicyScenariosProps {
@@ -18,7 +18,7 @@ interface PolicyScenariosProps {
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
   /** Callback when scenario is selected */
-  onScenarioSelect: (scenario: SimulationScenario) => void;
+  onScenarioSelect: (scenario: SimulationScenario | WaterSimulationScenario) => void;
   /** Currently loaded scenario ID (optional) */
   activeScenarioId?: string;
 }
@@ -148,11 +148,12 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
     category: 'water',
     impact: 'critical',
     parameters: {
-      solar_growth_pct: 0,
+      water_demand_growth_pct: 10,
       rainfall_change_pct: -40,
+      conservation_rate_pct: 0,
       start_date: '2025-01-01',
       end_date: '2025-12-31',
-    },
+    } as WaterSimulationScenario,
   },
   {
     id: 'water-refugees',
@@ -168,11 +169,12 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
     category: 'water',
     impact: 'high',
     parameters: {
-      solar_growth_pct: 0,
+      water_demand_growth_pct: 40,
       rainfall_change_pct: -15,
+      conservation_rate_pct: 10,
       start_date: '2025-01-01',
       end_date: '2027-12-31',
-    },
+    } as WaterSimulationScenario,
   },
   {
     id: 'water-optimal',
@@ -188,11 +190,12 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
     category: 'water',
     impact: 'moderate',
     parameters: {
-      solar_growth_pct: 0,
+      water_demand_growth_pct: 20,
       rainfall_change_pct: -10,
+      conservation_rate_pct: 20,
       start_date: '2025-01-01',
       end_date: '2030-12-31',
-    },
+    } as WaterSimulationScenario,
   },
 ];
 
@@ -317,8 +320,14 @@ export function PolicyScenarios({
 
               {/* Parameters Preview */}
               <div className="text-xs text-gray-500 space-y-1 mb-3 bg-gray-50 rounded p-2">
-                {scenario.parameters.solar_growth_pct !== 0 && (
+                {'solar_growth_pct' in scenario.parameters && scenario.parameters.solar_growth_pct !== 0 && (
                   <div>Solar: {scenario.parameters.solar_growth_pct > 0 ? '+' : ''}{scenario.parameters.solar_growth_pct}%</div>
+                )}
+                {'water_demand_growth_pct' in scenario.parameters && scenario.parameters.water_demand_growth_pct !== 0 && (
+                  <div>Demand: {scenario.parameters.water_demand_growth_pct > 0 ? '+' : ''}{scenario.parameters.water_demand_growth_pct}%</div>
+                )}
+                {'conservation_rate_pct' in scenario.parameters && scenario.parameters.conservation_rate_pct !== 0 && (
+                  <div>Conservation: {scenario.parameters.conservation_rate_pct}%</div>
                 )}
                 {scenario.parameters.rainfall_change_pct !== 0 && (
                   <div>Rainfall: {scenario.parameters.rainfall_change_pct > 0 ? '+' : ''}{scenario.parameters.rainfall_change_pct}%</div>

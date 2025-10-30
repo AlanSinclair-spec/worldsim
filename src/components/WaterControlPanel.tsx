@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import type { WaterSimulationResponse } from '@/lib/types';
+import { useState, useEffect } from 'react';
+import type { WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
 import { LoadingSpinner } from './LoadingSpinner';
 
 /**
@@ -63,6 +63,8 @@ interface WaterControlPanelProps {
     start_date: string;
     end_date: string;
   }, executionTime?: number) => void;
+  /** Initial scenario to load (from PolicyScenarios) */
+  initialScenario?: WaterSimulationScenario | null;
 }
 
 /**
@@ -87,7 +89,7 @@ interface WaterControlPanelProps {
  *   }}
  * />
  */
-export function WaterControlPanel({ language = 'en', onSimulationComplete }: WaterControlPanelProps) {
+export function WaterControlPanel({ language = 'en', onSimulationComplete, initialScenario }: WaterControlPanelProps) {
   // Calculate default dates (last 30 days)
   const today = new Date();
   const thirtyDaysAgo = new Date(today);
@@ -104,6 +106,23 @@ export function WaterControlPanel({ language = 'en', onSimulationComplete }: Wat
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [executionTime, setExecutionTime] = useState<number | null>(null);
+
+  /**
+   * Load scenario parameters when initialScenario changes
+   */
+  useEffect(() => {
+    if (initialScenario) {
+      setDemandGrowth(initialScenario.water_demand_growth_pct);
+      setRainfallChange(initialScenario.rainfall_change_pct);
+      setConservationRate(initialScenario.conservation_rate_pct);
+      setStartDate(initialScenario.start_date);
+      setEndDate(initialScenario.end_date);
+      setActivePreset(null); // Clear preset selection
+      setError(null);
+      setSuccessMessage(null);
+      console.log('✅ Water scenario loaded into WaterControlPanel:', initialScenario);
+    }
+  }, [initialScenario]);
 
   /**
    * Clear messages after timeout

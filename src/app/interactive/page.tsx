@@ -12,7 +12,7 @@ import { WaterResultsPanel } from '@/components/WaterResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
-import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
+import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
 
 // Lazy load MapView for better performance (largest component)
 const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
@@ -54,7 +54,7 @@ export default function InteractivePage() {
     energy?: IngestStats;
     rainfall?: IngestStats;
   }>({});
-  const [selectedScenario, setSelectedScenario] = useState<SimulationScenario | null>(null);
+  const [selectedScenario, setSelectedScenario] = useState<SimulationScenario | WaterSimulationScenario | null>(null);
 
   // Refs for scrolling
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -63,7 +63,7 @@ export default function InteractivePage() {
   /**
    * Handle scenario selection from PolicyScenarios component
    */
-  const handleScenarioSelect = useCallback((scenario: SimulationScenario) => {
+  const handleScenarioSelect = useCallback((scenario: SimulationScenario | WaterSimulationScenario) => {
     console.log('📋 Scenario selected:', scenario);
     setSelectedScenario(scenario);
   }, []);
@@ -308,12 +308,13 @@ export default function InteractivePage() {
                 <ControlPanel
                   language={language}
                   onSimulationComplete={handleEnergySimulationComplete}
-                  initialScenario={selectedScenario}
+                  initialScenario={selectedScenario && 'solar_growth_pct' in selectedScenario ? selectedScenario : null}
                 />
               ) : (
                 <WaterControlPanel
                   language={language}
                   onSimulationComplete={handleWaterSimulationComplete}
+                  initialScenario={selectedScenario && 'water_demand_growth_pct' in selectedScenario ? selectedScenario : null}
                 />
               )}
             </div>

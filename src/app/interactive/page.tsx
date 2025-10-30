@@ -9,6 +9,7 @@ import { WaterControlPanel } from '@/components/WaterControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
 import { WaterResultsPanel } from '@/components/WaterResultsPanel';
+import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
 
@@ -354,6 +355,28 @@ export default function InteractivePage() {
 
           {/* Right Column - Results - Full width on mobile, half on tablet, 1/4 on desktop */}
           <div className="md:col-span-2 xl:col-span-3" ref={resultsRef}>
+            {/* Executive Summary - Cabinet-Ready Recommendation */}
+            {activeTab === 'energy' && energyResults && !isSimulating && (
+              <div className="mb-6 transform hover:scale-[1.01] transition-all duration-200">
+                <ExecutiveSummary
+                  results={energyResults}
+                  scenario={energyScenario}
+                  language={language}
+                />
+              </div>
+            )}
+
+            {activeTab === 'water' && waterResults && !isSimulating && (
+              <div className="mb-6 transform hover:scale-[1.01] transition-all duration-200">
+                <ExecutiveSummary
+                  results={waterResults as unknown as SimulationResponse}
+                  scenario={null}
+                  language={language}
+                />
+              </div>
+            )}
+
+            {/* Detailed Results Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               {activeTab === 'energy' ? (
                 <ResultsPanelEnhanced

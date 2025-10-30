@@ -5,10 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { ControlPanel } from '@/components/ControlPanel';
+import { WaterControlPanel } from '@/components/WaterControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
+import { WaterResultsPanel } from '@/components/WaterResultsPanel';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
-import type { SimulationResponse, SimulationScenario, IngestStats } from '@/lib/types';
+import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
 
 // Lazy load MapView for better performance (largest component)
 const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
@@ -40,9 +42,11 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
 export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
-  const [results, setResults] = useState<SimulationResponse | null>(null);
-  const [scenario, setScenario] = useState<SimulationScenario | null>(null);
-  const [executionTime, setExecutionTime] = useState<number | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<'energy' | 'water'>('energy');
+  const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
+  const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
+  const [energyScenario, setEnergyScenario] = useState<SimulationScenario | null>(null);
+  const [energyExecutionTime, setEnergyExecutionTime] = useState<number | undefined>(undefined);
   const [isSimulating, setIsSimulating] = useState(false);
   const [uploadedData, setUploadedData] = useState<{
     energy?: IngestStats;
@@ -54,28 +58,24 @@ export default function InteractivePage() {
   const mapRef = useRef<HTMLDivElement>(null);
 
   /**
-   * Handle simulation completion
-   * Called when ControlPanel finishes a simulation
-   * Memoized with useCallback for performance
+   * Handle energy simulation completion
    */
-  const handleSimulationComplete = useCallback((
+  const handleEnergySimulationComplete = useCallback((
     simulationResults: SimulationResponse,
     simulationScenario?: SimulationScenario,
     execTime?: number
   ) => {
-    console.log('🎉 Simulation complete! Updating UI...', {
+    console.log('⚡ Energy simulation complete!', {
       daily_results: simulationResults.daily_results.length,
       avg_stress: simulationResults.summary.avg_stress,
-      scenario: simulationScenario,
-      executionTime: execTime,
     });
 
-    setResults(simulationResults);
-    setScenario(simulationScenario || null);
-    setExecutionTime(execTime);
+    setEnergyResults(simulationResults);
+    setEnergyScenario(simulationScenario || null);
+    setEnergyExecutionTime(execTime);
     setIsSimulating(false);
 
-    // Smooth scroll to results section after a short delay
+    // Smooth scroll to results section
     setTimeout(() => {
       resultsRef.current?.scrollIntoView({
         behavior: 'smooth',
@@ -83,7 +83,38 @@ export default function InteractivePage() {
       });
     }, 500);
 
-    // Pulse the map to draw attention
+    // Pulse the map
+    if (mapRef.current) {
+      mapRef.current.classList.add('animate-pulse-once');
+      setTimeout(() => {
+        mapRef.current?.classList.remove('animate-pulse-once');
+      }, 1000);
+    }
+  }, []);
+
+  /**
+   * Handle water simulation completion
+   */
+  const handleWaterSimulationComplete = useCallback((
+    simulationResults: WaterSimulationResponse
+  ) => {
+    console.log('💧 Water simulation complete!', {
+      daily_results: simulationResults.daily_results.length,
+      avg_stress: simulationResults.summary.avg_stress,
+    });
+
+    setWaterResults(simulationResults);
+    setIsSimulating(false);
+
+    // Smooth scroll to results section
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }, 500);
+
+    // Pulse the map
     if (mapRef.current) {
       mapRef.current.classList.add('animate-pulse-once');
       setTimeout(() => {
@@ -124,6 +155,8 @@ export default function InteractivePage() {
     dataUploaded: { en: 'Data Uploaded', es: 'Datos Cargados' },
     noResults: { en: 'No simulation results yet', es: 'Sin resultados de simulación aún' },
     runSimulation: { en: 'Run a simulation to see results here', es: 'Ejecute una simulación para ver resultados aquí' },
+    energyTab: { en: 'Energy Simulation', es: 'Simulación de Energía' },
+    waterTab: { en: 'Water Simulation', es: 'Simulación de Agua' },
   };
 
   return (
@@ -205,6 +238,36 @@ export default function InteractivePage() {
         </div>
       </header>
 
+      {/* Tab Navigation */}
+      <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="flex justify-center">
+          <div className="inline-flex bg-white rounded-xl shadow-lg p-2 border border-gray-200">
+            <button
+              onClick={() => setActiveTab('energy')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                activeTab === 'energy'
+                  ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">⚡</span>
+              <span className="text-base">{labels.energyTab[language]}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('water')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                activeTab === 'water'
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">💧</span>
+              <span className="text-base">{labels.waterTab[language]}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         {/* Responsive layout: Mobile (stack), Tablet (2 cols), Desktop (3 cols) */}
@@ -219,12 +282,19 @@ export default function InteractivePage() {
               />
             </div>
 
-            {/* Control Panel */}
+            {/* Control Panel - Conditional based on activeTab */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
-              <ControlPanel
-                language={language}
-                onSimulationComplete={handleSimulationComplete}
-              />
+              {activeTab === 'energy' ? (
+                <ControlPanel
+                  language={language}
+                  onSimulationComplete={handleEnergySimulationComplete}
+                />
+              ) : (
+                <WaterControlPanel
+                  language={language}
+                  onSimulationComplete={handleWaterSimulationComplete}
+                />
+              )}
             </div>
           </div>
 
@@ -238,42 +308,46 @@ export default function InteractivePage() {
                   <div className="h-[300px] sm:h-[400px] md:h-[500px] xl:h-[700px]">
                     <MapView
                       height="100%"
-                      simulationResults={results}
+                      simulationResults={(activeTab === 'energy' ? energyResults : waterResults) as SimulationResponse | null}
+                      visualizationType={activeTab}
                     />
                   </div>
                 </div>
 
                 {/* Map Overlay - Show results summary (responsive) */}
-                {results && (
-                  <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-2 md:p-3 border border-gray-200">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
-                      <div>
-                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
-                          {language === 'en' ? 'Avg Stress' : 'Estrés Prom'}
-                        </p>
-                        <p className="text-lg md:text-2xl font-bold text-blue-600">
-                          {(results.summary.avg_stress * 100).toFixed(1)}%
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
-                          {language === 'en' ? 'Max Stress' : 'Estrés Máx'}
-                        </p>
-                        <p className="text-lg md:text-2xl font-bold text-red-600">
-                          {(results.summary.max_stress * 100).toFixed(1)}%
-                        </p>
-                      </div>
-                      <div className="col-span-2 md:col-span-1">
-                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
-                          {language === 'en' ? 'Most Stressed' : 'Más Estresado'}
-                        </p>
-                        <p className="text-xs md:text-sm font-bold text-orange-600 truncate">
-                          {results.summary.top_stressed_regions[0]?.region_name || 'N/A'}
-                        </p>
+                {(() => {
+                  const currentResults = activeTab === 'energy' ? energyResults : waterResults;
+                  return currentResults && (
+                    <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-2 md:p-3 border border-gray-200">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+                        <div>
+                          <p className="text-[10px] md:text-xs font-semibold text-gray-700">
+                            {language === 'en' ? 'Avg Stress' : 'Estrés Prom'}
+                          </p>
+                          <p className="text-lg md:text-2xl font-bold text-blue-600">
+                            {(currentResults.summary.avg_stress * 100).toFixed(1)}%
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] md:text-xs font-semibold text-gray-700">
+                            {language === 'en' ? 'Max Stress' : 'Estrés Máx'}
+                          </p>
+                          <p className="text-lg md:text-2xl font-bold text-red-600">
+                            {(currentResults.summary.max_stress * 100).toFixed(1)}%
+                          </p>
+                        </div>
+                        <div className="col-span-2 md:col-span-1">
+                          <p className="text-[10px] md:text-xs font-semibold text-gray-700">
+                            {language === 'en' ? 'Most Stressed' : 'Más Estresado'}
+                          </p>
+                          <p className="text-xs md:text-sm font-bold text-orange-600 truncate">
+                            {currentResults.summary.top_stressed_regions[0]?.region_name || 'N/A'}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -281,17 +355,25 @@ export default function InteractivePage() {
           {/* Right Column - Results - Full width on mobile, half on tablet, 1/4 on desktop */}
           <div className="md:col-span-2 xl:col-span-3" ref={resultsRef}>
             <div className="transform hover:scale-[1.01] transition-all duration-200">
-              <ResultsPanelEnhanced
-                results={results}
-                scenario={scenario}
-                executionTime={executionTime}
-                isLoading={isSimulating}
-                language={language}
-              />
+              {activeTab === 'energy' ? (
+                <ResultsPanelEnhanced
+                  results={energyResults}
+                  scenario={energyScenario}
+                  executionTime={energyExecutionTime}
+                  isLoading={isSimulating}
+                  language={language}
+                />
+              ) : (
+                <WaterResultsPanel
+                  results={waterResults}
+                  isLoading={isSimulating}
+                  language={language}
+                />
+              )}
             </div>
 
             {/* No results state */}
-            {!results && !isSimulating && (
+            {!(activeTab === 'energy' ? energyResults : waterResults) && !isSimulating && (
               <div className="mt-6 bg-gradient-to-br from-blue-50 to-green-50 border-2 border-dashed border-blue-300 rounded-xl p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

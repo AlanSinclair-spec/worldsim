@@ -23,16 +23,17 @@ dotenv.config({ path: resolve(__dirname, '../.env.local') });
 interface RegionFeature {
   type: 'Feature';
   properties: {
-    id: string;
-    name: string;
-    nameEs: string;
-    type: string;
-    population: number;
-    areaKm2: number;
+    FCODE: string;
+    UID: string;
+    COD: number;
+    NAM: string;
+    NA2: string;
+    AREA_KM: number;
+    PERIMETRO: number;
   };
   geometry: {
     type: string;
-    coordinates: number[][][] | number[];
+    coordinates: number[][][] | number[][] | number[];
   };
 }
 
@@ -82,7 +83,14 @@ async function seedRegions() {
   console.log('📝 Starting region upserts...\n');
 
   for (const feature of regionsData.features) {
-    const { id, name, nameEs, type, population, areaKm2 } = feature.properties;
+    // Map GeoJSON properties to database schema
+    const { COD, NAM, NA2, AREA_KM } = feature.properties;
+    const id = `dept-${COD}`; // Create ID from department code
+    const name = NAM;
+    const nameEs = NA2;
+    const type = 'department'; // All entries are departments
+    const population = null; // Not available in GeoJSON
+    const areaKm2 = AREA_KM;
     const geometry = feature.geometry;
 
     try {
@@ -95,6 +103,19 @@ async function seedRegions() {
           .map((coord: number[]) => `${coord[0]} ${coord[1]}`)
           .join(', ');
         geometryWKT = `POLYGON((${polygonCoords}))`;
+      } else if (geometry.type === 'MultiPolygon') {
+        const coords = geometry.coordinates;
+        if (Array.isArray(coords) && coords.length > 0 && Array.isArray(coords[0]) && Array.isArray(coords[0][0]) && Array.isArray(coords[0][0][0])) {
+          const polygons = (coords as unknown as number[][][][]).map(polygon => {
+            const ring = polygon[0]
+              .map((coord: number[]) => `${coord[0]} ${coord[1]}`)
+              .join(', ');
+            return `((${ring}))`;
+          }).join(', ');
+          geometryWKT = `MULTIPOLYGON(${polygons})`;
+        } else {
+          throw new Error('Invalid MultiPolygon coordinates structure');
+        }
       } else if (geometry.type === 'Point') {
         const coords = geometry.coordinates as number[];
         geometryWKT = `POINT(${coords[0]} ${coords[1]})`;

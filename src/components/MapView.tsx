@@ -56,6 +56,8 @@ interface MapViewProps {
   height?: string;
   /** Simulation results to visualize on the map */
   simulationResults?: SimulationResponse | null;
+  /** Type of visualization (energy or water stress) */
+  visualizationType?: 'energy' | 'water';
 }
 
 /**
@@ -87,7 +89,9 @@ interface MapViewProps {
  *   simulationResults={results}
  * />
  */
-function MapViewComponent({ onRegionClick, height = '600px', simulationResults }: MapViewProps) {
+function MapViewComponent({ onRegionClick, height = '600px', simulationResults, visualizationType: _visualizationType = 'energy' }: MapViewProps) {
+  // TODO: Implement different color schemes/labels for water vs energy visualization
+  // visualizationType is currently unused - will be implemented in future PR
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<MapboxMap | null>(null);
   const popup = useRef<MapboxPopup | null>(null);

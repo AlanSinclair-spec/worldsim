@@ -85,7 +85,7 @@ export default function Page() {
               </p>
 
               <p className="text-lg text-gray-600 mt-4">
-                Complete digital twin of all 14 departments • Expanding to Central America in 2025
+                Complete digital twin of all 14 departments
               </p>
 
               {/* Value Comparison Card */}
@@ -255,7 +255,7 @@ export default function Page() {
           </div>
           <div className="mt-12 text-center">
             <p className="text-xl text-blue-100 mb-6">
-              <span className="font-bold text-white">El Salvador can follow the same path.</span> Then Guatemala. Then Honduras. Then 50+ nations worldwide.
+              <span className="font-bold text-white">El Salvador can follow the same path.</span> Test policies today that transform nations tomorrow.
             </p>
             <Link
               href="/interactive"
@@ -438,55 +438,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* Expansion Roadmap Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-4">Expansion Roadmap</h2>
-          <p className="text-center text-gray-600 mb-12">
-            Building the future of data-driven governance, one nation at a time
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-green-500">
-              <div className="text-4xl mb-4 text-center">🇸🇻</div>
-              <h3 className="font-bold text-xl mb-2 text-center">El Salvador</h3>
-              <p className="text-green-600 font-semibold text-center mb-3">LIVE NOW</p>
-              <p className="text-gray-600 text-sm text-center">
-                Complete digital twin with 14 departments
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-blue-300">
-              <div className="text-4xl mb-4 text-center">🇭🇳</div>
-              <h3 className="font-bold text-xl mb-2 text-center">Honduras</h3>
-              <p className="text-blue-600 font-semibold text-center mb-3">Q2 2025</p>
-              <p className="text-gray-600 text-sm text-center">
-                18 departments planned
-              </p>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-300">
-              <div className="text-4xl mb-4 text-center">🇬🇹</div>
-              <h3 className="font-bold text-xl mb-2 text-center">Guatemala</h3>
-              <p className="text-gray-600 font-semibold text-center mb-3">Q3 2025</p>
-              <p className="text-gray-600 text-sm text-center">
-                22 departments planned
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-12 text-center">
-            <div className="inline-flex items-center gap-2 bg-white rounded-lg px-6 py-4 shadow-md">
-              <span className="text-2xl">🌎</span>
-              <div className="text-left">
-                <p className="font-semibold">Your Country</p>
-                <p className="text-sm text-gray-600">Request early access for other nations</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 to-green-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -494,7 +445,7 @@ export default function Page() {
             Don&apos;t guess. Don&apos;t wait. Test your policies now.
           </h2>
           <p className="text-xl text-blue-100 mb-10">
-            Join the data-driven government revolution. Start with El Salvador, scale to the world.
+            Join the data-driven government revolution in El Salvador.
           </p>
           <Link
             href="/interactive"

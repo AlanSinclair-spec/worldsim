@@ -176,6 +176,8 @@ export interface SimulationResponse {
     /** List of regions with highest average stress (sorted descending) */
     top_stressed_regions: TopStressedRegion[];
   };
+  /** Optional economic analysis (added in v2.0+) */
+  economic_analysis?: EconomicAnalysis;
 }
 
 /**
@@ -377,4 +379,54 @@ export interface WaterSimulationResponse {
     /** List of regions with highest average stress (sorted descending) */
     top_stressed_regions: TopStressedRegion[];
   };
+  /** Optional economic analysis (added in v2.0+) */
+  economic_analysis?: EconomicAnalysis;
+}
+
+/**
+ * EconomicAnalysis provides comprehensive financial assessment of infrastructure stress
+ *
+ * Includes investment requirements, ROI calculations, and cost of inaction analysis.
+ * All monetary values in USD.
+ *
+ * @example
+ * const analysis: EconomicAnalysis = {
+ *   infrastructure_investment_usd: 45_000_000,
+ *   annual_savings_usd: 12_000_000,
+ *   annual_costs_prevented_usd: 15_000_000,
+ *   roi_5_year: 4.2,
+ *   payback_period_months: 18,
+ *   net_present_value_usd: 35_000_000,
+ *   opportunity_cost_6mo_delay_usd: 8_500_000,
+ *   total_economic_exposure_usd: 15_000_000,
+ *   cost_of_inaction_5_year_usd: 82_500_000
+ * };
+ */
+export interface EconomicAnalysis {
+  /** Total infrastructure investment needed (USD) */
+  infrastructure_investment_usd: number;
+
+  /** Annual savings from investment (USD/year) */
+  annual_savings_usd: number;
+
+  /** Annual costs prevented by taking action (USD/year) */
+  annual_costs_prevented_usd: number;
+
+  /** Return on Investment over 5 years (as multiplier, e.g. 4.2 = 420% return) */
+  roi_5_year: number;
+
+  /** Time to recover investment (months) */
+  payback_period_months: number;
+
+  /** Net Present Value of investment using 5% discount rate (USD) */
+  net_present_value_usd: number;
+
+  /** Cost of delaying action by 6 months (USD) */
+  opportunity_cost_6mo_delay_usd: number;
+
+  /** Total annual economic exposure if no action taken (USD/year) */
+  total_economic_exposure_usd: number;
+
+  /** Cumulative cost of inaction over 5 years (USD) */
+  cost_of_inaction_5_year_usd: number;
 }

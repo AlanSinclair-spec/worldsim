@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { simulateScenario } from '@/lib/model';
 import { supabase } from '@/lib/supabase';
-import type { SimulationScenario, SimulationResponse } from '@/lib/types';
+import type { SimulationScenario, SimulationResponse, EconomicAnalysis } from '@/lib/types';
 import {
   EnergySimulationSchema,
   checkBodySize,
@@ -10,6 +10,7 @@ import {
   MAX_BODY_SIZE,
 } from '@/lib/validation';
 import { applyRateLimit } from '@/lib/rate-limit';
+import { calculateEconomicImpact, EL_SALVADOR_ECONOMICS } from '@/lib/economics';
 
 /**
  * API Route: /api/simulate
@@ -43,6 +44,7 @@ interface SimulateResponse {
     run_id: string;
     daily_results: SimulationResponse['daily_results'];
     summary: SimulationResponse['summary'];
+    economic_analysis?: EconomicAnalysis;
     scenario: SimulationScenario;
     execution_time_ms: number;
   };
@@ -163,6 +165,32 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     const executionTime = Date.now() - startTime;
     console.log(`[${new Date().toISOString()}] [API /api/simulate] ⏱️ Simulation execution time: ${executionTime}ms`);
 
+    // Calculate economic impact
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 💰 Calculating economic analysis...`);
+    let economicAnalysis: EconomicAnalysis | undefined;
+    try {
+      const stressedRegions = simulationResults.summary.top_stressed_regions.map(r => ({
+        region: r.region_name,
+        population: EL_SALVADOR_ECONOMICS.population.by_region[r.region_name as keyof typeof EL_SALVADOR_ECONOMICS.population.by_region] || 0,
+        stress_level: r.avg_stress
+      }));
+
+      economicAnalysis = calculateEconomicImpact({
+        simulation_type: 'energy',
+        stressed_regions: stressedRegions,
+        scenario_params: validatedParams
+      });
+
+      console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ Economic analysis complete:`, {
+        investment: economicAnalysis.infrastructure_investment_usd,
+        roi: economicAnalysis.roi_5_year,
+        exposure: economicAnalysis.total_economic_exposure_usd
+      });
+    } catch (economicError) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ⚠️ Economic analysis failed (continuing anyway):`, economicError);
+      // Continue without economic analysis if it fails
+    }
+
     // Store run in database
     console.log(`[${new Date().toISOString()}] [API /api/simulate] 💾 Storing run in database...`);
     let runId: string | null = null;
@@ -206,6 +234,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
         run_id: runId || 'not-stored',
         daily_results: simulationResults.daily_results,
         summary: simulationResults.summary,
+        economic_analysis: economicAnalysis,
         scenario: scenario,
         execution_time_ms: executionTime,
       },
@@ -309,6 +338,7 @@ export async function GET(req: NextRequest): Promise<NextResponse<SimulateRespon
         run_id: runRecord.id,
         daily_results: results.daily_results,
         summary: results.summary,
+        economic_analysis: results.economic_analysis,
         scenario: scenario,
         execution_time_ms: runRecord.execution_time_ms || 0,
       },

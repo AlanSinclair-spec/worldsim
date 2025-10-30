@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { simulateAgricultureScenario } from '@/lib/model';
 import { supabase } from '@/lib/supabase';
+import type { EconomicAnalysis } from '@/lib/types';
 import {
   AgricultureSimulationSchema,
   checkBodySize,
@@ -9,6 +10,7 @@ import {
   MAX_BODY_SIZE,
 } from '@/lib/validation';
 import { applyRateLimit } from '@/lib/rate-limit';
+import { calculateEconomicImpact, EL_SALVADOR_ECONOMICS } from '@/lib/economics';
 
 /**
  * API Route: /api/simulate-agriculture
@@ -65,6 +67,7 @@ interface SimulateAgricultureResponse {
         crop_type: string;
       }>;
     };
+    economic_analysis?: EconomicAnalysis;
     scenario: {
       rainfall_change_pct: number;
       temperature_change_c: number;
@@ -261,6 +264,51 @@ export async function POST(
       `[${new Date().toISOString()}] [API /api/simulate-agriculture] ⏱️ Simulation execution time: ${executionTime}ms`
     );
 
+    // Calculate economic impact
+    console.log(
+      `[${new Date().toISOString()}] [API /api/simulate-agriculture] 💰 Calculating economic analysis...`
+    );
+    let economicAnalysis: EconomicAnalysis | undefined;
+    try {
+      const stressedRegions = simulationResults.summary.top_stressed_regions.map(r => ({
+        region: r.region_name,
+        population: EL_SALVADOR_ECONOMICS.population.by_region[r.region_name as keyof typeof EL_SALVADOR_ECONOMICS.population.by_region] || 0,
+        stress_level: r.avg_stress
+      }));
+
+      // Calculate crop losses by crop type
+      const cropLosses: Record<string, number> = {};
+      for (const result of simulationResults.daily_results) {
+        const loss = result.baseline_yield_kg - result.actual_yield_kg;
+        if (loss > 0) {
+          cropLosses[result.crop_type] = (cropLosses[result.crop_type] || 0) + loss;
+        }
+      }
+
+      economicAnalysis = calculateEconomicImpact({
+        simulation_type: 'agriculture',
+        stressed_regions: stressedRegions,
+        scenario_params: validatedParams,
+        crop_losses: cropLosses
+      });
+
+      console.log(
+        `[${new Date().toISOString()}] [API /api/simulate-agriculture] ✅ Economic analysis complete:`,
+        {
+          investment: economicAnalysis.infrastructure_investment_usd,
+          roi: economicAnalysis.roi_5_year,
+          exposure: economicAnalysis.total_economic_exposure_usd,
+          crop_losses: cropLosses
+        }
+      );
+    } catch (economicError) {
+      console.error(
+        `[${new Date().toISOString()}] [API /api/simulate-agriculture] ⚠️ Economic analysis failed (continuing anyway):`,
+        economicError
+      );
+      // Continue without economic analysis if it fails
+    }
+
     // Store run in database
     console.log(
       `[${new Date().toISOString()}] [API /api/simulate-agriculture] 💾 Storing run in database...`
@@ -322,6 +370,7 @@ export async function POST(
         run_id: runId || 'not-stored',
         daily_results: simulationResults.daily_results,
         summary: simulationResults.summary,
+        economic_analysis: economicAnalysis,
         scenario: scenario,
         execution_time_ms: executionTime,
       },

@@ -6,13 +6,16 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { ControlPanel } from '@/components/ControlPanel';
 import { WaterControlPanel } from '@/components/WaterControlPanel';
+import { AgricultureControlPanel } from '@/components/AgricultureControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
 import { WaterResultsPanel } from '@/components/WaterResultsPanel';
+import { AgricultureResultsPanel } from '@/components/AgricultureResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
+import type { AgricultureSimulationParams } from '@/components/AgricultureControlPanel';
 
 // Lazy load MapView for better performance (largest component)
 const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
@@ -44,9 +47,10 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
 export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
-  const [activeTab, setActiveTab] = useState<'energy' | 'water'>('energy');
+  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture'>('energy');
   const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
   const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
+  const [agricultureResults, setAgricultureResults] = useState<any | null>(null);
   const [energyScenario, setEnergyScenario] = useState<SimulationScenario | null>(null);
   const [energyExecutionTime, setEnergyExecutionTime] = useState<number | undefined>(undefined);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -135,6 +139,68 @@ export default function InteractivePage() {
   }, []);
 
   /**
+   * Handle agriculture simulation completion
+   */
+  const handleAgricultureSimulationComplete = useCallback(async (
+    params: AgricultureSimulationParams
+  ) => {
+    setIsSimulating(true);
+
+    try {
+      console.log('🌾 Starting agriculture simulation...', params);
+
+      // Call agriculture simulation API
+      const response = await fetch('/api/simulate-agriculture', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(params),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Agriculture simulation failed');
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        console.log('🌾 Agriculture simulation complete!', {
+          daily_results: result.data.daily_results.length,
+          avg_stress: result.data.summary.avg_stress,
+          total_yield_loss_pct: result.data.summary.total_yield_loss_pct,
+        });
+
+        setAgricultureResults(result.data);
+        setIsSimulating(false);
+
+        // Smooth scroll to results section
+        setTimeout(() => {
+          resultsRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+          });
+        }, 500);
+
+        // Pulse the map
+        if (mapRef.current) {
+          mapRef.current.classList.add('animate-pulse-once');
+          setTimeout(() => {
+            mapRef.current?.classList.remove('animate-pulse-once');
+          }, 1000);
+        }
+      } else {
+        throw new Error('Invalid response from agriculture simulation');
+      }
+    } catch (error) {
+      console.error('❌ Agriculture simulation error:', error);
+      setIsSimulating(false);
+      alert(error instanceof Error ? error.message : 'Agriculture simulation failed');
+    }
+  }, []);
+
+  /**
    * Handle CSV upload completion
    * Called when UploadPanel successfully uploads data
    * Memoized with useCallback for performance
@@ -168,6 +234,7 @@ export default function InteractivePage() {
     runSimulation: { en: 'Test a policy scenario to get cabinet-ready recommendations', es: 'Pruebe un escenario de política para obtener recomendaciones' },
     energyTab: { en: 'Energy Policy', es: 'Política Energética' },
     waterTab: { en: 'Water Policy', es: 'Política Hídrica' },
+    agricultureTab: { en: 'Agriculture Policy', es: 'Política Agrícola' },
   };
 
   return (
@@ -275,6 +342,17 @@ export default function InteractivePage() {
               <span className="text-2xl mr-2">💧</span>
               <span className="text-base">{labels.waterTab[language]}</span>
             </button>
+            <button
+              onClick={() => setActiveTab('agriculture')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                activeTab === 'agriculture'
+                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">🌾</span>
+              <span className="text-base">{labels.agricultureTab[language]}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -310,11 +388,17 @@ export default function InteractivePage() {
                   onSimulationComplete={handleEnergySimulationComplete}
                   initialScenario={selectedScenario && 'solar_growth_pct' in selectedScenario ? selectedScenario : null}
                 />
-              ) : (
+              ) : activeTab === 'water' ? (
                 <WaterControlPanel
                   language={language}
                   onSimulationComplete={handleWaterSimulationComplete}
                   initialScenario={selectedScenario && 'water_demand_growth_pct' in selectedScenario ? selectedScenario : null}
+                />
+              ) : (
+                <AgricultureControlPanel
+                  language={language}
+                  onRunSimulation={handleAgricultureSimulationComplete}
+                  loading={isSimulating}
                 />
               )}
             </div>
@@ -330,7 +414,7 @@ export default function InteractivePage() {
                   <div className="h-[300px] sm:h-[400px] md:h-[500px] xl:h-[700px]">
                     <MapView
                       height="100%"
-                      simulationResults={(activeTab === 'energy' ? energyResults : waterResults) as SimulationResponse | null}
+                      simulationResults={(activeTab === 'energy' ? energyResults : activeTab === 'water' ? waterResults : agricultureResults) as SimulationResponse | null}
                       visualizationType={activeTab}
                     />
                   </div>
@@ -338,7 +422,7 @@ export default function InteractivePage() {
 
                 {/* Map Overlay - Show results summary (responsive) */}
                 {(() => {
-                  const currentResults = activeTab === 'energy' ? energyResults : waterResults;
+                  const currentResults = activeTab === 'energy' ? energyResults : activeTab === 'water' ? waterResults : agricultureResults;
                   return currentResults && (
                     <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-2 md:p-3 border border-gray-200">
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
@@ -397,6 +481,16 @@ export default function InteractivePage() {
               </div>
             )}
 
+            {activeTab === 'agriculture' && agricultureResults && !isSimulating && (
+              <div className="mb-6 transform hover:scale-[1.01] transition-all duration-200">
+                <ExecutiveSummary
+                  results={agricultureResults as unknown as SimulationResponse}
+                  scenario={null}
+                  language={language}
+                />
+              </div>
+            )}
+
             {/* Detailed Results Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               {activeTab === 'energy' ? (
@@ -407,9 +501,15 @@ export default function InteractivePage() {
                   isLoading={isSimulating}
                   language={language}
                 />
-              ) : (
+              ) : activeTab === 'water' ? (
                 <WaterResultsPanel
                   results={waterResults}
+                  isLoading={isSimulating}
+                  language={language}
+                />
+              ) : (
+                <AgricultureResultsPanel
+                  results={agricultureResults}
                   isLoading={isSimulating}
                   language={language}
                 />
@@ -417,7 +517,7 @@ export default function InteractivePage() {
             </div>
 
             {/* No results state */}
-            {!(activeTab === 'energy' ? energyResults : waterResults) && !isSimulating && (
+            {!(activeTab === 'energy' ? energyResults : activeTab === 'water' ? waterResults : agricultureResults) && !isSimulating && (
               <div className="mt-6 bg-gradient-to-br from-blue-50 to-green-50 border-2 border-dashed border-blue-300 rounded-xl p-8 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

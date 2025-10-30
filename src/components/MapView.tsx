@@ -56,8 +56,8 @@ interface MapViewProps {
   height?: string;
   /** Simulation results to visualize on the map */
   simulationResults?: SimulationResponse | null;
-  /** Type of visualization (energy or water stress) */
-  visualizationType?: 'energy' | 'water';
+  /** Type of visualization (energy, water, or agriculture stress) */
+  visualizationType?: 'energy' | 'water' | 'agriculture';
 }
 
 /**
@@ -89,9 +89,7 @@ interface MapViewProps {
  *   simulationResults={results}
  * />
  */
-function MapViewComponent({ onRegionClick, height = '600px', simulationResults, visualizationType: _visualizationType = 'energy' }: MapViewProps) {
-  // TODO: Implement different color schemes/labels for water vs energy visualization
-  // visualizationType is currently unused - will be implemented in future PR
+function MapViewComponent({ onRegionClick, height = '600px', simulationResults, visualizationType = 'energy' }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<MapboxMap | null>(null);
   const popup = useRef<MapboxPopup | null>(null);
@@ -607,13 +605,25 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
               // Show stress data if available (priority #1)
               if (hasStressData) {
                 let stressLabel = 'Healthy';
-                if (stress >= 0.60) stressLabel = 'Critical';
-                else if (stress >= 0.35) stressLabel = 'Warning';
-                else if (stress >= 0.15) stressLabel = 'Caution';
+                let stressTitle = 'Infrastructure Stress';
+
+                // Agriculture uses different thresholds and labels
+                if (visualizationType === 'agriculture') {
+                  stressTitle = 'Crop Stress';
+                  if (stress >= 0.80) stressLabel = 'Critical';
+                  else if (stress >= 0.60) stressLabel = 'High Stress';
+                  else if (stress >= 0.30) stressLabel = 'Moderate';
+                  else stressLabel = 'Low';
+                } else {
+                  // Energy/Water thresholds
+                  if (stress >= 0.60) stressLabel = 'Critical';
+                  else if (stress >= 0.35) stressLabel = 'Warning';
+                  else if (stress >= 0.15) stressLabel = 'Caution';
+                }
 
                 popupContent += `
                     <div style="margin-bottom: 16px; padding: 12px; background: ${stressColor}15; border-left: 4px solid ${stressColor}; border-radius: 6px;">
-                      <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 4px;">Infrastructure Stress</div>
+                      <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; margin-bottom: 4px;">${stressTitle}</div>
                       <div style="font-size: 24px; font-weight: 700; color: ${stressColor};">${stressPercentage}%</div>
                       <div style="font-size: 12px; font-weight: 500; color: #6b7280; margin-top: 4px;">${stressLabel}</div>
                     </div>`;
@@ -882,38 +892,73 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         {simulationResults && (
           <div className="absolute bottom-12 md:bottom-16 left-2 md:left-auto md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-4 max-w-[180px] md:max-w-[200px]">
             <h4 className="text-[10px] md:text-xs font-bold text-gray-700 mb-2 md:mb-3 uppercase tracking-wide">
-              Infrastructure Stress
+              {visualizationType === 'agriculture' ? 'Crop Stress' : 'Infrastructure Stress'}
             </h4>
-            <div className="space-y-1.5 md:space-y-2">
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#10b981' }}></div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Healthy</div>
-                  <div className="text-[9px] md:text-xs text-gray-500">0-15%</div>
+            {visualizationType === 'agriculture' ? (
+              // Agriculture-specific legend
+              <div className="space-y-1.5 md:space-y-2">
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#10b981' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Low</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">0-30%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f59e0b' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Moderate</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">30-60%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f97316' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">High Stress</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">60-80%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#ef4444' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Critical</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">80-100%</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f59e0b' }}></div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Caution</div>
-                  <div className="text-[9px] md:text-xs text-gray-500">15-35%</div>
+            ) : (
+              // Energy/Water legend
+              <div className="space-y-1.5 md:space-y-2">
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#10b981' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Healthy</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">0-15%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f59e0b' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Caution</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">15-35%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f97316' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Warning</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">35-60%</div>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2 md:space-x-3">
+                  <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#ef4444' }}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] md:text-xs font-semibold text-gray-800">Critical</div>
+                    <div className="text-[9px] md:text-xs text-gray-500">60-100%</div>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f97316' }}></div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Warning</div>
-                  <div className="text-[9px] md:text-xs text-gray-500">35-60%</div>
-                </div>
-              </div>
-              <div className="flex items-center space-x-2 md:space-x-3">
-                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#ef4444' }}></div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Critical</div>
-                  <div className="text-[9px] md:text-xs text-gray-500">60-100%</div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         )}
 

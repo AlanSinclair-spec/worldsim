@@ -7,14 +7,14 @@ interface PolicyScenario {
   title: { en: string; es: string };
   description: { en: string; es: string };
   icon: string;
-  category: 'energy' | 'water';
+  category: 'energy' | 'water' | 'agriculture';
   impact: 'critical' | 'high' | 'moderate';
   parameters: SimulationScenario | WaterSimulationScenario;
 }
 
 interface PolicyScenariosProps {
-  /** Current active category (energy/water) */
-  category: 'energy' | 'water';
+  /** Current active category (energy/water/agriculture) */
+  category: 'energy' | 'water' | 'agriculture';
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
   /** Callback when scenario is selected */

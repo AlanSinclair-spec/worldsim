@@ -39,6 +39,20 @@ CREATE TABLE IF NOT EXISTS rain_daily (
   UNIQUE(region_id, date)
 );
 
+-- Agriculture daily data table
+CREATE TABLE IF NOT EXISTS agriculture_daily (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  region_id TEXT NOT NULL REFERENCES regions(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  crop_type TEXT NOT NULL CHECK (crop_type IN ('coffee', 'sugar_cane', 'corn', 'beans')),
+  yield_kg_per_hectare DECIMAL(10, 2) NOT NULL,
+  rainfall_mm DECIMAL(10, 2) NOT NULL,
+  temperature_avg_c DECIMAL(5, 2) NOT NULL,
+  soil_moisture_pct DECIMAL(5, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(region_id, date, crop_type)
+);
+
 -- Simulation runs table
 CREATE TABLE IF NOT EXISTS runs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -52,12 +66,14 @@ CREATE TABLE IF NOT EXISTS runs (
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_energy_daily_region_date ON energy_daily(region_id, date);
 CREATE INDEX IF NOT EXISTS idx_rain_daily_region_date ON rain_daily(region_id, date);
+CREATE INDEX IF NOT EXISTS idx_agriculture_region_crop ON agriculture_daily(region_id, crop_type, date);
 CREATE INDEX IF NOT EXISTS idx_runs_created_at ON runs(created_at DESC);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE regions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE energy_daily ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rain_daily ENABLE ROW LEVEL SECURITY;
+ALTER TABLE agriculture_daily ENABLE ROW LEVEL SECURITY;
 ALTER TABLE runs ENABLE ROW LEVEL SECURITY;
 
 -- Create policies to allow public read access (adjust based on your security needs)
@@ -98,6 +114,19 @@ CREATE POLICY "Allow public update to rain_daily"
   ON rain_daily FOR UPDATE
   USING (true);
 
+-- Agriculture daily policies
+CREATE POLICY "Allow public read access to agriculture_daily"
+  ON agriculture_daily FOR SELECT
+  USING (true);
+
+CREATE POLICY "Allow public insert to agriculture_daily"
+  ON agriculture_daily FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "Allow public update to agriculture_daily"
+  ON agriculture_daily FOR UPDATE
+  USING (true);
+
 -- Runs policies
 CREATE POLICY "Allow public read access to runs"
   ON runs FOR SELECT
@@ -115,6 +144,7 @@ CREATE POLICY "Allow public update to runs"
 GRANT ALL ON regions TO anon, authenticated;
 GRANT ALL ON energy_daily TO anon, authenticated;
 GRANT ALL ON rain_daily TO anon, authenticated;
+GRANT ALL ON agriculture_daily TO anon, authenticated;
 GRANT ALL ON runs TO anon, authenticated;
 
 -- Refresh schema cache
@@ -124,6 +154,6 @@ NOTIFY pgrst, 'reload schema';
 DO $$
 BEGIN
   RAISE NOTICE 'Database schema created successfully!';
-  RAISE NOTICE 'Tables created: regions, energy_daily, rain_daily, runs';
+  RAISE NOTICE 'Tables created: regions, energy_daily, rain_daily, agriculture_daily, runs';
   RAISE NOTICE 'Next step: Run npm run seed to populate regions table';
 END $$;

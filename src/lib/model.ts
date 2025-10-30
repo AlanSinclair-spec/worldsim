@@ -883,3 +883,481 @@ export function validateWaterScenarioParams(params: WaterSimulationScenario): {
 
   return { isValid: true };
 }
+
+// ============================================
+// AGRICULTURE IMPACT SIMULATION FUNCTIONS
+// ============================================
+
+/**
+ * Crop optimal conditions (El Salvador-specific)
+ */
+const CROP_OPTIMAL_CONDITIONS = {
+  coffee: {
+    rainfall_min_mm: 50,
+    rainfall_max_mm: 150,
+    temp_min_c: 18,
+    temp_max_c: 25,
+    sensitivity: 0.8, // High sensitivity to climate variations
+  },
+  sugar_cane: {
+    rainfall_min_mm: 80,
+    rainfall_max_mm: 200,
+    temp_min_c: 20,
+    temp_max_c: 30,
+    sensitivity: 0.6, // Moderate sensitivity
+  },
+  corn: {
+    rainfall_min_mm: 40,
+    rainfall_max_mm: 120,
+    temp_min_c: 15,
+    temp_max_c: 30,
+    sensitivity: 0.7, // Moderate-high sensitivity
+  },
+  beans: {
+    rainfall_min_mm: 30,
+    rainfall_max_mm: 100,
+    temp_min_c: 18,
+    temp_max_c: 28,
+    sensitivity: 0.75, // Moderate-high sensitivity
+  },
+};
+
+/**
+ * Calculate crop stress based on environmental conditions
+ *
+ * Crop stress represents how far conditions deviate from optimal ranges.
+ * Higher stress = lower yields.
+ *
+ * Formula:
+ * - Rainfall stress: Distance from optimal range as ratio
+ * - Temperature stress: Distance from optimal range as ratio
+ * - Total stress = weighted average of factors × crop sensitivity
+ * - 0.0 = No stress (optimal conditions)
+ * - 0.5 = Moderate stress (some yield loss)
+ * - 1.0 = Severe stress (crop failure)
+ *
+ * @param rainfall_mm - Monthly rainfall in millimeters
+ * @param temperature_c - Average temperature in Celsius
+ * @param crop_type - Type of crop ('coffee', 'sugar_cane', 'corn', 'beans')
+ * @param soil_moisture_pct - Optional soil moisture percentage (0-100)
+ * @returns Crop stress level from 0 to 1
+ *
+ * @example
+ * calculateCropStress(30, 22, 'coffee', 45) // Returns ~0.6 (severe drought stress)
+ * calculateCropStress(100, 22, 'coffee', 70) // Returns ~0.0 (optimal)
+ * calculateCropStress(200, 35, 'corn', 90) // Returns ~0.8 (too much rain, too hot)
+ */
+export function calculateCropStress(
+  rainfall_mm: number,
+  temperature_c: number,
+  crop_type: keyof typeof CROP_OPTIMAL_CONDITIONS,
+  soil_moisture_pct?: number
+): number {
+  const optimal = CROP_OPTIMAL_CONDITIONS[crop_type];
+
+  // Calculate rainfall stress
+  let rainfallStress = 0;
+  if (rainfall_mm < optimal.rainfall_min_mm) {
+    // Drought stress
+    rainfallStress = (optimal.rainfall_min_mm - rainfall_mm) / optimal.rainfall_min_mm;
+  } else if (rainfall_mm > optimal.rainfall_max_mm) {
+    // Excess rainfall stress
+    rainfallStress = (rainfall_mm - optimal.rainfall_max_mm) / optimal.rainfall_max_mm;
+  }
+  rainfallStress = Math.min(1, rainfallStress);
+
+  // Calculate temperature stress
+  let tempStress = 0;
+  if (temperature_c < optimal.temp_min_c) {
+    // Cold stress
+    tempStress = (optimal.temp_min_c - temperature_c) / optimal.temp_min_c;
+  } else if (temperature_c > optimal.temp_max_c) {
+    // Heat stress
+    tempStress = (temperature_c - optimal.temp_max_c) / optimal.temp_max_c;
+  }
+  tempStress = Math.min(1, tempStress);
+
+  // Apply soil moisture factor if available (reduces stress if moisture is good)
+  let moistureFactor = 1.0;
+  if (soil_moisture_pct !== undefined && soil_moisture_pct > 0) {
+    // Good soil moisture (>40%) reduces stress by up to 20%
+    if (soil_moisture_pct >= 40) {
+      moistureFactor = 0.8;
+    } else {
+      // Low soil moisture increases stress
+      moistureFactor = 1.0 + (40 - soil_moisture_pct) / 100;
+    }
+  }
+
+  // Weighted average: 60% rainfall stress, 40% temperature stress
+  const baseStress = rainfallStress * 0.6 + tempStress * 0.4;
+
+  // Apply crop sensitivity and moisture factor
+  const totalStress = baseStress * optimal.sensitivity * moistureFactor;
+
+  // Clamp between 0 and 1
+  return Math.max(0, Math.min(1, totalStress));
+}
+
+/**
+ * Calculate yield impact from crop stress
+ *
+ * Converts crop stress level into actual yield reduction.
+ * Uses a non-linear relationship: mild stress has small impact,
+ * severe stress causes dramatic yield losses.
+ *
+ * @param baseline_yield_kg - Baseline yield in kg/hectare under optimal conditions
+ * @param stress_level - Crop stress level (0-1)
+ * @returns Actual yield in kg/hectare after stress impact
+ *
+ * @example
+ * calculateYieldImpact(1000, 0.0) // Returns 1000 (no stress, full yield)
+ * calculateYieldImpact(1000, 0.3) // Returns ~850 (mild stress, 15% loss)
+ * calculateYieldImpact(1000, 0.7) // Returns ~400 (severe stress, 60% loss)
+ * calculateYieldImpact(1000, 1.0) // Returns 100 (total failure, 90% loss)
+ */
+export function calculateYieldImpact(baseline_yield_kg: number, stress_level: number): number {
+  // Non-linear stress curve: y = baseline × (1 - stress^1.5)
+  // This creates steeper yield loss at high stress levels
+  const yieldFactor = 1 - Math.pow(stress_level, 1.5);
+  const actualYield = baseline_yield_kg * Math.max(0.1, yieldFactor); // Min 10% yield even in crisis
+
+  return Math.round(actualYield);
+}
+
+/**
+ * Run agriculture impact simulation
+ *
+ * Models crop yield changes based on:
+ * - Rainfall changes (drought or flooding)
+ * - Temperature changes (climate change)
+ * - Irrigation improvements (mitigation measure)
+ * - Crop-specific sensitivities
+ *
+ * The simulation formula:
+ * 1. Apply rainfall changes to baseline rainfall
+ * 2. Apply temperature changes to baseline temperature
+ * 3. Apply irrigation improvements (increases effective soil moisture)
+ * 4. Calculate crop stress for each region/date/crop combination
+ * 5. Calculate yield impacts and economic losses
+ *
+ * @param params - Agriculture simulation scenario parameters
+ * @returns Agriculture simulation results with daily data and summary statistics
+ * @throws Error if database queries fail or data is missing
+ *
+ * @example
+ * const results = await simulateAgricultureScenario({
+ *   rainfall_change_pct: -30,        // Severe drought
+ *   temperature_change_c: 2,         // Climate change
+ *   irrigation_improvement_pct: 20,  // New irrigation systems
+ *   crop_type: 'coffee',             // Focus on coffee
+ *   start_date: '2024-01-01',
+ *   end_date: '2024-12-31'
+ * });
+ *
+ * console.log(results.summary.total_yield_loss_kg); // 150000
+ */
+export async function simulateAgricultureScenario(params: {
+  rainfall_change_pct: number;
+  temperature_change_c: number;
+  irrigation_improvement_pct: number;
+  crop_type: string; // 'all' or specific crop
+  start_date: string;
+  end_date: string;
+}): Promise<{
+  daily_results: Array<{
+    date: string;
+    region_id: string;
+    region_name: string;
+    crop_type: string;
+    baseline_yield_kg: number;
+    actual_yield_kg: number;
+    yield_change_pct: number;
+    stress: number;
+  }>;
+  summary: {
+    avg_stress: number;
+    max_stress: number;
+    total_yield_loss_kg: number;
+    total_yield_loss_pct: number;
+    most_affected_crop: string;
+    top_stressed_regions: Array<{
+      region_id: string;
+      region_name: string;
+      avg_stress: number;
+      crop_type: string;
+    }>;
+  };
+}> {
+  const {
+    rainfall_change_pct,
+    temperature_change_c,
+    irrigation_improvement_pct,
+    crop_type,
+    start_date,
+    end_date,
+  } = params;
+
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ========== AGRICULTURE SIMULATION START ==========`);
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] 🌾 Parameters:`, {
+    rainfall_change_pct,
+    temperature_change_c,
+    irrigation_improvement_pct,
+    crop_type,
+    start_date,
+    end_date,
+  });
+
+  // Step 1: Fetch all regions
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] 📍 Step 1: Fetching regions...`);
+  const { data: regions, error: regionsError } = await supabase
+    .from('regions')
+    .select('id, name');
+
+  if (regionsError || !regions || regions.length === 0) {
+    throw new Error(`Failed to fetch regions: ${regionsError?.message || 'No regions found'}`);
+  }
+
+  const regionMap = new Map(regions.map(r => [r.id, r.name]));
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ✅ Loaded ${regions.length} regions`);
+
+  // Step 2: Fetch agriculture data
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] 🌾 Step 2: Fetching agriculture data...`);
+  let query = supabase
+    .from('agriculture_daily')
+    .select('region_id, date, crop_type, yield_kg_per_hectare, rainfall_mm, temperature_avg_c, soil_moisture_pct')
+    .gte('date', start_date)
+    .lte('date', end_date);
+
+  // Filter by crop type if specified
+  if (crop_type !== 'all') {
+    query = query.eq('crop_type', crop_type);
+  }
+
+  const { data: agricultureData, error: agricultureError } = await query.order('date', { ascending: true });
+
+  if (agricultureError) {
+    throw new Error(`Failed to fetch agriculture data: ${agricultureError.message}`);
+  }
+
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ✅ Loaded ${agricultureData?.length || 0} agriculture records`);
+
+  // Handle no data case
+  if (!agricultureData || agricultureData.length === 0) {
+    console.warn(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ⚠️ No agriculture data found`);
+    return {
+      daily_results: [],
+      summary: {
+        avg_stress: 0,
+        max_stress: 0,
+        total_yield_loss_kg: 0,
+        total_yield_loss_pct: 0,
+        most_affected_crop: 'none',
+        top_stressed_regions: [],
+      },
+    };
+  }
+
+  // Step 3: Calculate daily results
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] 🧮 Step 3: Calculating results...`);
+  const daily_results = [];
+  const cropYieldLosses = new Map<string, number>();
+
+  for (const record of agricultureData) {
+    const region_id = record.region_id;
+    const region_name = regionMap.get(region_id) || 'Unknown';
+    const baseline_yield_kg = record.yield_kg_per_hectare;
+
+    // Apply simulation parameters
+    const adjustedRainfall = record.rainfall_mm * (1 + rainfall_change_pct / 100);
+    const adjustedTemperature = record.temperature_avg_c + temperature_change_c;
+
+    // Irrigation improvements increase effective soil moisture
+    let adjustedSoilMoisture = record.soil_moisture_pct;
+    if (adjustedSoilMoisture) {
+      adjustedSoilMoisture = Math.min(100, adjustedSoilMoisture * (1 + irrigation_improvement_pct / 100));
+    }
+
+    // Calculate crop stress
+    const stress = calculateCropStress(
+      adjustedRainfall,
+      adjustedTemperature,
+      record.crop_type as keyof typeof CROP_OPTIMAL_CONDITIONS,
+      adjustedSoilMoisture
+    );
+
+    // Calculate actual yield
+    const actual_yield_kg = calculateYieldImpact(baseline_yield_kg, stress);
+    const yield_change_pct = ((actual_yield_kg - baseline_yield_kg) / baseline_yield_kg) * 100;
+
+    // Track yield losses by crop
+    const yieldLoss = baseline_yield_kg - actual_yield_kg;
+    cropYieldLosses.set(
+      record.crop_type,
+      (cropYieldLosses.get(record.crop_type) || 0) + yieldLoss
+    );
+
+    daily_results.push({
+      date: record.date,
+      region_id,
+      region_name,
+      crop_type: record.crop_type,
+      baseline_yield_kg,
+      actual_yield_kg,
+      yield_change_pct,
+      stress,
+    });
+  }
+
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ✅ Calculated ${daily_results.length} results`);
+
+  // Step 4: Calculate summary
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] 📈 Step 4: Calculating summary...`);
+
+  const totalBaseline = daily_results.reduce((sum, r) => sum + r.baseline_yield_kg, 0);
+  const totalActual = daily_results.reduce((sum, r) => sum + r.actual_yield_kg, 0);
+  const total_yield_loss_kg = totalBaseline - totalActual;
+  const total_yield_loss_pct = totalBaseline > 0 ? (total_yield_loss_kg / totalBaseline) * 100 : 0;
+
+  const avg_stress = daily_results.length > 0
+    ? daily_results.reduce((sum, r) => sum + r.stress, 0) / daily_results.length
+    : 0;
+  const max_stress = daily_results.length > 0
+    ? Math.max(...daily_results.map(r => r.stress))
+    : 0;
+
+  // Find most affected crop
+  let most_affected_crop = 'none';
+  let maxCropLoss = 0;
+  for (const [crop, loss] of cropYieldLosses.entries()) {
+    if (loss > maxCropLoss) {
+      maxCropLoss = loss;
+      most_affected_crop = crop;
+    }
+  }
+
+  // Calculate top stressed regions
+  const regionStress = new Map<string, { name: string; crop: string; stresses: number[] }>();
+  daily_results.forEach(result => {
+    const key = `${result.region_id}:${result.crop_type}`;
+    const existing = regionStress.get(key);
+    if (existing) {
+      existing.stresses.push(result.stress);
+    } else {
+      regionStress.set(key, {
+        name: result.region_name,
+        crop: result.crop_type,
+        stresses: [result.stress],
+      });
+    }
+  });
+
+  const top_stressed_regions = Array.from(regionStress.entries())
+    .map(([key, data]) => {
+      const [region_id] = key.split(':');
+      return {
+        region_id,
+        region_name: data.name,
+        crop_type: data.crop,
+        avg_stress: data.stresses.reduce((sum, s) => sum + s, 0) / data.stresses.length,
+      };
+    })
+    .sort((a, b) => b.avg_stress - a.avg_stress)
+    .slice(0, 5);
+
+  const summary = {
+    avg_stress: Math.round(avg_stress * 1000) / 1000,
+    max_stress: Math.round(max_stress * 1000) / 1000,
+    total_yield_loss_kg: Math.round(total_yield_loss_kg),
+    total_yield_loss_pct: Math.round(total_yield_loss_pct * 10) / 10,
+    most_affected_crop,
+    top_stressed_regions: top_stressed_regions.map(r => ({
+      ...r,
+      avg_stress: Math.round(r.avg_stress * 1000) / 1000,
+    })),
+  };
+
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ✅ Summary:`, summary);
+  console.log(`[${new Date().toISOString()}] [Model simulateAgricultureScenario] ========== AGRICULTURE SIMULATION COMPLETE ==========`);
+
+  return { daily_results, summary };
+}
+
+/**
+ * Validate agriculture simulation parameters
+ *
+ * @param params - Agriculture simulation parameters to validate
+ * @returns Object with isValid flag and error message if invalid
+ */
+export function validateAgricultureParams(params: {
+  rainfall_change_pct: number;
+  temperature_change_c: number;
+  irrigation_improvement_pct: number;
+  crop_type: string;
+  start_date: string;
+  end_date: string;
+}): {
+  isValid: boolean;
+  error?: string;
+} {
+  // Validate rainfall change
+  if (params.rainfall_change_pct < -100 || params.rainfall_change_pct > 200) {
+    return {
+      isValid: false,
+      error: 'Rainfall change must be between -100% and +200%',
+    };
+  }
+
+  // Validate temperature change
+  if (params.temperature_change_c < -5 || params.temperature_change_c > 10) {
+    return {
+      isValid: false,
+      error: 'Temperature change must be between -5°C and +10°C',
+    };
+  }
+
+  // Validate irrigation improvement
+  if (params.irrigation_improvement_pct < 0 || params.irrigation_improvement_pct > 100) {
+    return {
+      isValid: false,
+      error: 'Irrigation improvement must be between 0% and 100%',
+    };
+  }
+
+  // Validate crop type
+  const validCrops = ['all', 'coffee', 'sugar_cane', 'corn', 'beans'];
+  if (!validCrops.includes(params.crop_type)) {
+    return {
+      isValid: false,
+      error: `Crop type must be one of: ${validCrops.join(', ')}`,
+    };
+  }
+
+  // Validate dates
+  const startDate = new Date(params.start_date);
+  const endDate = new Date(params.end_date);
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    return {
+      isValid: false,
+      error: 'Invalid date format (expected YYYY-MM-DD)',
+    };
+  }
+
+  if (endDate <= startDate) {
+    return {
+      isValid: false,
+      error: 'End date must be after start date',
+    };
+  }
+
+  const daysDiff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24);
+  if (daysDiff > 365 * 5) {
+    return {
+      isValid: false,
+      error: 'Date range cannot exceed 5 years',
+    };
+  }
+
+  return { isValid: true };
+}

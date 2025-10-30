@@ -97,14 +97,15 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
   const popup = useRef<MapboxPopup | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [is3DMode, setIs3DMode] = useState(false);
+  const [is3DMode, setIs3DMode] = useState(true); // Start in 3D mode by default
+  const isInitialMount = useRef(true); // Track initial mount to avoid duplicate terrain application
 
   // Load 3D preference from localStorage on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved3DMode = localStorage.getItem('worldsim-map-3d-mode');
-      if (saved3DMode === 'true') {
-        setIs3DMode(true);
+      if (saved3DMode === 'false') {
+        setIs3DMode(false); // Only override if explicitly set to false
       }
     }
   }, []);
@@ -129,7 +130,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       map.current.setLayoutProperty('sky', 'visibility', 'visible');
       map.current.easeTo({
         pitch: 60,
-        bearing: 0,
+        bearing: 20, // Slight rotation for better 3D perspective
         duration: 800,
         easing: (t: number) => t * (2 - t), // ease-in-out
       });
@@ -172,22 +173,30 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
     );
   }, [mapLoaded, is3DMode]);
 
-  // Apply saved 3D mode when map loads
+  // Apply 3D mode when toggled (skip initial mount since terrain is applied in style.load)
   useEffect(() => {
-    if (!map.current || !mapLoaded || !is3DMode) return;
+    if (!map.current || !mapLoaded) return;
 
-    // Apply 3D mode from saved preference
-    map.current.setTerrain({
-      source: 'mapbox-dem',
-      exaggeration: 1.5
-    });
-    map.current.setLayoutProperty('sky', 'visibility', 'visible');
-    map.current.easeTo({
-      pitch: 60,
-      bearing: 0,
-      duration: 800,
-      easing: (t: number) => t * (2 - t),
-    });
+    // Skip initial mount - terrain is already applied in style.load
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Apply 3D mode when toggled by user
+    if (is3DMode) {
+      map.current.setTerrain({
+        source: 'mapbox-dem',
+        exaggeration: 1.5
+      });
+      map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      map.current.easeTo({
+        pitch: 60,
+        bearing: 20,
+        duration: 800,
+        easing: (t: number) => t * (2 - t),
+      });
+    }
   }, [mapLoaded, is3DMode]);
 
   /**
@@ -241,8 +250,8 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         style: 'mapbox://styles/mapbox/light-v11', // Clean, professional base
         center: [-88.9, 13.7], // El Salvador center
         zoom: 8.2,
-        pitch: 0, // Flat view - professional standard
-        bearing: 0, // North-up orientation
+        pitch: 60, // Start in 3D view with terrain
+        bearing: 20, // Slight rotation for better 3D perspective
         minZoom: 7,
         maxZoom: 14,
         maxBounds: [
@@ -263,15 +272,15 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         focusAfterOpen: true, // Accessibility
       });
 
-      mapInstance.on('load', () => {
-        console.log('✅ Map loaded successfully');
+      mapInstance.on('style.load', () => {
+        console.log('✅ Map style loaded successfully');
         setMapLoaded(true);
         setError(null);
 
-        // Add 3D terrain source
+        // Add 3D terrain source (using correct DEM source)
         mapInstance.addSource('mapbox-dem', {
           type: 'raster-dem',
-          url: 'mapbox://mapbox.terrain-rgb',
+          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
           tileSize: 512,
           maxzoom: 14,
         });
@@ -287,10 +296,16 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
           },
         });
 
-        // Initially hide sky layer (only show in 3D mode)
-        mapInstance.setLayoutProperty('sky', 'visibility', 'none');
+        // Show sky layer by default (3D mode is on by default)
+        mapInstance.setLayoutProperty('sky', 'visibility', 'visible');
 
-        // Fit to El Salvador bounds with smooth animation
+        // Enable 3D terrain immediately (since we start in 3D mode)
+        mapInstance.setTerrain({
+          source: 'mapbox-dem',
+          exaggeration: 1.5
+        });
+
+        // Fit to El Salvador bounds with smooth animation (maintaining 3D view)
         mapInstance.fitBounds(
           [
             [-90.2, 13.0], // Southwest
@@ -300,6 +315,8 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
             padding: { top: 50, bottom: 50, left: 50, right: 50 },
             duration: 1500, // Smooth 1.5s animation
             essential: true,
+            pitch: 60, // Maintain 3D pitch
+            bearing: 20, // Maintain rotation
           }
         );
       });

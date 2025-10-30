@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import confetti from 'canvas-confetti';
 import { ControlPanel } from '@/components/ControlPanel';
 import { WaterControlPanel } from '@/components/WaterControlPanel';
 import { AgricultureControlPanel } from '@/components/AgricultureControlPanel';
@@ -78,6 +79,38 @@ export default function InteractivePage() {
   const mapRef = useRef<HTMLDivElement>(null);
 
   /**
+   * Trigger success confetti celebration
+   */
+  const celebrate = useCallback(() => {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval = window.setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
+  }, []);
+
+  /**
    * Handle scenario selection from PolicyScenarios component
    */
   const handleScenarioSelect = useCallback((scenario: SimulationScenario | WaterSimulationScenario) => {
@@ -133,6 +166,9 @@ export default function InteractivePage() {
     setEnergyExecutionTime(execTime);
     setIsSimulating(false);
 
+    // Celebrate success!
+    setTimeout(() => celebrate(), 600);
+
     // Smooth scroll to results section
     setTimeout(() => {
       resultsRef.current?.scrollIntoView({
@@ -163,6 +199,9 @@ export default function InteractivePage() {
 
     setWaterResults(simulationResults);
     setIsSimulating(false);
+
+    // Celebrate success!
+    setTimeout(() => celebrate(), 600);
 
     // Smooth scroll to results section
     setTimeout(() => {
@@ -217,6 +256,9 @@ export default function InteractivePage() {
 
         setAgricultureResults(result.data);
         setIsSimulating(false);
+
+        // Celebrate success!
+        setTimeout(() => celebrate(), 600);
 
         // Smooth scroll to results section
         setTimeout(() => {

@@ -42,6 +42,11 @@ module.exports = {
         'fade-in-fast': 'fade-in 0.2s ease-in-out',
         'fade-in-slow': 'fade-in 0.8s ease-in-out',
         'shimmer': 'shimmer 2s ease-in-out infinite',
+        'slide-up': 'slide-up 0.5s ease-out',
+        'slide-down': 'slide-down 0.5s ease-out',
+        'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+        'bounce-in': 'bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'gradient-shift': 'gradient-shift 3s ease infinite',
       },
       keyframes: {
         'fade-in': {
@@ -60,6 +65,61 @@ module.exports = {
           },
           '100%': {
             backgroundPosition: '200% 0',
+          },
+        },
+        'slide-up': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(20px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'slide-down': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-20px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'pulse-glow': {
+          '0%, 100%': {
+            boxShadow: '0 0 5px rgba(59, 130, 246, 0.5)',
+          },
+          '50%': {
+            boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), 0 0 30px rgba(59, 130, 246, 0.6)',
+          },
+        },
+        'bounce-in': {
+          '0%': {
+            opacity: '0',
+            transform: 'scale(0.3)',
+          },
+          '50%': {
+            opacity: '1',
+            transform: 'scale(1.05)',
+          },
+          '70%': {
+            transform: 'scale(0.9)',
+          },
+          '100%': {
+            transform: 'scale(1)',
+          },
+        },
+        'gradient-shift': {
+          '0%': {
+            backgroundPosition: '0% 50%',
+          },
+          '50%': {
+            backgroundPosition: '100% 50%',
+          },
+          '100%': {
+            backgroundPosition: '0% 50%',
           },
         },
       },

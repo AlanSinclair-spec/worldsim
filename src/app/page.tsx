@@ -424,8 +424,14 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-sm text-gray-500">
-            <p>&copy; 2024 WorldSim. Empowering decision-makers with data-driven insights.</p>
+          <div className="border-t border-gray-800 pt-8 text-center text-sm">
+            <p className="text-gray-500 mb-4">&copy; 2024 WorldSim. Empowering decision-makers with data-driven insights.</p>
+            <div className="flex items-center justify-center gap-2">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white text-xs font-semibold shadow-lg animate-pulse-glow">
+                <span className="text-base">🤖</span>
+                <span>Built with GPT-4 & Claude</span>
+              </div>
+            </div>
           </div>
         </div>
       </footer>

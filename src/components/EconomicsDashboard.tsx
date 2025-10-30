@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import type { SimulationResponse, WaterSimulationResponse, EconomicAnalysis } from '@/lib/types';
+import type { SimulationResponse, WaterSimulationResponse } from '@/lib/types';
 
 // Dynamically import Chart.js components for performance
 const Line = dynamic(() => import('react-chartjs-2').then(mod => mod.Line), { ssr: false });
@@ -46,18 +46,6 @@ interface EconomicsDashboardProps {
   agricultureResults?: any | null;
   /** Language preference */
   language?: 'en' | 'es';
-}
-
-/**
- * Intervention Option for Portfolio Optimizer
- */
-interface Intervention {
-  sector: 'energy' | 'water' | 'agriculture';
-  name: string;
-  investment: number;
-  roi: number;
-  payback: number;
-  selected: boolean;
 }
 
 /**
@@ -426,7 +414,7 @@ export function EconomicsDashboard({
                   tooltip: {
                     callbacks: {
                       label: (context) => {
-                        const value = context.parsed.y;
+                        const value = context.parsed.y ?? 0;
                         return `${context.dataset.label}: $${value.toFixed(1)}M`;
                       },
                     },
@@ -435,7 +423,7 @@ export function EconomicsDashboard({
                 scales: {
                   y: {
                     ticks: {
-                      callback: (value) => `$${value}M`,
+                      callback: (value) => value != null ? `$${value}M` : '',
                     },
                   },
                 },

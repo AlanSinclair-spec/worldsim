@@ -12,6 +12,7 @@ import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
 import { WaterResultsPanel } from '@/components/WaterResultsPanel';
 import { AgricultureResultsPanel } from '@/components/AgricultureResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
+import { EconomicsDashboard } from '@/components/EconomicsDashboard';
 import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
@@ -47,7 +48,7 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
 export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
-  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture'>('energy');
+  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics'>('energy');
   const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
   const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
   const [agricultureResults, setAgricultureResults] = useState<any | null>(null);
@@ -235,6 +236,7 @@ export default function InteractivePage() {
     energyTab: { en: 'Energy Policy', es: 'Política Energética' },
     waterTab: { en: 'Water Policy', es: 'Política Hídrica' },
     agricultureTab: { en: 'Agriculture Policy', es: 'Política Agrícola' },
+    economicsTab: { en: 'Economic Analysis', es: 'Análisis Económico' },
   };
 
   return (
@@ -353,6 +355,17 @@ export default function InteractivePage() {
               <span className="text-2xl mr-2">🌾</span>
               <span className="text-base">{labels.agricultureTab[language]}</span>
             </button>
+            <button
+              onClick={() => setActiveTab('economics')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                activeTab === 'economics'
+                  ? 'bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">💰</span>
+              <span className="text-base">{labels.economicsTab[language]}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -380,28 +393,30 @@ export default function InteractivePage() {
               />
             </div>
 
-            {/* Control Panel - Conditional based on activeTab */}
-            <div className="transform hover:scale-[1.01] transition-all duration-200">
-              {activeTab === 'energy' ? (
-                <ControlPanel
-                  language={language}
-                  onSimulationComplete={handleEnergySimulationComplete}
-                  initialScenario={selectedScenario && 'solar_growth_pct' in selectedScenario ? selectedScenario : null}
-                />
-              ) : activeTab === 'water' ? (
-                <WaterControlPanel
-                  language={language}
-                  onSimulationComplete={handleWaterSimulationComplete}
-                  initialScenario={selectedScenario && 'water_demand_growth_pct' in selectedScenario ? selectedScenario : null}
-                />
-              ) : (
-                <AgricultureControlPanel
-                  language={language}
-                  onRunSimulation={handleAgricultureSimulationComplete}
-                  loading={isSimulating}
-                />
-              )}
-            </div>
+            {/* Control Panel - Conditional based on activeTab (hidden for economics tab) */}
+            {activeTab !== 'economics' && (
+              <div className="transform hover:scale-[1.01] transition-all duration-200">
+                {activeTab === 'energy' ? (
+                  <ControlPanel
+                    language={language}
+                    onSimulationComplete={handleEnergySimulationComplete}
+                    initialScenario={selectedScenario && 'solar_growth_pct' in selectedScenario ? selectedScenario : null}
+                  />
+                ) : activeTab === 'water' ? (
+                  <WaterControlPanel
+                    language={language}
+                    onSimulationComplete={handleWaterSimulationComplete}
+                    initialScenario={selectedScenario && 'water_demand_growth_pct' in selectedScenario ? selectedScenario : null}
+                  />
+                ) : (
+                  <AgricultureControlPanel
+                    language={language}
+                    onRunSimulation={handleAgricultureSimulationComplete}
+                    loading={isSimulating}
+                  />
+                )}
+              </div>
+            )}
           </div>
 
           {/* Middle Column - Map */}
@@ -491,7 +506,7 @@ export default function InteractivePage() {
               </div>
             )}
 
-            {/* Detailed Results Panel */}
+            {/* Detailed Results Panel or Economics Dashboard */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               {activeTab === 'energy' ? (
                 <ResultsPanelEnhanced
@@ -507,10 +522,17 @@ export default function InteractivePage() {
                   isLoading={isSimulating}
                   language={language}
                 />
-              ) : (
+              ) : activeTab === 'agriculture' ? (
                 <AgricultureResultsPanel
                   results={agricultureResults}
                   isLoading={isSimulating}
+                  language={language}
+                />
+              ) : (
+                <EconomicsDashboard
+                  energyResults={energyResults}
+                  waterResults={waterResults}
+                  agricultureResults={agricultureResults}
                   language={language}
                 />
               )}

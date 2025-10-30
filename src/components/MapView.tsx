@@ -131,7 +131,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       map.current.easeTo({
         pitch: 60,
         bearing: 20, // Slight rotation for better 3D perspective
-        duration: 800,
+        duration: 1000, // Smoother transition
         easing: (t: number) => t * (2 - t), // ease-in-out
       });
     } else {
@@ -139,7 +139,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       map.current.easeTo({
         pitch: 0,
         bearing: 0,
-        duration: 800,
+        duration: 1000, // Smoother transition
         easing: (t: number) => t * (2 - t),
       });
       // Disable terrain after animation completes
@@ -148,7 +148,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
           map.current.setTerrain(null);
           map.current.setLayoutProperty('sky', 'visibility', 'none');
         }
-      }, 800);
+      }, 1000); // Match animation duration
     }
   }, [is3DMode, mapLoaded]);
 
@@ -193,7 +193,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       map.current.easeTo({
         pitch: 60,
         bearing: 20,
-        duration: 800,
+        duration: 1000, // Smoother transition
         easing: (t: number) => t * (2 - t),
       });
     }
@@ -406,7 +406,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
             generateId: true, // Generate IDs for features to enable feature-state
           });
 
-          // Distinct color fill layer - each department gets a unique color
+          // Professional color palette - softer, more executive-grade colors
           map.current.addLayer({
             id: 'regions-fill',
             type: 'fill',
@@ -415,36 +415,36 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
               'fill-color': [
                 'match',
                 ['get', 'NAM'], // Use department name from official data
-                'La Union', '#10b981',        // Green
-                'Usulutan', '#3b82f6',        // Blue
-                'San Miguel', '#f59e0b',      // Amber
-                'Morazan', '#8b5cf6',         // Purple
-                'La Paz', '#ec4899',          // Pink
-                'San Vicente', '#06b6d4',     // Cyan
-                'La Libertad', '#f97316',     // Orange
-                'San Salvador', '#14b8a6',    // Teal
-                'Sonsonate', '#84cc16',       // Lime
-                'Cuscatlan', '#eab308',       // Yellow
-                'Ahuachapan', '#6366f1',      // Indigo
-                'Cabañas', '#a855f7',         // Violet
-                'Santa Ana', '#22c55e',       // Emerald
-                'Chalatenango', '#0ea5e9',    // Sky Blue
+                'San Salvador', '#3B82F6',    // Blue
+                'La Libertad', '#10B981',     // Emerald
+                'Santa Ana', '#F59E0B',       // Amber
+                'Chalatenango', '#6366F1',    // Indigo
+                'Sonsonate', '#8B5CF6',       // Purple
+                'La Paz', '#EC4899',          // Pink
+                'Usulutan', '#14B8A6',        // Teal
+                'San Miguel', '#EF4444',      // Red
+                'Morazan', '#F97316',         // Orange
+                'La Union', '#06B6D4',        // Cyan
+                'Cuscatlan', '#A855F7',       // Violet
+                'Cabañas', '#84CC16',         // Lime
+                'Ahuachapan', '#22C55E',      // Green
+                'San Vicente', '#EAB308',     // Yellow
                 '#94a3b8' // Default gray for any unmapped regions
               ],
               'fill-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                0.85, // Hover: more opaque
-                0.7, // Default: solid but not overwhelming
+                0.7, // Hover: more opaque
+                0.5, // Default: softer, professional look
               ],
               'fill-opacity-transition': {
-                duration: 300,
+                duration: 500, // Smoother transitions
                 delay: 0,
               },
             },
           });
 
-          // Professional border/outline layer
+          // Professional border/outline layer - subtle and clean
           map.current.addLayer({
             id: 'regions-outline',
             type: 'line',
@@ -454,41 +454,50 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
               'line-width': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
-                3, // Thicker on hover
-                2, // Standard width
+                2.5, // Slightly thicker on hover
+                1, // Thin, professional borders
               ],
-              'line-opacity': 0.9,
+              'line-opacity': 0.8, // Slightly more subtle
               'line-width-transition': {
-                duration: 300,
+                duration: 500, // Smooth transition
                 delay: 0,
               },
             },
           });
 
-          // Professional labels - clean, authoritative typography
+          // Professional labels - executive-grade typography with shadow
           map.current.addLayer({
             id: 'regions-labels',
             type: 'symbol',
             source: 'regions',
             layout: {
               'text-field': ['get', 'NAM'], // Use NAM field from official El Salvador GeoJSON
-              'text-size': 13,
+              'text-size': [
+                'interpolate', ['linear'], ['zoom'],
+                7, 11,   // Smaller at low zoom
+                9, 14,   // Larger as you zoom in
+                12, 16   // Largest at high zoom
+              ],
               'text-anchor': 'center',
-              'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
-              'text-letter-spacing': 0.05, // Professional spacing
+              'text-font': ['DIN Pro Bold', 'Arial Unicode MS Bold'],
+              'text-letter-spacing': 0.08, // More spacing for readability
               'text-transform': 'uppercase', // Professional government style
             },
             paint: {
-              'text-color': '#1f2937', // Dark gray for strong contrast
-              'text-halo-color': '#ffffff',
-              'text-halo-width': 2.5,
-              'text-halo-blur': 0.5,
+              'text-color': '#ffffff', // White text
+              'text-halo-color': 'rgba(0, 0, 0, 0.8)', // Dark shadow for readability
+              'text-halo-width': 3,
+              'text-halo-blur': 1,
               'text-opacity': [
                 'case',
                 ['boolean', ['feature-state', 'hover'], false],
                 1.0, // Full opacity on hover
-                0.95, // High visibility by default
+                0.9, // Slightly transparent by default
               ],
+              'text-opacity-transition': {
+                duration: 500,
+                delay: 0,
+              },
             },
           });
 
@@ -717,57 +726,65 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         {/* Map container */}
         <div ref={mapContainer} className="w-full h-full rounded-lg overflow-hidden" />
 
-        {/* 3D View Controls - Top Right */}
+        {/* Minimal Controls - Top Right (subtle, fade in on hover) */}
         {mapLoaded && (
-          <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
-            {/* 2D/3D Toggle Button */}
+          <div className="absolute top-4 right-4 flex flex-col gap-2 z-10 opacity-40 hover:opacity-100 transition-opacity duration-300">
+            {/* 2D/3D Toggle Button - Icon Only */}
             <button
               onClick={toggle3DMode}
-              className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-3 hover:bg-blue-50 transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-2.5 hover:bg-blue-50 hover:shadow-lg transition-all duration-200 min-w-[40px] min-h-[40px] flex items-center justify-center"
               title={is3DMode ? 'Switch to 2D View' : 'Switch to 3D View'}
               aria-label={is3DMode ? 'Switch to 2D View' : 'Switch to 3D View'}
             >
-              <div className="flex items-center gap-2">
-                <span className="text-xl md:text-2xl transition-transform group-hover:scale-110">
-                  {is3DMode ? '🗺️' : '⛰️'}
-                </span>
-                <span className="hidden md:inline text-xs font-semibold text-gray-700 group-hover:text-blue-600">
-                  {is3DMode ? '2D' : '3D'}
-                </span>
-              </div>
-            </button>
-
-            {/* Reset View Button */}
-            <button
-              onClick={resetView}
-              className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-3 hover:bg-blue-50 transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center"
-              title="Reset View"
-              aria-label="Reset camera to default position"
-            >
-              <span className="text-xl md:text-2xl transition-transform group-hover:rotate-180 duration-500">
-                🧭
+              <span className="text-xl transition-transform hover:scale-110">
+                {is3DMode ? '🗺️' : '⛰️'}
               </span>
             </button>
 
-            {/* 3D Mode Hint */}
-            {is3DMode && (
-              <div className="bg-blue-50/95 backdrop-blur-sm rounded-lg shadow-lg border border-blue-200 p-2 mt-2 max-w-[200px] animate-fade-in">
-                <p className="text-[10px] md:text-xs text-blue-800 font-medium">
-                  💡 Right-click + drag to rotate
-                </p>
-                <p className="text-[9px] md:text-[10px] text-blue-600 mt-1">
-                  Ctrl + drag to tilt
-                </p>
-              </div>
-            )}
+            {/* Reset View Button - Icon Only */}
+            <button
+              onClick={resetView}
+              className="bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 p-2.5 hover:bg-blue-50 hover:shadow-lg transition-all duration-200 min-w-[40px] min-h-[40px] flex items-center justify-center"
+              title="Reset View"
+              aria-label="Reset camera to default position"
+            >
+              <span className="text-xl transition-transform hover:rotate-180 duration-500">
+                🧭
+              </span>
+            </button>
           </div>
         )}
 
-        {/* Stress Level Legend - responsive positioning */}
+        {/* Department Colors Legend - shown when NO simulation */}
+        {!simulationResults && mapLoaded && (
+          <div className="absolute bottom-12 md:bottom-16 left-2 md:left-auto md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3 md:p-4 max-w-[200px] md:max-w-[220px]">
+            <h4 className="text-[10px] md:text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
+              🇸🇻 El Salvador Departments
+            </h4>
+            <div className="space-y-1.5 text-[9px] md:text-[10px] text-gray-600 max-h-[200px] overflow-y-auto">
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#3B82F6'}}></div><span>San Salvador</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#10B981'}}></div><span>La Libertad</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#F59E0B'}}></div><span>Santa Ana</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#6366F1'}}></div><span>Chalatenango</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#8B5CF6'}}></div><span>Sonsonate</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EC4899'}}></div><span>La Paz</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#14B8A6'}}></div><span>Usulutan</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EF4444'}}></div><span>San Miguel</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#F97316'}}></div><span>Morazan</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#06B6D4'}}></div><span>La Union</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#A855F7'}}></div><span>Cuscatlan</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#84CC16'}}></div><span>Cabañas</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#22C55E'}}></div><span>Ahuachapan</span></div>
+              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EAB308'}}></div><span>San Vicente</span></div>
+            </div>
+          </div>
+        )}
+
+        {/* Stress Level Legend - shown when simulation IS running */}
         {simulationResults && (
           <div className="absolute bottom-12 md:bottom-16 left-2 md:left-auto md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-4 max-w-[180px] md:max-w-[200px]">
             <h4 className="text-[10px] md:text-xs font-bold text-gray-700 mb-2 md:mb-3 uppercase tracking-wide">
-              Stress Level
+              Infrastructure Stress
             </h4>
             <div className="space-y-1.5 md:space-y-2">
               <div className="flex items-center space-x-2 md:space-x-3">
@@ -809,8 +826,8 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
             <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50 backdrop-blur-sm">
               <div className="text-center bg-white/90 rounded-xl p-6 shadow-lg">
                 <LoadingSpinner size="lg" color="text-blue-600" center className="mb-4" />
-                <p className="text-sm font-semibold text-gray-700 mb-1">Loading Map</p>
-                <p className="text-xs text-gray-500">Preparing interactive visualization...</p>
+                <p className="text-sm font-semibold text-gray-700 mb-1">Loading El Salvador...</p>
+                <p className="text-xs text-gray-500">Initializing 14 departments</p>
               </div>
             </div>
           </div>

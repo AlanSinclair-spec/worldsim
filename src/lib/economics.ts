@@ -604,7 +604,7 @@ function calculateAgricultureEconomics(
 export function calculateEconomicImpact(params: {
   simulation_type: 'energy' | 'water' | 'agriculture';
   stressed_regions: StressedRegion[];
-  scenario_params: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  scenario_params: unknown;
   crop_losses?: Record<string, number>;
 }): EconomicAnalysis {
   const { simulation_type, stressed_regions, scenario_params, crop_losses } = params;

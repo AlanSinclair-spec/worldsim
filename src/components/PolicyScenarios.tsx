@@ -13,8 +13,8 @@ interface PolicyScenario {
 }
 
 interface PolicyScenariosProps {
-  /** Current active category (energy/water/agriculture/economics) */
-  category: 'energy' | 'water' | 'agriculture' | 'economics';
+  /** Current active category (energy/water/agriculture/economics/compare) */
+  category: 'energy' | 'water' | 'agriculture' | 'economics' | 'compare';
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
   /** Callback when scenario is selected */

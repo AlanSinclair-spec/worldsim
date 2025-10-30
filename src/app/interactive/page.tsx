@@ -13,6 +13,7 @@ import { WaterResultsPanel } from '@/components/WaterResultsPanel';
 import { AgricultureResultsPanel } from '@/components/AgricultureResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { EconomicsDashboard } from '@/components/EconomicsDashboard';
+import { ScenarioComparison } from '@/components/ScenarioComparison';
 import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
@@ -45,10 +46,19 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
  * - Loading states and error handling
  * - Bilingual support (EN/ES)
  */
+interface SavedScenario {
+  id: string;
+  name: string;
+  type: 'energy' | 'water' | 'agriculture';
+  timestamp: string;
+  results: any;
+  params: Record<string, unknown>;
+}
+
 export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
-  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics'>('energy');
+  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics' | 'compare'>('energy');
   const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
   const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
   const [agricultureResults, setAgricultureResults] = useState<any | null>(null);
@@ -60,6 +70,7 @@ export default function InteractivePage() {
     rainfall?: IngestStats;
   }>({});
   const [selectedScenario, setSelectedScenario] = useState<SimulationScenario | WaterSimulationScenario | null>(null);
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
 
   // Refs for scrolling
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -71,6 +82,36 @@ export default function InteractivePage() {
   const handleScenarioSelect = useCallback((scenario: SimulationScenario | WaterSimulationScenario) => {
     console.log('📋 Scenario selected:', scenario);
     setSelectedScenario(scenario);
+  }, []);
+
+  /**
+   * Save current scenario for comparison
+   */
+  const saveScenarioForComparison = useCallback((
+    type: 'energy' | 'water' | 'agriculture',
+    results: any,
+    params: Record<string, unknown>,
+    customName?: string
+  ) => {
+    const name = customName || `${type.charAt(0).toUpperCase() + type.slice(1)} - ${new Date().toLocaleString()}`;
+    const newScenario: SavedScenario = {
+      id: crypto.randomUUID(),
+      name,
+      type,
+      timestamp: new Date().toISOString(),
+      results,
+      params,
+    };
+    setSavedScenarios(prev => [...prev, newScenario]);
+    console.log('💾 Scenario saved for comparison:', newScenario);
+  }, []);
+
+  /**
+   * Remove scenario from comparison
+   */
+  const removeScenario = useCallback((id: string) => {
+    setSavedScenarios(prev => prev.filter(s => s.id !== id));
+    console.log('🗑️ Scenario removed:', id);
   }, []);
 
   /**
@@ -237,6 +278,8 @@ export default function InteractivePage() {
     waterTab: { en: 'Water Policy', es: 'Política Hídrica' },
     agricultureTab: { en: 'Agriculture Policy', es: 'Política Agrícola' },
     economicsTab: { en: 'Economic Analysis', es: 'Análisis Económico' },
+    compareTab: { en: 'Compare Scenarios', es: 'Comparar Escenarios' },
+    saveScenario: { en: 'Save for Comparison', es: 'Guardar para Comparar' },
   };
 
   return (
@@ -366,6 +409,22 @@ export default function InteractivePage() {
               <span className="text-2xl mr-2">💰</span>
               <span className="text-base">{labels.economicsTab[language]}</span>
             </button>
+            <button
+              onClick={() => setActiveTab('compare')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 relative ${
+                activeTab === 'compare'
+                  ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">📊</span>
+              <span className="text-base">{labels.compareTab[language]}</span>
+              {savedScenarios.length > 0 && (
+                <span className="ml-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+                  {savedScenarios.length}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -393,8 +452,8 @@ export default function InteractivePage() {
               />
             </div>
 
-            {/* Control Panel - Conditional based on activeTab (hidden for economics tab) */}
-            {activeTab !== 'economics' && (
+            {/* Control Panel - Conditional based on activeTab (hidden for economics and compare tabs) */}
+            {activeTab !== 'economics' && activeTab !== 'compare' && (
               <div className="transform hover:scale-[1.01] transition-all duration-200">
                 {activeTab === 'energy' ? (
                   <ControlPanel
@@ -506,7 +565,34 @@ export default function InteractivePage() {
               </div>
             )}
 
-            {/* Detailed Results Panel or Economics Dashboard */}
+            {/* Save for Comparison Button */}
+            {activeTab !== 'economics' && activeTab !== 'compare' && (
+              <>
+                {(activeTab === 'energy' && energyResults) ||
+                 (activeTab === 'water' && waterResults) ||
+                 (activeTab === 'agriculture' && agricultureResults) ? (
+                  <div className="mb-4">
+                    <button
+                      onClick={() => {
+                        const currentResults = activeTab === 'energy' ? energyResults : activeTab === 'water' ? waterResults : agricultureResults;
+                        if (currentResults) {
+                          saveScenarioForComparison(activeTab as 'energy' | 'water' | 'agriculture', currentResults, {});
+                        }
+                      }}
+                      className="w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 font-semibold shadow-md transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                      <span className="text-xl">💾</span>
+                      <span>{labels.saveScenario[language]}</span>
+                      <span className="ml-2 bg-white text-indigo-600 text-xs font-bold rounded-full px-2 py-1">
+                        {savedScenarios.length}
+                      </span>
+                    </button>
+                  </div>
+                ) : null}
+              </>
+            )}
+
+            {/* Detailed Results Panel, Economics Dashboard, or Scenario Comparison */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               {activeTab === 'energy' ? (
                 <ResultsPanelEnhanced
@@ -526,6 +612,12 @@ export default function InteractivePage() {
                 <AgricultureResultsPanel
                   results={agricultureResults}
                   isLoading={isSimulating}
+                  language={language}
+                />
+              ) : activeTab === 'compare' ? (
+                <ScenarioComparison
+                  scenarios={savedScenarios}
+                  onRemoveScenario={removeScenario}
                   language={language}
                 />
               ) : (

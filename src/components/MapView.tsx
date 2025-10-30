@@ -57,7 +57,7 @@ interface MapViewProps {
   /** Simulation results to visualize on the map */
   simulationResults?: SimulationResponse | null;
   /** Type of visualization (energy, water, agriculture stress, or economics) */
-  visualizationType?: 'energy' | 'water' | 'agriculture' | 'economics';
+  visualizationType?: 'energy' | 'water' | 'agriculture' | 'economics' | 'compare';
 }
 
 /**

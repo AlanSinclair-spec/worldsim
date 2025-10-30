@@ -439,6 +439,41 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
                 duration: 500, // Smoother transitions
                 delay: 0,
               },
+              // Glow effect for stressed regions
+              'fill-outline-color': [
+                'case',
+                ['>=', ['get', 'stress'], 0.8],
+                '#ef4444', // Red glow for critical regions
+                ['>=', ['get', 'stress'], 0.6],
+                '#f97316', // Orange glow for high stress
+                ['>=', ['get', 'stress'], 0.3],
+                '#f59e0b', // Amber glow for moderate stress
+                '#10b981' // Green glow for low stress
+              ],
+            },
+          });
+
+          // Pulsing animation layer for critical regions (stress > 0.8)
+          // This creates a breathing effect to draw attention to critical areas
+          map.current.addLayer({
+            id: 'regions-pulse',
+            type: 'fill',
+            source: 'regions',
+            paint: {
+              'fill-color': '#ef4444', // Red color for critical regions
+              'fill-opacity': [
+                'case',
+                ['>=', ['get', 'stress'], 0.8],
+                [
+                  'interpolate',
+                  ['linear'],
+                  ['%', ['/', ['+', ['get', 't'], 0], 2000], 1], // 2-second pulse cycle
+                  0, 0.1,  // Start at low opacity
+                  0.5, 0.4, // Peak at higher opacity
+                  1, 0.1   // Return to low opacity
+                ],
+                0 // No pulse for non-critical regions
+              ],
             },
           });
 
@@ -645,9 +680,30 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
                     </div>`;
               }
 
+              // Action buttons
+              if (hasStressData && stress >= 0.6) {
+                popupContent += `
+                    <div style="margin-top: 16px; display: flex; gap: 8px;">
+                      <button
+                        onclick="window.dispatchEvent(new CustomEvent('map-zoom-to-region', { detail: { regionId: '${regionId}', regionName: '${regionName}' }}))"
+                        style="flex: 1; padding: 10px 14px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(59, 130, 246, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(59, 130, 246, 0.3)'">
+                        🔍 Zoom Here
+                      </button>
+                      <button
+                        onclick="window.dispatchEvent(new CustomEvent('map-view-details', { detail: { regionId: '${regionId}', regionName: '${regionName}', stress: ${stress} }}))"
+                        style="flex: 1; padding: 10px 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);"
+                        onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(16, 185, 129, 0.4)'"
+                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(16, 185, 129, 0.3)'">
+                        📊 Details
+                      </button>
+                    </div>`;
+              }
+
               // Professional footer
               popupContent += `
-                    <div style="padding-top: 12px; border-top: 1px solid #e5e7eb;">
+                    <div style="padding-top: 12px; border-top: 1px solid #e5e7eb; margin-top: 12px;">
                       <div style="font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #9ca3af;">Department ID: ${regionId}</div>
                     </div>
                   </div>
@@ -782,6 +838,61 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
    */
   // Removed dynamic color changing based on simulation results
   // Each department keeps its unique color for visual distinction
+
+  /**
+   * Handle zoom-to-region custom events from popup buttons
+   */
+  useEffect(() => {
+    const handleZoomToRegion = async (event: any) => {
+      if (!map.current) return;
+
+      const { regionId, regionName } = event.detail;
+      console.log('Zooming to region:', regionName);
+
+      // Fetch region GeoJSON to get bounds
+      try {
+        const response = await fetch('/regions.json');
+        const geojson = await response.json();
+        const feature = geojson.features.find(
+          (f: any) => f.properties.id === regionId || f.properties.NAM === regionName
+        );
+
+        if (feature && feature.geometry) {
+          // Calculate bounds from geometry
+          const coordinates = feature.geometry.coordinates[0];
+          const bounds = new (mapboxgl as any).LngLatBounds();
+
+          coordinates.forEach((coord: any) => {
+            bounds.extend(coord);
+          });
+
+          // Animate zoom to region with padding
+          map.current.fitBounds(bounds, {
+            padding: { top: 50, bottom: 50, left: 50, right: 50 },
+            duration: 1500,
+            essential: true,
+          });
+        }
+      } catch (error) {
+        console.error('Error zooming to region:', error);
+      }
+    };
+
+    const handleViewDetails = (event: any) => {
+      const { regionId, regionName, stress } = event.detail;
+      console.log('View details for region:', regionId, regionName, 'Stress:', stress);
+      // This could trigger a modal or side panel in the future
+      // For now, just log the action
+    };
+
+    window.addEventListener('map-zoom-to-region', handleZoomToRegion);
+    window.addEventListener('map-view-details', handleViewDetails);
+
+    return () => {
+      window.removeEventListener('map-zoom-to-region', handleZoomToRegion);
+      window.removeEventListener('map-view-details', handleViewDetails);
+    };
+  }, []);
 
   // Render map container with loading and error states
   return (

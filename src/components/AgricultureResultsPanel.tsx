@@ -3,6 +3,7 @@
 import { memo, useMemo, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { SkeletonLoader } from './SkeletonLoader';
+import { AIExplanationPanel } from './AIExplanationPanel';
 import {
   downloadCSV,
   downloadChartAsPNG,
@@ -22,6 +23,8 @@ interface AgricultureResultsPanelProps {
   isLoading?: boolean;
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
+  /** Scenario parameters used in simulation (for AI explanation) */
+  scenarioParams?: Record<string, unknown>;
 }
 
 interface AgricultureSimulationResponse {
@@ -48,6 +51,12 @@ interface AgricultureSimulationResponse {
       crop_type: string;
     }>;
   };
+  economic_analysis?: {
+    total_economic_exposure_usd?: number;
+    infrastructure_investment_usd?: number;
+    roi_5_year?: number;
+    annual_costs_prevented_usd?: number;
+  };
 }
 
 /**
@@ -71,6 +80,7 @@ function AgricultureResultsPanelComponent({
   results,
   isLoading = false,
   language = 'en',
+  scenarioParams = {},
 }: AgricultureResultsPanelProps) {
   // Chart ref for PNG export (simplified for now)
   const chartRef = useRef<HTMLCanvasElement | null>(null);
@@ -416,6 +426,23 @@ function AgricultureResultsPanelComponent({
           </div>
         </div>
       )}
+
+      {/* AI Explanation Panel */}
+      <AIExplanationPanel
+        simulationType="agriculture"
+        results={{
+          summary: {
+            avg_crop_stress: results.summary.avg_stress,
+            top_stressed_regions: results.summary.top_stressed_regions.map(r => ({
+              name: r.region_name,
+              avg_stress: r.avg_stress,
+            })),
+          },
+          economic_analysis: results.economic_analysis,
+        }}
+        scenarioParams={scenarioParams}
+        language={language}
+      />
 
       {/* Charts Section */}
       <div className="mb-8">

@@ -2,30 +2,37 @@ import { NextRequest, NextResponse } from 'next/server';
 import { OpenAI } from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { supabase } from '@/lib/supabase';
+import { generateSimulationExplanation } from '@/lib/ai-explainer';
 
 /**
  * POST /api/explain
  *
  * Generates natural language explanations of simulation results using LLMs
  *
+ * Supports two modes:
+ * 1. Legacy mode: Pass simulationId to fetch from database
+ * 2. New structured mode: Pass results directly for structured insights
+ *
  * Supports:
  * - OpenAI (GPT-4)
  * - Anthropic (Claude)
  * - Bilingual output (English/Spanish)
+ * - Structured insights with recommendations
  */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { simulationId, language = 'en', provider = 'openai' } = body;
+    const {
+      simulationId,
+      simulation_type,
+      results,
+      scenario_params,
+      language = 'en',
+      provider = 'openai',
+      structured = false,
+    } = body;
 
     // Validate inputs
-    if (!simulationId) {
-      return NextResponse.json(
-        { success: false, error: 'Simulation ID is required' },
-        { status: 400 }
-      );
-    }
-
     if (!['en', 'es'].includes(language)) {
       return NextResponse.json(
         { success: false, error: 'Language must be "en" or "es"' },
@@ -36,6 +43,40 @@ export async function POST(req: NextRequest) {
     if (!['openai', 'anthropic'].includes(provider)) {
       return NextResponse.json(
         { success: false, error: 'Provider must be "openai" or "anthropic"' },
+        { status: 400 }
+      );
+    }
+
+    // NEW STRUCTURED MODE: Direct results passed in request
+    if (structured && simulation_type && results && scenario_params) {
+      if (!['energy', 'water', 'agriculture'].includes(simulation_type)) {
+        return NextResponse.json(
+          { success: false, error: 'simulation_type must be "energy", "water", or "agriculture"' },
+          { status: 400 }
+        );
+      }
+
+      // Use new structured explainer module
+      const explanation = await generateSimulationExplanation({
+        simulation_type: simulation_type as 'energy' | 'water' | 'agriculture',
+        results,
+        scenario_params,
+        language: language as 'en' | 'es',
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          ...explanation,
+          provider: 'openai', // Always uses OpenAI for structured mode
+        },
+      });
+    }
+
+    // LEGACY MODE: Fetch simulation from database
+    if (!simulationId) {
+      return NextResponse.json(
+        { success: false, error: 'Simulation ID is required for legacy mode, or use structured mode with results' },
         { status: 400 }
       );
     }
@@ -55,9 +96,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Prepare context for LLM
-    const results = simulation.results;
-    const summary = results.summary;
-    const params = results.parameters;
+    const simulationResults = simulation.results;
+    const summary = simulationResults.summary;
+    const params = simulationResults.parameters;
 
     const contextPrompt = language === 'en'
       ? `Analyze this energy simulation for El Salvador:

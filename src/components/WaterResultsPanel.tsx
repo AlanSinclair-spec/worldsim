@@ -6,6 +6,7 @@ import { Chart as ChartJS } from 'chart.js';
 import { WaterSimulationResponse } from '@/lib/types';
 import { SkeletonLoader, SkeletonStatCard } from './SkeletonLoader';
 import { LoadingSpinner } from './LoadingSpinner';
+import { AIExplanationPanel } from './AIExplanationPanel';
 import {
   downloadCSV,
   downloadChartAsPNG,
@@ -25,6 +26,8 @@ interface WaterResultsPanelProps {
   isLoading?: boolean;
   /** Language for labels (EN/ES) */
   language?: 'en' | 'es';
+  /** Scenario parameters used in simulation (for AI explanation) */
+  scenarioParams?: Record<string, unknown>;
 }
 
 /**
@@ -72,6 +75,7 @@ function WaterResultsPanelComponent({
   results,
   isLoading = false,
   language = 'en',
+  scenarioParams = {},
 }: WaterResultsPanelProps) {
   // Chart ref for PNG export
   const chartRef = useRef<ChartJS<'line'> | undefined>(null);
@@ -331,6 +335,17 @@ function WaterResultsPanelComponent({
             <span>{labels.stressThreshold[language]}</span>
           </div>
         </div>
+
+        {/* AI Explanation Panel */}
+        <AIExplanationPanel
+          simulationType="water"
+          results={{
+            summary: displayResults.summary,
+            economic_analysis: displayResults.economic_analysis,
+          }}
+          scenarioParams={scenarioParams}
+          language={language}
+        />
 
         {/* Chart */}
         <div>

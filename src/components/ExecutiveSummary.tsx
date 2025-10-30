@@ -194,6 +194,16 @@ ${new Date().toISOString().split('T')[0]}
         </div>
       </div>
 
+      {/* El Salvador Context Disclaimer */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <p className="text-sm text-blue-900">
+          <strong>{language === 'en' ? 'Scope:' : 'Alcance:'}</strong>{' '}
+          {language === 'en'
+            ? 'Recommendations for El Salvador Government based on 14 department infrastructure data'
+            : 'Recomendaciones para el Gobierno de El Salvador basadas en datos de infraestructura de 14 departamentos'}
+        </p>
+      </div>
+
       {/* Recommendation Text */}
       <div className={`mb-6 p-4 bg-white rounded-lg border ${colors.border}`}>
         <p className={`text-sm leading-relaxed font-medium ${colors.text}`}>

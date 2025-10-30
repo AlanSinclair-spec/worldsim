@@ -58,10 +58,10 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
   const [showFormatGuide, setShowFormatGuide] = useState(false);
 
   const labels = {
-    title: { en: 'Upload Data', es: 'Cargar Datos' },
+    title: { en: 'Upload El Salvador Data', es: 'Cargar Datos de El Salvador' },
     subtitle: {
-      en: 'Import historical data to improve simulation accuracy',
-      es: 'Importe datos históricos para mejorar la precisión de la simulación',
+      en: 'Import data for El Salvador\'s 14 departments to improve simulation accuracy',
+      es: 'Importe datos de los 14 departamentos de El Salvador para mejorar la precisión',
     },
     energyTitle: { en: 'Energy Data', es: 'Datos de Energía' },
     rainfallTitle: { en: 'Rainfall Data', es: 'Datos de Precipitación' },

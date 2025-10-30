@@ -36,8 +36,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'drought-crisis',
     title: {
-      en: 'What if drought reduces rainfall 30%?',
-      es: '¿Qué pasa si la sequía reduce lluvias 30%?',
+      en: 'El Salvador: Drought Crisis',
+      es: 'El Salvador: Crisis de Sequía',
     },
     description: {
       en: 'Climate crisis scenario: Test grid resilience under severe water scarcity',
@@ -56,8 +56,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'coal-ban',
     title: {
-      en: 'Can we ban coal by 2030?',
-      es: '¿Podemos prohibir el carbón para 2030?',
+      en: 'El Salvador: Coal Phase-Out by 2030',
+      es: 'El Salvador: Eliminación del Carbón para 2030',
     },
     description: {
       en: 'Test 100% renewable transition with aggressive solar expansion',
@@ -76,8 +76,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'climate-refugees',
     title: {
-      en: 'Can we handle 500K climate refugees?',
-      es: '¿Podemos manejar 500K refugiados climáticos?',
+      en: 'El Salvador: 500K Climate Refugees',
+      es: 'El Salvador: 500K Refugiados Climáticos',
     },
     description: {
       en: 'Population surge scenario: Test infrastructure under 40% demand increase',
@@ -96,8 +96,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'bitcoin-mining',
     title: {
-      en: 'What if Bitcoin mining doubles?',
-      es: '¿Qué pasa si la minería Bitcoin se duplica?',
+      en: 'El Salvador: Bitcoin Mining Doubles',
+      es: 'El Salvador: Minería Bitcoin se Duplica',
     },
     description: {
       en: 'Industrial expansion scenario: Test grid capacity under crypto growth',
@@ -116,8 +116,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'optimal-growth',
     title: {
-      en: 'Optimal 5-year growth plan',
-      es: 'Plan óptimo de crecimiento a 5 años',
+      en: 'El Salvador: Optimal 5-Year Plan',
+      es: 'El Salvador: Plan Óptimo a 5 Años',
     },
     description: {
       en: 'Balanced scenario: Moderate solar expansion with climate resilience',
@@ -137,8 +137,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'water-drought',
     title: {
-      en: 'Severe drought: 40% rainfall drop',
-      es: 'Sequía severa: Caída del 40% en lluvia',
+      en: 'El Salvador: Severe Drought',
+      es: 'El Salvador: Sequía Severa',
     },
     description: {
       en: 'Worst-case climate scenario: Test water infrastructure resilience',
@@ -158,8 +158,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'water-refugees',
     title: {
-      en: 'Water needs: 500K new residents',
-      es: 'Necesidades hídricas: 500K nuevos residentes',
+      en: 'El Salvador: 500K New Residents',
+      es: 'El Salvador: 500K Nuevos Residentes',
     },
     description: {
       en: 'Population growth scenario: Test water supply capacity expansion',
@@ -179,8 +179,8 @@ const POLICY_SCENARIOS: PolicyScenario[] = [
   {
     id: 'water-optimal',
     title: {
-      en: 'Sustainable water management',
-      es: 'Gestión sostenible del agua',
+      en: 'El Salvador: Sustainable Water Management',
+      es: 'El Salvador: Gestión Sostenible del Agua',
     },
     description: {
       en: 'Best-case scenario: Moderate growth with climate adaptation',

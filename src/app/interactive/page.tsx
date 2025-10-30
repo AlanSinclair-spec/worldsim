@@ -158,10 +158,10 @@ export default function InteractivePage() {
   const hasUploadedData = uploadedData.energy || uploadedData.rainfall;
 
   const labels = {
-    title: { en: 'Policy Decision Platform', es: 'Plataforma de Decisiones' },
+    title: { en: 'El Salvador Policy Decision Platform', es: 'Plataforma de Decisiones de El Salvador' },
     subtitle: {
-      en: 'Test critical policies and see which regions fail first - in 10 seconds',
-      es: 'Pruebe políticas críticas y vea qué regiones fallan primero - en 10 segundos',
+      en: 'Test critical scenarios across El Salvador\'s 14 departments - see which regions fail first in 10 seconds',
+      es: 'Pruebe escenarios críticos en los 14 departamentos de El Salvador - vea qué regiones fallan primero en 10 segundos',
     },
     dataUploaded: { en: 'Data Ready', es: 'Datos Listos' },
     noResults: { en: 'No policy tested yet', es: 'Sin políticas probadas aún' },

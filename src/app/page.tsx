@@ -74,7 +74,7 @@ export default function Page() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
-                Test Policy Decisions in
+                Test El Salvador&apos;s Policy Decisions in
                 <span className="block bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   10 Seconds
                 </span>
@@ -82,6 +82,10 @@ export default function Page() {
 
               <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed font-medium">
                 Instead of 6 months and $100K+ on consultants. See which regions fail first before spending millions on infrastructure.
+              </p>
+
+              <p className="text-lg text-gray-600 mt-4">
+                Complete digital twin of all 14 departments • Expanding to Central America in 2025
               </p>
 
               {/* Value Comparison Card */}
@@ -130,6 +134,9 @@ export default function Page() {
                     </div>
                   </div>
                 </div>
+                <p className="text-sm text-gray-500 text-center mt-4 pt-4 border-t">
+                  Currently available for El Salvador
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -137,7 +144,7 @@ export default function Page() {
                   href="/interactive"
                   className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-600 to-green-600 text-white font-semibold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
                 >
-                  Test Your First Policy
+                  Try El Salvador Demo
                   <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -254,12 +261,46 @@ export default function Page() {
               href="/interactive"
               className="inline-flex items-center px-8 py-4 bg-white text-blue-900 font-bold rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
             >
-              Start Testing Your Policies
+              Try El Salvador Demo
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Why El Salvador First? Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why Start with El Salvador?
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-4xl mb-4">✅</div>
+              <h3 className="font-semibold mb-2">Complete Coverage</h3>
+              <p className="text-gray-600">All 14 departments mapped with real infrastructure data</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-4">🌡️</div>
+              <h3 className="font-semibold mb-2">Climate Vulnerable</h3>
+              <p className="text-gray-600">Highest stakes for testing scenarios (drought, flooding, migration)</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-4">🚀</div>
+              <h3 className="font-semibold mb-2">Innovation-Friendly</h3>
+              <p className="text-gray-600">Government open to data-driven policy tools</p>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="font-semibold mb-2">Perfect Proof Point</h3>
+              <p className="text-gray-600">Small enough to model completely, large enough to matter</p>
+            </div>
+          </div>
+          <p className="text-center text-gray-600 mt-8">
+            Success here → Scale to 50+ similar nations
+          </p>
         </div>
       </section>
 
@@ -397,6 +438,55 @@ export default function Page() {
         </div>
       </section>
 
+      {/* Expansion Roadmap Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-50 to-indigo-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-4">Expansion Roadmap</h2>
+          <p className="text-center text-gray-600 mb-12">
+            Building the future of data-driven governance, one nation at a time
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-green-500">
+              <div className="text-4xl mb-4 text-center">🇸🇻</div>
+              <h3 className="font-bold text-xl mb-2 text-center">El Salvador</h3>
+              <p className="text-green-600 font-semibold text-center mb-3">LIVE NOW</p>
+              <p className="text-gray-600 text-sm text-center">
+                Complete digital twin with 14 departments
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-blue-300">
+              <div className="text-4xl mb-4 text-center">🇭🇳</div>
+              <h3 className="font-bold text-xl mb-2 text-center">Honduras</h3>
+              <p className="text-blue-600 font-semibold text-center mb-3">Q2 2025</p>
+              <p className="text-gray-600 text-sm text-center">
+                18 departments planned
+              </p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-lg border-2 border-gray-300">
+              <div className="text-4xl mb-4 text-center">🇬🇹</div>
+              <h3 className="font-bold text-xl mb-2 text-center">Guatemala</h3>
+              <p className="text-gray-600 font-semibold text-center mb-3">Q3 2025</p>
+              <p className="text-gray-600 text-sm text-center">
+                22 departments planned
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-12 text-center">
+            <div className="inline-flex items-center gap-2 bg-white rounded-lg px-6 py-4 shadow-md">
+              <span className="text-2xl">🌎</span>
+              <div className="text-left">
+                <p className="font-semibold">Your Country</p>
+                <p className="text-sm text-gray-600">Request early access for other nations</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 to-green-600">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -410,7 +500,7 @@ export default function Page() {
             href="/interactive"
             className="inline-flex items-center px-10 py-5 bg-white text-blue-600 font-bold text-lg rounded-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200"
           >
-            Test Your First Policy Decision
+            Try El Salvador Demo
             <svg className="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>

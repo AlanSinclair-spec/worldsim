@@ -119,8 +119,13 @@ export function WaterControlPanel({ language = 'en', onSimulationComplete, initi
       setEndDate(initialScenario.end_date);
       setActivePreset(null); // Clear preset selection
       setError(null);
-      setSuccessMessage(null);
+      setSuccessMessage('✅ Scenario loaded! Click "Run Simulation" to test.');
       console.log('✅ Water scenario loaded into WaterControlPanel:', initialScenario);
+
+      // Auto-clear success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     }
   }, [initialScenario]);
 

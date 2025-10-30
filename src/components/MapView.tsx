@@ -668,6 +668,104 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
   }, [mapLoaded, onRegionClick, getRegionStress, simulationResults]);
 
   /**
+   * Add strategic location markers (ports, airports, capital cities)
+   */
+  useEffect(() => {
+    if (!map.current || !mapLoaded) return;
+
+    // Strategic locations in El Salvador
+    const strategicLocations = {
+      type: 'FeatureCollection',
+      features: [
+        // Capital
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-89.2182, 13.6929] },
+          properties: { name: 'San Salvador', type: 'capital', icon: '🏛️', description: 'Capital City' }
+        },
+        // Major Ports
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-87.8333, 13.3333] },
+          properties: { name: 'La Unión', type: 'port', icon: '⚓', description: 'Pacific Port' }
+        },
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-89.8333, 13.4833] },
+          properties: { name: 'Acajutla', type: 'port', icon: '⚓', description: 'Major Cargo Port' }
+        },
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-89.5500, 13.4833] },
+          properties: { name: 'La Libertad', type: 'port', icon: '⚓', description: 'Fishing Port' }
+        },
+        // Airport
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-89.0557, 13.4409] },
+          properties: { name: 'El Salvador Int\'l Airport', type: 'airport', icon: '✈️', description: 'San Salvador' }
+        },
+        // Other major cities
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-89.5597, 13.9794] },
+          properties: { name: 'Santa Ana', type: 'city', icon: '🏙️', description: 'Second Largest City' }
+        },
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [-88.1833, 13.4833] },
+          properties: { name: 'San Miguel', type: 'city', icon: '🏙️', description: 'Third Largest City' }
+        },
+      ]
+    };
+
+    // Add source for strategic locations
+    if (!map.current.getSource('strategic-locations')) {
+      map.current.addSource('strategic-locations', {
+        type: 'geojson',
+        data: strategicLocations
+      });
+
+      // Add icon layer
+      map.current.addLayer({
+        id: 'strategic-icons',
+        type: 'symbol',
+        source: 'strategic-locations',
+        layout: {
+          'text-field': ['get', 'icon'],
+          'text-size': 18,
+          'text-anchor': 'center',
+          'text-offset': [0, 0],
+          'text-allow-overlap': true, // Show even if crowded
+        },
+        paint: {
+          'text-opacity': 0.8,
+        }
+      });
+
+      // Add label layer
+      map.current.addLayer({
+        id: 'strategic-labels',
+        type: 'symbol',
+        source: 'strategic-locations',
+        layout: {
+          'text-field': ['get', 'name'],
+          'text-size': 10,
+          'text-anchor': 'top',
+          'text-offset': [0, 1.2],
+          'text-font': ['DIN Pro Medium', 'Arial Unicode MS Regular'],
+        },
+        paint: {
+          'text-color': '#1f2937',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 2,
+          'text-opacity': 0.7,
+        }
+      });
+    }
+  }, [mapLoaded]);
+
+  /**
    * Note: Region colors are now fixed by department name
    * Simulation results are shown in popups and the legend,
    * but colors remain distinct per department for easy identification

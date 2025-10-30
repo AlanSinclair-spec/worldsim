@@ -14,6 +14,7 @@ import { AgricultureResultsPanel } from '@/components/AgricultureResultsPanel';
 import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { EconomicsDashboard } from '@/components/EconomicsDashboard';
 import { ScenarioComparison } from '@/components/ScenarioComparison';
+import { TrendsDashboard } from '@/components/TrendsDashboard';
 import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
@@ -58,7 +59,7 @@ interface SavedScenario {
 export default function InteractivePage() {
   // State management
   const [language, setLanguage] = useState<'en' | 'es'>('en');
-  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics' | 'compare'>('energy');
+  const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics' | 'compare' | 'trends'>('energy');
   const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
   const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
   const [agricultureResults, setAgricultureResults] = useState<any | null>(null);
@@ -279,6 +280,7 @@ export default function InteractivePage() {
     agricultureTab: { en: 'Agriculture Policy', es: 'Política Agrícola' },
     economicsTab: { en: 'Economic Analysis', es: 'Análisis Económico' },
     compareTab: { en: 'Compare Scenarios', es: 'Comparar Escenarios' },
+    trendsTab: { en: 'Trends & ML', es: 'Tendencias y ML' },
     saveScenario: { en: 'Save for Comparison', es: 'Guardar para Comparar' },
   };
 
@@ -425,6 +427,17 @@ export default function InteractivePage() {
                 </span>
               )}
             </button>
+            <button
+              onClick={() => setActiveTab('trends')}
+              className={`flex items-center px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                activeTab === 'trends'
+                  ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md transform scale-105'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
+            >
+              <span className="text-2xl mr-2">📈</span>
+              <span className="text-base">{labels.trendsTab[language]}</span>
+            </button>
           </div>
         </div>
       </div>
@@ -452,8 +465,8 @@ export default function InteractivePage() {
               />
             </div>
 
-            {/* Control Panel - Conditional based on activeTab (hidden for economics and compare tabs) */}
-            {activeTab !== 'economics' && activeTab !== 'compare' && (
+            {/* Control Panel - Conditional based on activeTab (hidden for economics, compare, and trends tabs) */}
+            {activeTab !== 'economics' && activeTab !== 'compare' && activeTab !== 'trends' && (
               <div className="transform hover:scale-[1.01] transition-all duration-200">
                 {activeTab === 'energy' ? (
                   <ControlPanel
@@ -618,6 +631,19 @@ export default function InteractivePage() {
                 <ScenarioComparison
                   scenarios={savedScenarios}
                   onRemoveScenario={removeScenario}
+                  language={language}
+                />
+              ) : activeTab === 'trends' ? (
+                <TrendsDashboard
+                  simulationType={
+                    energyResults ? 'energy' : waterResults ? 'water' : 'agriculture'
+                  }
+                  historicalData={
+                    energyResults?.daily_results ||
+                    waterResults?.daily_results ||
+                    agricultureResults?.daily_results ||
+                    []
+                  }
                   language={language}
                 />
               ) : (

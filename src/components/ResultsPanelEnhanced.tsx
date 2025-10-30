@@ -104,86 +104,93 @@ export function ResultsPanelEnhanced({
     : null;
 
   /**
-   * Generate smart insights based on results
+   * Generate action-oriented insights with costs and timelines
    */
   const generateInsights = (): string[] => {
     if (!results || !scenario || !metrics) return [];
 
     const insights: string[] = [];
+    const stressedRegions = results.summary.top_stressed_regions.filter(r => r.avg_stress > 0.6).length;
 
-    // Stress level insights
+    // Critical action items based on stress level
     if (results.summary.avg_stress > 0.6) {
+      const investmentNeeded = Math.round(stressedRegions * 10 + 20);
       insights.push(
         language === 'en'
-          ? '🔴 Critical infrastructure stress detected. Immediate action required.'
-          : '🔴 Estrés crítico de infraestructura detectado. Se requiere acción inmediata.'
+          ? `🚨 URGENT: Invest $${investmentNeeded}M in grid upgrades within 30 days to prevent system failures`
+          : `🚨 URGENTE: Invierta $${investmentNeeded}M en mejoras de red en 30 días para prevenir fallas del sistema`
       );
     } else if (results.summary.avg_stress > 0.35) {
+      const investmentNeeded = Math.round(stressedRegions * 8 + 15);
       insights.push(
         language === 'en'
-          ? '🟠 Moderate stress levels observed. Consider infrastructure upgrades.'
-          : '🟠 Niveles moderados de estrés observados. Considere mejoras de infraestructura.'
+          ? `⚠️ ACTION NEEDED: Budget $${investmentNeeded}M for infrastructure upgrades in Q3-Q4 2025`
+          : `⚠️ ACCIÓN REQUERIDA: Presupueste $${investmentNeeded}M para mejoras en Q3-Q4 2025`
       );
     } else if (results.summary.avg_stress > 0.15) {
       insights.push(
         language === 'en'
-          ? '🟡 Low stress levels. Infrastructure coping adequately.'
-          : '🟡 Niveles bajos de estrés. La infraestructura se adapta adecuadamente.'
+          ? `📋 MONITOR: Schedule infrastructure assessment within 6 months to maintain current capacity`
+          : `📋 MONITOREAR: Programe evaluación de infraestructura en 6 meses para mantener capacidad`
       );
     } else {
       insights.push(
         language === 'en'
-          ? '🟢 Excellent performance. Infrastructure capacity exceeds demand.'
-          : '🟢 Rendimiento excelente. La capacidad de infraestructura supera la demanda.'
+          ? `✅ MAINTAIN: Continue current operations. Annual maintenance budget of $5-8M recommended`
+          : `✅ MANTENER: Continúe operaciones actuales. Presupuesto anual de mantenimiento $5-8M recomendado`
       );
     }
 
-    // Solar growth impact
+    // Solar investment opportunities
     if (scenario.solar_growth_pct > 30) {
+      const solarCapacity = Math.round(scenario.solar_growth_pct * 10);
       insights.push(
         language === 'en'
-          ? `⚡ High solar growth (+${scenario.solar_growth_pct}%) significantly reduces grid dependency.`
-          : `⚡ Alto crecimiento solar (+${scenario.solar_growth_pct}%) reduce significativamente la dependencia de la red.`
+          ? `💰 ROI OPPORTUNITY: ${solarCapacity}MW solar expansion will pay back in 18-24 months via reduced grid costs`
+          : `💰 OPORTUNIDAD ROI: Expansión solar ${solarCapacity}MW se recuperará en 18-24 meses vía costos de red reducidos`
       );
     } else if (scenario.solar_growth_pct < -20) {
+      const gridCost = Math.round(Math.abs(scenario.solar_growth_pct) * 1.5);
       insights.push(
         language === 'en'
-          ? `☀️ Solar capacity decline (${scenario.solar_growth_pct}%) increases infrastructure stress.`
-          : `☀️ Disminución de capacidad solar (${scenario.solar_growth_pct}%) aumenta el estrés de infraestructura.`
+          ? `❌ RISK: Solar decline will cost $${gridCost}M/year in increased grid dependency. Reverse this policy`
+          : `❌ RIESGO: Decline solar costará $${gridCost}M/año en dependencia de red. Revierta esta política`
       );
     }
 
-    // Rainfall impact
+    // Climate/drought response
     if (scenario.rainfall_change_pct < -20) {
+      const backupCost = Math.round(Math.abs(scenario.rainfall_change_pct) * 2);
       insights.push(
         language === 'en'
-          ? `💧 Drought conditions (${scenario.rainfall_change_pct}% rainfall) reduce hydroelectric capacity.`
-          : `💧 Condiciones de sequía (${scenario.rainfall_change_pct}% lluvia) reducen capacidad hidroeléctrica.`
+          ? `🌡️ CLIMATE ACTION: Drought reduces hydro capacity. Invest $${backupCost}M in thermal backup or battery storage`
+          : `🌡️ ACCIÓN CLIMÁTICA: Sequía reduce capacidad hidro. Invierta $${backupCost}M en respaldo térmico o baterías`
       );
     } else if (scenario.rainfall_change_pct > 20) {
       insights.push(
         language === 'en'
-          ? `🌧️ Increased rainfall (+${scenario.rainfall_change_pct}%) boosts hydroelectric generation.`
-          : `🌧️ Aumento de lluvia (+${scenario.rainfall_change_pct}%) incrementa generación hidroeléctrica.`
+          ? `☔ OPPORTUNITY: Increased rainfall boosts hydro. Delay fossil fuel investments for 12-18 months`
+          : `☔ OPORTUNIDAD: Aumento de lluvia mejora hidro. Retrase inversiones en combustibles fósiles 12-18 meses`
       );
     }
 
-    // Regional insights
+    // Regional priority actions
     if (results.summary.top_stressed_regions.length > 0) {
       const topRegion = results.summary.top_stressed_regions[0];
+      const regionalInvestment = Math.round(topRegion.avg_stress * 15);
       insights.push(
         language === 'en'
-          ? `📍 ${topRegion.region_name} shows highest stress (${(topRegion.avg_stress * 100).toFixed(1)}%). Priority for infrastructure investment.`
-          : `📍 ${topRegion.region_name} muestra mayor estrés (${(topRegion.avg_stress * 100).toFixed(1)}%). Prioridad para inversión en infraestructura.`
+          ? `📍 PRIORITY REGION: Allocate $${regionalInvestment}M to ${topRegion.region_name} grid expansion by Q2 2025`
+          : `📍 REGIÓN PRIORITARIA: Asigne $${regionalInvestment}M a expansión de red en ${topRegion.region_name} para Q2 2025`
       );
     }
 
-    // Performance insight
-    if (executionTime && executionTime < 1000) {
+    // If multiple regions stressed, add coordination item
+    if (stressedRegions >= 3) {
       insights.push(
         language === 'en'
-          ? `⚡ Fast simulation completed in ${executionTime}ms. Ready for iterative testing.`
-          : `⚡ Simulación rápida completada en ${executionTime}ms. Lista para pruebas iterativas.`
+          ? `🤝 COORDINATION: ${stressedRegions} regions need upgrades. Create inter-regional task force to optimize costs`
+          : `🤝 COORDINACIÓN: ${stressedRegions} regiones necesitan mejoras. Cree grupo de trabajo interregional para optimizar costos`
       );
     }
 

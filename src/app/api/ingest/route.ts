@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { parse } from 'csv-parse/sync';
 import { supabase } from '@/lib/supabase';
+import {
+  IngestSchema,
+  checkBodySize,
+  formatZodError,
+  MAX_BODY_SIZE,
+} from '@/lib/validation';
+import { applyRateLimit } from '@/lib/rate-limit';
 
 /**
  * API Route: /api/ingest
@@ -37,14 +45,6 @@ const VALID_REGIONS = [
   'San Vicente',
   'Cabañas',
 ];
-
-/**
- * Request body structure
- */
-interface IngestRequest {
-  csv_text: string;
-  data_type: 'energy' | 'rainfall';
-}
 
 /**
  * Parsed CSV row structure
@@ -84,24 +84,43 @@ interface IngestStats {
  */
 export async function POST(req: NextRequest) {
   try {
-    // Parse request body
-    const body = await req.json() as IngestRequest;
-    const { csv_text, data_type } = body;
+    // Rate limiting - prevent abuse (check before any processing)
+    console.log(`[${new Date().toISOString()}] [API /api/ingest] 🚦 Checking rate limits...`);
+    const rateLimitResponse = applyRateLimit(req, 'ingest');
+    if (rateLimitResponse) {
+      return rateLimitResponse;
+    }
 
-    // Validate inputs
-    if (!csv_text || typeof csv_text !== 'string') {
+    // Check body size before parsing (DoS protection)
+    console.log(`[${new Date().toISOString()}] [API /api/ingest] 🔒 Checking request size...`);
+    if (!checkBodySize(req)) {
+      console.error(`[${new Date().toISOString()}] [API /api/ingest] ❌ Request too large`);
       return NextResponse.json(
-        { success: false, error: 'Missing or invalid csv_text' },
-        { status: 400 }
+        {
+          success: false,
+          error: `Request too large (maximum ${MAX_BODY_SIZE / 1024 / 1024}MB)`,
+        },
+        { status: 413 }
       );
     }
 
-    if (!data_type || !['energy', 'rainfall'].includes(data_type)) {
-      return NextResponse.json(
-        { success: false, error: 'data_type must be "energy" or "rainfall"' },
-        { status: 400 }
-      );
+    // Parse and validate request body with Zod
+    console.log(`[${new Date().toISOString()}] [API /api/ingest] 📥 Parsing and validating request body...`);
+    const body = await req.json();
+
+    let validatedParams: z.infer<typeof IngestSchema>;
+    try {
+      validatedParams = IngestSchema.parse(body);
+      console.log(`[${new Date().toISOString()}] [API /api/ingest] ✅ Input validation passed`);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error(`[${new Date().toISOString()}] [API /api/ingest] ❌ Validation failed:`, error.errors);
+        return NextResponse.json(formatZodError(error), { status: 400 });
+      }
+      throw error;
     }
+
+    const { csv_text, data_type } = validatedParams;
 
     // Parse CSV
     let records: CSVRow[];

@@ -259,3 +259,122 @@ export interface IngestResponse {
   /** Specific validation errors for individual rows */
   errors?: string[];
 }
+
+/**
+ * WaterData represents daily water demand and supply for a specific region
+ *
+ * Used for water stress analysis and simulation.
+ *
+ * @example
+ * const waterData: WaterData = {
+ *   id: 'uuid-789',
+ *   date: '2024-01-15',
+ *   region_id: 'SS',
+ *   water_demand_m3: 150000,
+ *   water_supply_m3: 140000,
+ *   reservoir_level_pct: 75
+ * };
+ */
+export interface WaterData {
+  /** Unique identifier for this water data record */
+  id: string;
+  /** Date in ISO format (YYYY-MM-DD) */
+  date: string;
+  /** Foreign key reference to regions table */
+  region_id: string;
+  /** Water demand in cubic meters (m³) */
+  water_demand_m3: number;
+  /** Water supply in cubic meters (m³) */
+  water_supply_m3: number;
+  /** Reservoir level as percentage (0-100) */
+  reservoir_level_pct?: number;
+}
+
+/**
+ * WaterSimulationScenario defines input parameters for water stress simulation
+ *
+ * @example
+ * const scenario: WaterSimulationScenario = {
+ *   water_demand_growth_pct: 30,
+ *   rainfall_change_pct: -20,
+ *   conservation_rate_pct: -15,
+ *   start_date: '2024-01-01',
+ *   end_date: '2024-12-31'
+ * };
+ */
+export interface WaterSimulationScenario {
+  /** Water demand growth rate as percentage (e.g., 30 = 30% increase from population) */
+  water_demand_growth_pct: number;
+  /** Rainfall change from baseline as percentage (e.g., -20 = 20% decrease) */
+  rainfall_change_pct: number;
+  /** Conservation rate as negative percentage (e.g., -15 = 15% savings) */
+  conservation_rate_pct: number;
+  /** Simulation start date in ISO format (YYYY-MM-DD) */
+  start_date: string;
+  /** Simulation end date in ISO format (YYYY-MM-DD) */
+  end_date: string;
+}
+
+/**
+ * WaterSimulationResult represents a single day's water simulation output
+ *
+ * @example
+ * const result: WaterSimulationResult = {
+ *   date: '2024-06-15',
+ *   region_id: 'SS',
+ *   region_name: 'San Salvador',
+ *   demand: 165000,
+ *   supply: 145000,
+ *   stress: 0.88,
+ *   unmet_demand: 20000
+ * };
+ */
+export interface WaterSimulationResult {
+  /** Date of this simulation result in ISO format (YYYY-MM-DD) */
+  date: string;
+  /** Region identifier this result applies to */
+  region_id: string;
+  /** Display name of the region */
+  region_name: string;
+  /** Projected water demand in m³ */
+  demand: number;
+  /** Available water supply in m³ */
+  supply: number;
+  /** Water stress ratio (0-1). Values closer to 1 indicate critical shortage */
+  stress: number;
+  /** Unmet water demand in m³ (demand - supply if positive) */
+  unmet_demand: number;
+}
+
+/**
+ * WaterSimulationResponse is the complete output from water simulation
+ *
+ * @example
+ * const response: WaterSimulationResponse = {
+ *   daily_results: [...],
+ *   summary: {
+ *     avg_stress: 0.65,
+ *     max_stress: 0.95,
+ *     total_unmet_demand_m3: 2500000,
+ *     critical_shortage_days: 45,
+ *     top_stressed_regions: [...]
+ *   }
+ * };
+ */
+export interface WaterSimulationResponse {
+  /** Array of daily simulation results across all regions */
+  daily_results: WaterSimulationResult[];
+  /** Aggregate summary statistics for the entire simulation */
+  summary: {
+    /** Average water stress across all regions and dates */
+    avg_stress: number;
+    /** Maximum stress value encountered in the simulation */
+    max_stress: number;
+    /** Total unmet water demand across simulation period (m³) */
+    total_unmet_demand_m3: number;
+    /** Number of days with critical water shortage (stress > 0.8) */
+    critical_shortage_days: number;
+    /** List of regions with highest average stress (sorted descending) */
+    top_stressed_regions: TopStressedRegion[];
+  };
+}

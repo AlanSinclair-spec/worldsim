@@ -73,14 +73,14 @@ export default function Page() {
                 El Salvador Digital Twin
               </div>
 
-              <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
                 Test the future
                 <span className="block bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
                   before living it
                 </span>
               </h1>
 
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed">
                 Simulate infrastructure, energy, and climate scenarios for El Salvador.
                 Make data-driven decisions with confidence.
               </p>
@@ -105,21 +105,21 @@ export default function Page() {
               </div>
 
               {/* Social Proof */}
-              <div className="flex items-center space-x-6 text-sm text-gray-600">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-600">
                 <div className="flex items-center space-x-2">
-                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span>14 Departments</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span>Real-time Simulation</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span>AI-Powered Insights</span>
@@ -132,7 +132,9 @@ export default function Page() {
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-2xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
                 <div className="p-2">
-                  <MapView height="500px" />
+                  <div className="h-[300px] sm:h-[400px] lg:h-[500px]">
+                    <MapView height="100%" />
+                  </div>
                 </div>
               </div>
             </div>

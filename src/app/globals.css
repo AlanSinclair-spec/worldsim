@@ -53,7 +53,7 @@ body {
   transform: scale(1.2);
 }
 
-/* Input range custom styling */
+/* Input range custom styling - touch-friendly */
 input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
@@ -73,19 +73,35 @@ input[type='range']:hover {
 input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--primary-color);
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: var(--primary-color);
   cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile: larger touch targets */
+@media (max-width: 768px) {
+  input[type='range']::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 /* Loading animation */
@@ -100,4 +116,51 @@ input[type='range']::-moz-range-thumb {
 
 .animate-spin {
   animation: spin 1s linear infinite;
+}
+
+/* Mobile touch improvements */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection on interactive elements */
+button,
+.touch-manipulation {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* iOS Safari: Prevent zoom on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="date"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Better tap highlights for mobile */
+a, button {
+  -webkit-tap-highlight-color: rgba(14, 165, 233, 0.2);
+}
+
+/* Ensure minimum touch target size (44x44px Apple guideline) */
+@media (max-width: 768px) {
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

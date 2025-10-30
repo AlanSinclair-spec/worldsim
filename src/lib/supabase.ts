@@ -8,36 +8,33 @@ import { createClient } from '@supabase/supabase-js';
  *
  * We use NEXT_PUBLIC_ versions for client-side access and fall back to server-side versions.
  *
- * During build time, env vars may not be available. We use placeholder values to allow
- * the build to succeed, and validate at runtime in API routes.
+ * SECURITY: No placeholder values are used. Missing credentials will cause the application
+ * to fail fast, preventing silent failures in production.
  */
-const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL ||
-  process.env.SUPABASE_URL ||
-  'https://placeholder.supabase.co'; // Placeholder for build time
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
 
-const supabaseAnonKey =
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-  process.env.SUPABASE_ANON_KEY ||
-  'placeholder-key'; // Placeholder for build time
+// Fail fast if credentials are missing
+if (!supabaseUrl || !supabaseAnonKey) {
+  const errorMessage =
+    'Missing Supabase environment variables. ' +
+    'Please set SUPABASE_URL and SUPABASE_ANON_KEY in .env.local';
 
-// Debug: Log what we're using (server-side only)
-if (typeof window === 'undefined') {
-  console.log(`[${new Date().toISOString()}] [Supabase Client Init] URL: ${supabaseUrl.substring(0, 30)}...`);
-  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Key: ${supabaseAnonKey.substring(0, 20)}...`);
-  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Is placeholder URL: ${supabaseUrl === 'https://placeholder.supabase.co'}`);
-  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Is placeholder key: ${supabaseAnonKey === 'placeholder-key'}`);
+  if (typeof window === 'undefined') {
+    // Server-side: Throw error to fail build/runtime
+    console.error('❌ CRITICAL:', errorMessage);
+    throw new Error(errorMessage);
+  } else {
+    // Client-side: Log error but don't crash the page (allows static export)
+    console.error('❌ Supabase configuration error:', errorMessage);
+  }
 }
 
-// Warn if credentials are missing (but don't throw - let it fail at runtime if needed)
-if (
-  typeof window === 'undefined' && // Only log on server side
-  (supabaseUrl === 'https://placeholder.supabase.co' || supabaseAnonKey === 'placeholder-key')
-) {
-  console.warn(
-    '⚠️ Supabase environment variables not set. Database operations will fail at runtime. ' +
-    'Please ensure SUPABASE_URL and SUPABASE_ANON_KEY are set in .env.local'
-  );
+// Debug: Log what we're using (server-side only, only if configured)
+if (typeof window === 'undefined' && supabaseUrl && supabaseAnonKey) {
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] URL: ${supabaseUrl.substring(0, 30)}...`);
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] Key: ${supabaseAnonKey.substring(0, 20)}...`);
+  console.log(`[${new Date().toISOString()}] [Supabase Client Init] ✅ Credentials validated`);
 }
 
 /**
@@ -45,8 +42,8 @@ if (
  *
  * This client is configured to work with the WorldSim database schema.
  *
- * Note: During build time, this may use placeholder credentials. API routes should
- * validate the connection before use.
+ * SECURITY: Credentials are validated at initialization. If missing, the application
+ * will fail fast rather than use placeholder values.
  *
  * Usage examples:
  *
@@ -76,7 +73,7 @@ if (
  *   .eq('status', 'completed')
  *   .order('created_at', { ascending: false });
  */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 /**
  * Check if Supabase is properly configured
@@ -93,11 +90,9 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  * }
  */
 export function isSupabaseConfigured(): boolean {
-  return (
-    supabaseUrl !== 'https://placeholder.supabase.co' &&
-    supabaseAnonKey !== 'placeholder-key' &&
-    supabaseUrl.length > 0 &&
-    supabaseAnonKey.length > 0
+  return Boolean(
+    (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL) &&
+    (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY)
   );
 }
 

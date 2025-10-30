@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { simulateScenario, validateScenarioParams } from '@/lib/model';
+import { z } from 'zod';
+import { simulateScenario } from '@/lib/model';
 import { supabase } from '@/lib/supabase';
 import type { SimulationScenario, SimulationResponse } from '@/lib/types';
+import {
+  EnergySimulationSchema,
+  checkBodySize,
+  formatZodError,
+  MAX_BODY_SIZE,
+} from '@/lib/validation';
+import { applyRateLimit } from '@/lib/rate-limit';
 
 /**
  * API Route: /api/simulate
@@ -9,7 +17,7 @@ import type { SimulationScenario, SimulationResponse } from '@/lib/types';
  * Runs energy infrastructure simulations to model future demand, supply, and stress scenarios.
  *
  * This endpoint:
- * 1. Validates simulation parameters
+ * 1. Validates simulation parameters with Zod
  * 2. Executes the simulation model
  * 3. Stores the run in the database for reference
  * 4. Returns detailed results with summary statistics
@@ -27,16 +35,6 @@ import type { SimulationScenario, SimulationResponse } from '@/lib/types';
  */
 
 /**
- * Simulation request body interface
- */
-interface SimulateRequest {
-  solar_growth_pct: number;
-  rainfall_change_pct: number;
-  start_date: string;
-  end_date: string;
-}
-
-/**
  * Simulation response interface
  */
 interface SimulateResponse {
@@ -49,7 +47,7 @@ interface SimulateResponse {
     execution_time_ms: number;
   };
   error?: string;
-  details?: string;
+  details?: string | string[];
 }
 
 /**
@@ -66,93 +64,54 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
   console.log(`[${new Date().toISOString()}] [API /api/simulate] ========== NEW SIMULATION REQUEST ==========`);
 
   try {
-    // Parse request body
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📥 Parsing request body...`);
-    const body = await req.json() as SimulateRequest;
-    const { solar_growth_pct, rainfall_change_pct, start_date, end_date } = body;
+    // Rate limiting - prevent abuse (check before any processing)
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🚦 Checking rate limits...`);
+    const rateLimitResponse = applyRateLimit(req, 'simulation');
+    if (rateLimitResponse) {
+      return rateLimitResponse as NextResponse<SimulateResponse>;
+    }
 
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📋 Received parameters:`, {
+    // Check body size before parsing (DoS protection)
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🔒 Checking request size...`);
+    if (!checkBodySize(req)) {
+      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Request too large`);
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Request too large (maximum ${MAX_BODY_SIZE / 1024 / 1024}MB)`,
+        },
+        { status: 413 }
+      );
+    }
+
+    // Parse and validate request body with Zod
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📥 Parsing and validating request body...`);
+    const body = await req.json();
+
+    let validatedParams: SimulationScenario;
+    try {
+      validatedParams = EnergySimulationSchema.parse(body);
+      console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ Input validation passed`);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Validation failed:`, error.errors);
+        return NextResponse.json(formatZodError(error), { status: 400 });
+      }
+      throw error;
+    }
+
+    const { solar_growth_pct, rainfall_change_pct, start_date, end_date } = validatedParams;
+
+    console.log(`[${new Date().toISOString()}] [API /api/simulate] 📋 Validated parameters:`, {
       solar_growth_pct,
       rainfall_change_pct,
       start_date,
       end_date,
     });
 
-    // Validate required fields
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🔍 Validating required fields...`);
-
-    if (solar_growth_pct === undefined || solar_growth_pct === null) {
-      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing solar_growth_pct`);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required field: solar_growth_pct',
-        },
-        { status: 400 }
-      );
-    }
-
-    if (rainfall_change_pct === undefined || rainfall_change_pct === null) {
-      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing rainfall_change_pct`);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required field: rainfall_change_pct',
-        },
-        { status: 400 }
-      );
-    }
-
-    if (!start_date) {
-      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing start_date`);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required field: start_date',
-        },
-        { status: 400 }
-      );
-    }
-
-    if (!end_date) {
-      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Missing end_date`);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Missing required field: end_date',
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ All required fields present`);
-
-    // Create scenario object
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🏗️ Creating scenario object...`);
-    const scenario: SimulationScenario = {
-      solar_growth_pct,
-      rainfall_change_pct,
-      start_date,
-      end_date,
-    };
+    // Create scenario object (already validated by Zod)
+    const scenario: SimulationScenario = validatedParams;
     console.log(`[${new Date().toISOString()}] [API /api/simulate] 📦 Scenario object:`, scenario);
-
-    // Validate scenario parameters
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] 🔍 Validating scenario parameters...`);
-    const validation = validateScenarioParams(scenario);
-    if (!validation.isValid) {
-      console.error(`[${new Date().toISOString()}] [API /api/simulate] ❌ Validation failed:`, validation.error);
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid simulation parameters',
-          details: validation.error,
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log(`[${new Date().toISOString()}] [API /api/simulate] ✅ Parameters validated successfully`);
 
     // Run simulation
     console.log(`[${new Date().toISOString()}] [API /api/simulate] 🚀 Calling simulateScenario()...`);
@@ -253,7 +212,13 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
     };
     console.log(`[${new Date().toISOString()}] [API /api/simulate] ========== REQUEST COMPLETED SUCCESSFULLY ==========`);
 
-    return NextResponse.json(response);
+    // Return with caching headers for performance
+    return NextResponse.json(response, {
+      headers: {
+        'Cache-Control': 'private, max-age=3600', // Cache for 1 hour
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (error) {
     console.error(`[${new Date().toISOString()}] [API /api/simulate] 💥 UNHANDLED ERROR:`, error);
     console.error(`[${new Date().toISOString()}] [API /api/simulate] Error stack:`, error instanceof Error ? error.stack : 'No stack');

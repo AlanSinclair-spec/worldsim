@@ -1,13 +1,53 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import mapboxglImport from 'mapbox-gl';
+import { useEffect, useRef, useState, useCallback, memo } from 'react';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import type { SimulationResponse } from '@/lib/types';
+import { SkeletonLoader } from './SkeletonLoader';
+import { LoadingSpinner } from './LoadingSpinner';
 
-// Type workaround for mapbox-gl module export issues with TypeScript
-// eslint-disable-next-line
-const mapboxgl: any = mapboxglImport;
+// Type-safe interfaces for mapbox-gl (provides type safety without relying on @types/mapbox-gl)
+// This is safer than using 'any' while being compatible with the actual mapbox-gl library
+interface MapboxMap {
+  on(event: string, callback: (e: unknown) => void): void;
+  on(event: string, layer: string, callback: (e: MapboxMapLayerMouseEvent) => void): void;
+  remove(): void;
+  setTerrain(options: { source: string; exaggeration: number } | null): void;
+  setLayoutProperty(layer: string, property: string, value: string): void;
+  easeTo(options: { pitch: number; bearing: number; duration: number; easing?: (t: number) => number }): void;
+  fitBounds(
+    bounds: [[number, number], [number, number]],
+    options?: { padding: { top: number; bottom: number; left: number; right: number }; duration: number; essential: boolean; pitch?: number; bearing?: number }
+  ): void;
+  getCanvas(): HTMLCanvasElement;
+  getSource(id: string): unknown;
+  addSource(id: string, source: unknown): void;
+  addLayer(layer: unknown): void;
+  setFeatureState(feature: { source: string; id: string | number }, state: { hover: boolean }): void;
+}
+
+interface MapboxPopup {
+  setLngLat(lngLat: { lng: number; lat: number }): MapboxPopup;
+  setHTML(html: string): MapboxPopup;
+  addTo(map: MapboxMap): MapboxPopup;
+  remove(): void;
+}
+
+interface MapboxMapLayerMouseEvent {
+  lngLat: { lng: number; lat: number };
+  features?: Array<{
+    id?: string | number;
+    properties?: Record<string, unknown>;
+  }>;
+}
+
+interface MapboxErrorEvent {
+  error?: {
+    message?: string;
+    status?: number;
+  };
+}
 
 interface MapViewProps {
   /** Optional callback when a region is clicked */
@@ -47,13 +87,104 @@ interface MapViewProps {
  *   simulationResults={results}
  * />
  */
-export function MapView({ onRegionClick, height = '600px', simulationResults }: MapViewProps) {
+function MapViewComponent({ onRegionClick, height = '600px', simulationResults }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
-  // Mapbox GL types are not properly exported in the module, using Record type as a workaround
-  const map = useRef<Record<string, unknown> | null>(null);
-  const popup = useRef<Record<string, unknown> | null>(null);
+  const map = useRef<MapboxMap | null>(null);
+  const popup = useRef<MapboxPopup | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [is3DMode, setIs3DMode] = useState(false);
+
+  // Load 3D preference from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved3DMode = localStorage.getItem('worldsim-map-3d-mode');
+      if (saved3DMode === 'true') {
+        setIs3DMode(true);
+      }
+    }
+  }, []);
+
+  /**
+   * Toggle between 2D and 3D view with smooth animation
+   */
+  const toggle3DMode = useCallback(() => {
+    if (!map.current || !mapLoaded) return;
+
+    const newMode = !is3DMode;
+
+    setIs3DMode(newMode);
+    localStorage.setItem('worldsim-map-3d-mode', String(newMode));
+
+    if (newMode) {
+      // Switch to 3D: enable terrain, show sky, tilt camera
+      map.current.setTerrain({
+        source: 'mapbox-dem',
+        exaggeration: 1.5
+      });
+      map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      map.current.easeTo({
+        pitch: 60,
+        bearing: 0,
+        duration: 800,
+        easing: (t: number) => t * (2 - t), // ease-in-out
+      });
+    } else {
+      // Switch to 2D: remove terrain, hide sky, flatten camera
+      map.current.easeTo({
+        pitch: 0,
+        bearing: 0,
+        duration: 800,
+        easing: (t: number) => t * (2 - t),
+      });
+      // Disable terrain after animation completes
+      setTimeout(() => {
+        if (map.current) {
+          map.current.setTerrain(null);
+          map.current.setLayoutProperty('sky', 'visibility', 'none');
+        }
+      }, 800);
+    }
+  }, [is3DMode, mapLoaded]);
+
+  /**
+   * Reset camera to default view
+   */
+  const resetView = useCallback(() => {
+    if (!map.current || !mapLoaded) return;
+
+    map.current.fitBounds(
+      [
+        [-90.2, 13.0], // Southwest
+        [-87.5, 14.45], // Northeast
+      ],
+      {
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        duration: 1000,
+        essential: true,
+        pitch: is3DMode ? 60 : 0,
+        bearing: 0,
+      }
+    );
+  }, [mapLoaded, is3DMode]);
+
+  // Apply saved 3D mode when map loads
+  useEffect(() => {
+    if (!map.current || !mapLoaded || !is3DMode) return;
+
+    // Apply 3D mode from saved preference
+    map.current.setTerrain({
+      source: 'mapbox-dem',
+      exaggeration: 1.5
+    });
+    map.current.setLayoutProperty('sky', 'visibility', 'visible');
+    map.current.easeTo({
+      pitch: 60,
+      bearing: 0,
+      duration: 800,
+      easing: (t: number) => t * (2 - t),
+    });
+  }, [mapLoaded, is3DMode]);
 
   /**
    * Calculate average stress per region from simulation results
@@ -97,11 +228,11 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
       return;
     }
 
-    mapboxgl.accessToken = mapboxToken;
+    (mapboxgl as unknown as { accessToken: string }).accessToken = mapboxToken;
 
     try {
       // Initialize map with professional government styling
-      const mapInstance = new mapboxgl.Map({
+      const mapInstance = new (mapboxgl as unknown as { Map: new (options: unknown) => MapboxMap }).Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/light-v11', // Clean, professional base
         center: [-88.9, 13.7], // El Salvador center
@@ -118,13 +249,13 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
       });
       map.current = mapInstance;
 
-      // Create professional government-style popup
-      popup.current = new mapboxgl.Popup({
+      // Create professional government-style popup with responsive max-width
+      popup.current = new (mapboxgl as unknown as { Popup: new (options: unknown) => MapboxPopup }).Popup({
         closeButton: false, // Custom close button
         closeOnClick: true,
         className: 'government-popup',
-        maxWidth: '280px',
-        offset: 12,
+        maxWidth: '90vw', // Responsive: 90% of viewport width max
+        offset: [0, -10],
         focusAfterOpen: true, // Accessibility
       });
 
@@ -132,6 +263,28 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
         console.log('✅ Map loaded successfully');
         setMapLoaded(true);
         setError(null);
+
+        // Add 3D terrain source
+        mapInstance.addSource('mapbox-dem', {
+          type: 'raster-dem',
+          url: 'mapbox://mapbox.terrain-rgb',
+          tileSize: 512,
+          maxzoom: 14,
+        });
+
+        // Add sky layer for atmosphere effect
+        mapInstance.addLayer({
+          id: 'sky',
+          type: 'sky',
+          paint: {
+            'sky-type': 'atmosphere',
+            'sky-atmosphere-sun': [0.0, 90.0],
+            'sky-atmosphere-sun-intensity': 15,
+          },
+        });
+
+        // Initially hide sky layer (only show in 3D mode)
+        mapInstance.setLayoutProperty('sky', 'visibility', 'none');
 
         // Fit to El Salvador bounds with smooth animation
         mapInstance.fitBounds(
@@ -147,15 +300,16 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
         );
       });
 
-      mapInstance.on('error', (e: any) => {
-        console.error('❌ Mapbox error:', e);
+      mapInstance.on('error', (e: unknown) => {
+        const errorEvent = e as MapboxErrorEvent;
+        console.error('❌ Mapbox error:', errorEvent);
         console.error('Error details:', {
-          error: e.error,
-          message: e.error?.message,
-          status: e.error?.status,
+          error: errorEvent.error,
+          message: errorEvent.error?.message,
+          status: errorEvent.error?.status,
         });
 
-        const errorMsg = e.error?.message || 'Failed to load map';
+        const errorMsg = errorEvent.error?.message || 'Failed to load map';
         setError(`Map Error: ${errorMsg}. Check console for details.`);
       });
 
@@ -165,37 +319,44 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
       // Professional map controls
 
       // Navigation control (zoom + compass) - top right
-      const nav = new mapboxgl.NavigationControl({
+      const nav = new (mapboxgl as unknown as { NavigationControl: new (options: unknown) => unknown }).NavigationControl({
         showCompass: true,
         showZoom: true,
         visualizePitch: false, // Disabled for flat view
       });
-      mapInstance.addControl(nav, 'top-right');
+      (mapInstance as unknown as { addControl: (control: unknown, position: string) => void }).addControl(nav, 'top-right');
 
       // Scale bar - bottom left (metric units)
-      const scale = new mapboxgl.ScaleControl({
+      const scale = new (mapboxgl as unknown as { ScaleControl: new (options: unknown) => unknown }).ScaleControl({
         maxWidth: 120,
         unit: 'metric',
       });
-      mapInstance.addControl(scale, 'bottom-left');
+      (mapInstance as unknown as { addControl: (control: unknown, position: string) => void }).addControl(scale, 'bottom-left');
 
       // Professional attribution - bottom right
-      const attribution = new mapboxgl.AttributionControl({
+      const attribution = new (mapboxgl as unknown as { AttributionControl: new (options: unknown) => unknown }).AttributionControl({
         compact: true,
         customAttribution: '© WorldSim | Government of El Salvador',
       });
-      mapInstance.addControl(attribution, 'bottom-right');
+      (mapInstance as unknown as { addControl: (control: unknown, position: string) => void }).addControl(attribution, 'bottom-right');
     } catch (err) {
       console.error('Error initializing map:', err);
       setError('Failed to initialize map. Please refresh the page.');
     }
 
-    // Cleanup on unmount
+    // Cleanup on unmount to prevent memory leaks
     return () => {
-      (popup.current as any)?.remove();
-      popup.current = null;
-      (map.current as any)?.remove();
-      map.current = null;
+      // Cleanup popup
+      if (popup.current) {
+        popup.current.remove();
+        popup.current = null;
+      }
+
+      // Cleanup map
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
     };
   }, []); // Empty dependency array - only run once
 
@@ -204,8 +365,6 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
    */
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
-
-    const mapInstance = map.current as any;
 
     // Load regions from public directory
     fetch('/regions.json')
@@ -217,15 +376,17 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
       })
       .then(geojson => {
         // Add source if it doesn't exist
-        if (!mapInstance.getSource('regions')) {
-          mapInstance.addSource('regions', {
+        if (!map.current) return;
+
+        if (!map.current.getSource('regions')) {
+          map.current.addSource('regions', {
             type: 'geojson',
             data: geojson,
             generateId: true, // Generate IDs for features to enable feature-state
           });
 
           // Distinct color fill layer - each department gets a unique color
-          mapInstance.addLayer({
+          map.current.addLayer({
             id: 'regions-fill',
             type: 'fill',
             source: 'regions',
@@ -263,7 +424,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
           });
 
           // Professional border/outline layer
-          mapInstance.addLayer({
+          map.current.addLayer({
             id: 'regions-outline',
             type: 'line',
             source: 'regions',
@@ -284,7 +445,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
           });
 
           // Professional labels - clean, authoritative typography
-          mapInstance.addLayer({
+          map.current.addLayer({
             id: 'regions-labels',
             type: 'symbol',
             source: 'regions',
@@ -313,14 +474,16 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
           let hoveredRegionId: string | number | null = null;
 
           // Hover effect: darken region and outline on mouse enter
-          mapInstance.on('mouseenter', 'regions-fill', (e: any) => {
+          map.current.on('mouseenter', 'regions-fill', (e: MapboxMapLayerMouseEvent) => {
+            if (!map.current) return;
+
             // Change cursor to pointer
-            mapInstance.getCanvas().style.cursor = 'pointer';
+            map.current.getCanvas().style.cursor = 'pointer';
 
             if (e.features && e.features.length > 0) {
               // Remove previous hover state
               if (hoveredRegionId !== null) {
-                mapInstance.setFeatureState(
+                map.current.setFeatureState(
                   { source: 'regions', id: hoveredRegionId },
                   { hover: false }
                 );
@@ -328,7 +491,7 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
 
               // Set new hover state
               hoveredRegionId = e.features[0].id!;
-              mapInstance.setFeatureState(
+              map.current.setFeatureState(
                 { source: 'regions', id: hoveredRegionId },
                 { hover: true }
               );
@@ -336,13 +499,15 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
           });
 
           // Hover effect: remove highlight on mouse leave
-          mapInstance.on('mouseleave', 'regions-fill', () => {
+          map.current.on('mouseleave', 'regions-fill', () => {
+            if (!map.current) return;
+
             // Reset cursor
-            mapInstance.getCanvas().style.cursor = '';
+            map.current.getCanvas().style.cursor = '';
 
             // Remove hover state
             if (hoveredRegionId !== null) {
-              mapInstance.setFeatureState(
+              map.current.setFeatureState(
                 { source: 'regions', id: hoveredRegionId },
                 { hover: false }
               );
@@ -351,14 +516,16 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
           });
 
           // Click handler: show professional government-style popup
-          mapInstance.on('click', 'regions-fill', (e: any) => {
+          map.current.on('click', 'regions-fill', (e: MapboxMapLayerMouseEvent) => {
+            if (!map.current) return;
+
             if (e.features && e.features.length > 0) {
               const feature = e.features[0];
-              const regionId = feature.properties?.id || '';
-              const regionName = feature.properties?.name || 'Unknown Region';
-              const regionNameEs = feature.properties?.nameEs || regionName;
-              const population = feature.properties?.population;
-              const areaKm2 = feature.properties?.areaKm2;
+              const regionId = String(feature.properties?.id || '');
+              const regionName = String(feature.properties?.name || 'Unknown Region');
+              const regionNameEs = String(feature.properties?.nameEs || regionName);
+              const population = feature.properties?.population as number | undefined;
+              const areaKm2 = feature.properties?.areaKm2 as number | undefined;
 
               // Get stress data if available
               const stress = getRegionStress(regionId);
@@ -447,11 +614,11 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
                 </div>`;
 
               // Show popup at click location
-              if (popup.current) {
-                (popup.current as any)
+              if (popup.current && map.current) {
+                popup.current
                   .setLngLat(e.lngLat)
                   .setHTML(popupContent)
-                  .addTo(mapInstance);
+                  .addTo(map.current);
               }
 
               // Call optional callback
@@ -529,39 +696,85 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
         {/* Map container */}
         <div ref={mapContainer} className="w-full h-full rounded-lg overflow-hidden" />
 
-        {/* Stress Level Legend - only show when simulation results are available */}
+        {/* 3D View Controls - Top Right */}
+        {mapLoaded && (
+          <div className="absolute top-4 right-4 flex flex-col gap-2 z-10">
+            {/* 2D/3D Toggle Button */}
+            <button
+              onClick={toggle3DMode}
+              className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-3 hover:bg-blue-50 transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center"
+              title={is3DMode ? 'Switch to 2D View' : 'Switch to 3D View'}
+              aria-label={is3DMode ? 'Switch to 2D View' : 'Switch to 3D View'}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xl md:text-2xl transition-transform group-hover:scale-110">
+                  {is3DMode ? '🗺️' : '⛰️'}
+                </span>
+                <span className="hidden md:inline text-xs font-semibold text-gray-700 group-hover:text-blue-600">
+                  {is3DMode ? '2D' : '3D'}
+                </span>
+              </div>
+            </button>
+
+            {/* Reset View Button */}
+            <button
+              onClick={resetView}
+              className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-3 hover:bg-blue-50 transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center"
+              title="Reset View"
+              aria-label="Reset camera to default position"
+            >
+              <span className="text-xl md:text-2xl transition-transform group-hover:rotate-180 duration-500">
+                🧭
+              </span>
+            </button>
+
+            {/* 3D Mode Hint */}
+            {is3DMode && (
+              <div className="bg-blue-50/95 backdrop-blur-sm rounded-lg shadow-lg border border-blue-200 p-2 mt-2 max-w-[200px] animate-fade-in">
+                <p className="text-[10px] md:text-xs text-blue-800 font-medium">
+                  💡 Right-click + drag to rotate
+                </p>
+                <p className="text-[9px] md:text-[10px] text-blue-600 mt-1">
+                  Ctrl + drag to tilt
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Stress Level Legend - responsive positioning */}
         {simulationResults && (
-          <div className="absolute bottom-16 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-4 max-w-[200px]">
-            <h4 className="text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
-              Infrastructure Stress
+          <div className="absolute bottom-12 md:bottom-16 left-2 md:left-auto md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-2 md:p-4 max-w-[180px] md:max-w-[200px]">
+            <h4 className="text-[10px] md:text-xs font-bold text-gray-700 mb-2 md:mb-3 uppercase tracking-wide">
+              Stress Level
             </h4>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#10b981' }}></div>
-                <div className="flex-1">
-                  <div className="text-xs font-semibold text-gray-800">Healthy</div>
-                  <div className="text-xs text-gray-500">0-15%</div>
+            <div className="space-y-1.5 md:space-y-2">
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#10b981' }}></div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Healthy</div>
+                  <div className="text-[9px] md:text-xs text-gray-500">0-15%</div>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f59e0b' }}></div>
-                <div className="flex-1">
-                  <div className="text-xs font-semibold text-gray-800">Caution</div>
-                  <div className="text-xs text-gray-500">15-35%</div>
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f59e0b' }}></div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Caution</div>
+                  <div className="text-[9px] md:text-xs text-gray-500">15-35%</div>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#f97316' }}></div>
-                <div className="flex-1">
-                  <div className="text-xs font-semibold text-gray-800">Warning</div>
-                  <div className="text-xs text-gray-500">35-60%</div>
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#f97316' }}></div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Warning</div>
+                  <div className="text-[9px] md:text-xs text-gray-500">35-60%</div>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <div className="w-6 h-6 rounded" style={{ backgroundColor: '#ef4444' }}></div>
-                <div className="flex-1">
-                  <div className="text-xs font-semibold text-gray-800">Critical</div>
-                  <div className="text-xs text-gray-500">60-100%</div>
+              <div className="flex items-center space-x-2 md:space-x-3">
+                <div className="w-4 h-4 md:w-6 md:h-6 rounded flex-shrink-0" style={{ backgroundColor: '#ef4444' }}></div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10px] md:text-xs font-semibold text-gray-800">Critical</div>
+                  <div className="text-[9px] md:text-xs text-gray-500">60-100%</div>
                 </div>
               </div>
             </div>
@@ -570,18 +783,14 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
 
         {/* Premium loading state */}
         {!mapLoaded && !error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-green-50 rounded-lg">
-            <div className="text-center">
-              {/* Animated gradient spinner */}
-              <div className="relative w-16 h-16 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-green-600 animate-spin"></div>
-                <div className="absolute inset-2 rounded-full bg-white"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl">🗺️</span>
-                </div>
+          <div className="absolute inset-0 rounded-lg overflow-hidden">
+            <SkeletonLoader variant="map" className="w-full h-full" />
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100/50 backdrop-blur-sm">
+              <div className="text-center bg-white/90 rounded-xl p-6 shadow-lg">
+                <LoadingSpinner size="lg" color="text-blue-600" center className="mb-4" />
+                <p className="text-sm font-semibold text-gray-700 mb-1">Loading Map</p>
+                <p className="text-xs text-gray-500">Preparing interactive visualization...</p>
               </div>
-              <p className="text-sm font-semibold text-gray-700 mb-1">Loading WorldSim</p>
-              <p className="text-xs text-gray-500">Preparing interactive map...</p>
             </div>
           </div>
         )}
@@ -624,3 +833,6 @@ export function MapView({ onRegionClick, height = '600px', simulationResults }: 
     </div>
   );
 }
+
+// Memoized export for performance optimization
+export const MapView = memo(MapViewComponent);

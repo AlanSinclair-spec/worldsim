@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { SimulationResponse } from '@/lib/types';
+import { LoadingSpinner } from './LoadingSpinner';
 
 /**
  * Preset simulation scenarios
@@ -146,8 +147,19 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
       });
 
       if (!result.success) {
-        // Handle error response
-        const errorMsg = result.details || result.error || 'Simulation failed';
+        // Handle error response - format array or string
+        let errorMsg: string;
+        if (result.details) {
+          // If details is an array (from Zod validation), format as list
+          if (Array.isArray(result.details)) {
+            errorMsg = result.details.join('; ');
+          } else {
+            errorMsg = String(result.details);
+          }
+        } else {
+          errorMsg = result.error || 'Simulation failed';
+        }
+
         setError(errorMsg);
         console.error(`[${new Date().toISOString()}] [ControlPanel] ❌ Simulation failed with error:`, errorMsg);
         console.error(`[${new Date().toISOString()}] [ControlPanel] Full error response:`, result);
@@ -313,8 +325,8 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
       <div className="space-y-6">
         {/* Success Message */}
         {successMessage && (
-          <div className="flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-lg p-3 animate-fade-in">
-            <svg className="h-5 w-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <div role="status" aria-live="polite" className="flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-lg p-3 animate-fade-in">
+            <svg className="h-5 w-5 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -335,8 +347,8 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
 
         {/* Error Message */}
         {error && (
-          <div className="flex items-start gap-3 bg-red-50 border-2 border-red-200 rounded-lg p-3 animate-fade-in">
-            <svg className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+          <div role="alert" aria-live="assertive" className="flex items-start gap-3 bg-red-50 border-2 border-red-200 rounded-lg p-3 animate-fade-in">
+            <svg className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -347,17 +359,26 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
               <p className="text-sm font-semibold text-red-900">
                 {language === 'en' ? 'Error' : 'Error'}
               </p>
-              <p className="text-xs text-red-700 mt-1">{error}</p>
+              {/* Handle multiple errors separated by semicolons */}
+              {error.includes(';') ? (
+                <ul className="text-xs text-red-700 mt-1 list-disc list-inside space-y-0.5">
+                  {error.split(';').map((err, index) => (
+                    <li key={index}>{err.trim()}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-red-700 mt-1">{error}</p>
+              )}
             </div>
           </div>
         )}
 
         {/* Preset Scenarios */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2 md:mb-3">
             {labels.presets[language]}
           </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {(Object.keys(PRESETS) as PresetKey[]).map((key) => {
               const preset = PRESETS[key];
               const isActive = activePreset === key;
@@ -367,7 +388,9 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
                   key={key}
                   onClick={() => applyPreset(key)}
                   disabled={isRunning}
-                  className={`relative px-3 py-3 text-xs font-medium rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all ${getPresetColors(
+                  aria-label={`${preset.name[language]}: ${preset.description[language]}`}
+                  aria-pressed={isActive}
+                  className={`relative px-2 md:px-3 py-2.5 md:py-3 text-[10px] sm:text-xs font-medium rounded-lg focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all touch-manipulation ${getPresetColors(
                     preset.color,
                     isActive
                   )} ${isActive ? 'ring-2 scale-105 shadow-md' : ''}`}
@@ -388,13 +411,13 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           </div>
         </div>
 
-        {/* Solar Growth Slider */}
+        {/* Solar Growth Slider - touch-friendly */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label htmlFor="solar-growth" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="solar-growth" className="block text-xs sm:text-sm font-medium text-gray-700">
               {labels.solarGrowth[language]}
             </label>
-            <span className="text-sm font-semibold text-primary-600">
+            <span className="text-xs sm:text-sm font-semibold text-primary-600">
               {solarGrowth > 0 ? '+' : ''}
               {solarGrowth}%
             </span>
@@ -402,6 +425,7 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           <input
             type="range"
             id="solar-growth"
+            name="solar-growth"
             min="-50"
             max="200"
             step="5"
@@ -410,7 +434,15 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
               setSolarGrowth(Number(e.target.value));
               checkPresetMatch();
             }}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+            aria-label={labels.solarGrowth[language]}
+            aria-valuemin={-50}
+            aria-valuemax={200}
+            aria-valuenow={solarGrowth}
+            aria-valuetext={`${solarGrowth > 0 ? '+' : ''}${solarGrowth}%`}
+            className="w-full h-3 md:h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600 touch-manipulation"
+            style={{
+              WebkitAppearance: 'none',
+            }}
             disabled={isRunning}
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -420,13 +452,13 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           </div>
         </div>
 
-        {/* Rainfall Change Slider */}
+        {/* Rainfall Change Slider - touch-friendly */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <label htmlFor="rainfall-change" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="rainfall-change" className="block text-xs sm:text-sm font-medium text-gray-700">
               {labels.rainfallChange[language]}
             </label>
-            <span className="text-sm font-semibold text-blue-600">
+            <span className="text-xs sm:text-sm font-semibold text-blue-600">
               {rainfallChange > 0 ? '+' : ''}
               {rainfallChange}%
             </span>
@@ -434,6 +466,7 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           <input
             type="range"
             id="rainfall-change"
+            name="rainfall-change"
             min="-50"
             max="50"
             step="5"
@@ -442,7 +475,15 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
               setRainfallChange(Number(e.target.value));
               checkPresetMatch();
             }}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            aria-label={labels.rainfallChange[language]}
+            aria-valuemin={-50}
+            aria-valuemax={50}
+            aria-valuenow={rainfallChange}
+            aria-valuetext={`${rainfallChange > 0 ? '+' : ''}${rainfallChange}%`}
+            className="w-full h-3 md:h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600 touch-manipulation"
+            style={{
+              WebkitAppearance: 'none',
+            }}
             disabled={isRunning}
           />
           <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -452,31 +493,37 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
           </div>
         </div>
 
-        {/* Date Range */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Date Range - stacked on mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="start-date" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               {labels.startDate[language]}
             </label>
             <input
               type="date"
               id="start-date"
+              name="start-date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+              aria-label={labels.startDate[language]}
+              aria-required="true"
+              className="w-full px-3 py-2.5 md:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm touch-manipulation"
               disabled={isRunning}
             />
           </div>
           <div>
-            <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="end-date" className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
               {labels.endDate[language]}
             </label>
             <input
               type="date"
               id="end-date"
+              name="end-date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+              aria-label={labels.endDate[language]}
+              aria-required="true"
+              className="w-full px-3 py-2.5 md:py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm touch-manipulation"
               disabled={isRunning}
             />
           </div>
@@ -521,34 +568,21 @@ export function ControlPanel({ language = 'en', onSimulationComplete }: ControlP
         <button
           onClick={handleRunSimulation}
           disabled={isRunning || !isValidDateRange}
-          className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center shadow-md hover:shadow-lg"
+          aria-label={isRunning ? labels.running[language] : labels.runButton[language]}
+          aria-busy={isRunning}
+          className="w-full px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200 shadow-md hover:shadow-lg"
         >
           {isRunning ? (
-            <>
-              <svg
-                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              {labels.running[language]}
-            </>
+            <LoadingSpinner
+              size="sm"
+              color="text-white"
+              text={labels.running[language]}
+              center
+            />
           ) : (
-            labels.runButton[language]
+            <span className="flex items-center justify-center">
+              {labels.runButton[language]}
+            </span>
           )}
         </button>
 

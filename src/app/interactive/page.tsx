@@ -1,13 +1,24 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapView } from '@/components/MapView';
+import dynamic from 'next/dynamic';
 import { ControlPanel } from '@/components/ControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
+import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats } from '@/lib/types';
+
+// Lazy load MapView for better performance (largest component)
+const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
+  loading: () => (
+    <div className="h-[300px] sm:h-[400px] md:h-[500px] xl:h-[700px]">
+      <SkeletonLoader variant="map" className="w-full h-full" />
+    </div>
+  ),
+  ssr: false, // Mapbox requires window object
+});
 
 /**
  * Interactive Demo Page
@@ -45,8 +56,9 @@ export default function InteractivePage() {
   /**
    * Handle simulation completion
    * Called when ControlPanel finishes a simulation
+   * Memoized with useCallback for performance
    */
-  const handleSimulationComplete = (
+  const handleSimulationComplete = useCallback((
     simulationResults: SimulationResponse,
     simulationScenario?: SimulationScenario,
     execTime?: number
@@ -78,13 +90,14 @@ export default function InteractivePage() {
         mapRef.current?.classList.remove('animate-pulse-once');
       }, 1000);
     }
-  };
+  }, []);
 
   /**
    * Handle CSV upload completion
    * Called when UploadPanel successfully uploads data
+   * Memoized with useCallback for performance
    */
-  const handleUploadComplete = (type: 'energy' | 'rainfall', stats: IngestStats) => {
+  const handleUploadComplete = useCallback((type: 'energy' | 'rainfall', stats: IngestStats) => {
     console.log(`📊 ${type} data uploaded:`, {
       rows: stats.rows_inserted,
       date_range: stats.date_range,
@@ -95,7 +108,7 @@ export default function InteractivePage() {
       ...prev,
       [type]: stats,
     }));
-  };
+  }, []);
 
   /**
    * Check if user has uploaded data
@@ -193,11 +206,11 @@ export default function InteractivePage() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Three-column layout */}
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-          {/* Left Column - Configuration (40%) */}
-          <div className="xl:col-span-5 space-y-6">
+      <main className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+        {/* Responsive layout: Mobile (stack), Tablet (2 cols), Desktop (3 cols) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 md:gap-6">
+          {/* Left Column - Configuration */}
+          <div className="md:col-span-1 xl:col-span-5 space-y-4 md:space-y-6">
             {/* Upload Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
@@ -215,43 +228,46 @@ export default function InteractivePage() {
             </div>
           </div>
 
-          {/* Middle Column - Map (35%) */}
-          <div className="xl:col-span-4" ref={mapRef}>
+          {/* Middle Column - Map */}
+          <div className="md:col-span-1 xl:col-span-4" ref={mapRef}>
             <div className="relative">
               <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 transform hover:scale-[1.01] transition-all duration-300">
-                <div className="p-2">
-                  <MapView
-                    height="700px"
-                    simulationResults={results}
-                  />
+                <div className="p-1 md:p-2">
+                  {/* Responsive map height: Mobile 300px, Tablet 400px, Desktop 700px */}
+                  <div className="h-[300px] sm:h-[400px] md:h-[500px] xl:h-[700px]">
+                    <MapView
+                      height="100%"
+                      simulationResults={results}
+                    />
+                  </div>
                 </div>
 
-                {/* Map Overlay - Show results summary */}
+                {/* Map Overlay - Show results summary (responsive) */}
                 {results && (
-                  <div className="absolute top-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-3 border border-gray-200">
-                    <div className="flex items-center justify-between">
+                  <div className="absolute top-2 left-2 right-2 md:top-4 md:left-4 md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-2 md:p-3 border border-gray-200">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
                       <div>
-                        <p className="text-xs font-semibold text-gray-700">
-                          {language === 'en' ? 'Average Stress' : 'Estrés Promedio'}
+                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
+                          {language === 'en' ? 'Avg Stress' : 'Estrés Prom'}
                         </p>
-                        <p className="text-2xl font-bold text-blue-600">
+                        <p className="text-lg md:text-2xl font-bold text-blue-600">
                           {(results.summary.avg_stress * 100).toFixed(1)}%
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs font-semibold text-gray-700">
-                          {language === 'en' ? 'Max Stress' : 'Estrés Máximo'}
+                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
+                          {language === 'en' ? 'Max Stress' : 'Estrés Máx'}
                         </p>
-                        <p className="text-2xl font-bold text-red-600">
+                        <p className="text-lg md:text-2xl font-bold text-red-600">
                           {(results.summary.max_stress * 100).toFixed(1)}%
                         </p>
                       </div>
-                      <div>
-                        <p className="text-xs font-semibold text-gray-700">
+                      <div className="col-span-2 md:col-span-1">
+                        <p className="text-[10px] md:text-xs font-semibold text-gray-700">
                           {language === 'en' ? 'Most Stressed' : 'Más Estresado'}
                         </p>
-                        <p className="text-sm font-bold text-orange-600">
+                        <p className="text-xs md:text-sm font-bold text-orange-600 truncate">
                           {results.summary.top_stressed_regions[0]?.region_name || 'N/A'}
                         </p>
                       </div>
@@ -262,8 +278,8 @@ export default function InteractivePage() {
             </div>
           </div>
 
-          {/* Right Column - Results (25%) */}
-          <div className="xl:col-span-3" ref={resultsRef}>
+          {/* Right Column - Results - Full width on mobile, half on tablet, 1/4 on desktop */}
+          <div className="md:col-span-2 xl:col-span-3" ref={resultsRef}>
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <ResultsPanelEnhanced
                 results={results}

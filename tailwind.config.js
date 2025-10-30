@@ -37,6 +37,36 @@ module.exports = {
         '128': '32rem',
         '144': '36rem',
       },
+      animation: {
+        'fade-in': 'fade-in 0.4s ease-in-out',
+        'fade-in-fast': 'fade-in 0.2s ease-in-out',
+        'fade-in-slow': 'fade-in 0.8s ease-in-out',
+        'shimmer': 'shimmer 2s ease-in-out infinite',
+      },
+      keyframes: {
+        'fade-in': {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(-10px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        'shimmer': {
+          '0%': {
+            backgroundPosition: '-200% 0',
+          },
+          '100%': {
+            backgroundPosition: '200% 0',
+          },
+        },
+      },
+      transitionDuration: {
+        '400': '400ms',
+        '800': '800ms',
+      },
     },
   },
   plugins: [],

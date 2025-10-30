@@ -1,7 +1,23 @@
 'use client';
 
+import { memo, useMemo, useRef, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+import { Chart as ChartJS } from 'chart.js';
 import { SimulationResponse } from '@/lib/types';
-import { StressChart } from './Charts';
+import { SkeletonLoader, SkeletonStatCard } from './SkeletonLoader';
+import { LoadingSpinner } from './LoadingSpinner';
+import {
+  exportToCSV,
+  downloadCSV,
+  downloadChartAsPNG,
+  getTimestampedFilename,
+} from '@/lib/export';
+
+// Lazy load StressChart for better performance
+const StressChart = dynamic(() => import('./Charts').then(mod => ({ default: mod.StressChart })), {
+  loading: () => <SkeletonLoader variant="chart" className="h-[300px]" />,
+  ssr: false, // Charts use canvas which requires browser
+});
 
 interface ResultsPanelProps {
   /** Simulation results to display */
@@ -51,11 +67,14 @@ const MOCK_RESULTS: SimulationResponse = {
  *   language="en"
  * />
  */
-export function ResultsPanel({
+function ResultsPanelComponent({
   results,
   isLoading = false,
   language = 'en',
 }: ResultsPanelProps) {
+  // Chart ref for PNG export
+  const chartRef = useRef<ChartJS<'line'> | undefined>(null);
+
   const labels = {
     title: { en: 'Simulation Results', es: 'Resultados de Simulación' },
     subtitle: { en: 'Analysis of infrastructure stress across regions', es: 'Análisis del estrés de infraestructura en regiones' },
@@ -81,43 +100,99 @@ export function ResultsPanel({
   // Use mock data for demonstration
   const displayResults = results || MOCK_RESULTS;
 
-  // Calculate high-stress days (stress > 1.0)
-  const highStressDays = displayResults.daily_results.filter(r => r.stress > 1.0).length;
+  // Calculate high-stress days (stress > 1.0) - memoized for performance
+  const highStressDays = useMemo(() => {
+    return displayResults.daily_results.filter(r => r.stress > 1.0).length;
+  }, [displayResults.daily_results]);
+
+  /**
+   * Handle CSV export
+   */
+  const handleExportCSV = useCallback(() => {
+    if (!results) return;
+
+    try {
+      const csv = exportToCSV(results);
+      const filename = getTimestampedFilename('simulation_results', 'csv');
+      downloadCSV(csv, filename);
+
+      console.log(`[${new Date().toISOString()}] [ResultsPanel] CSV export successful: ${filename}`);
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] [ResultsPanel] CSV export failed:`, error);
+      alert(
+        language === 'en'
+          ? 'Failed to export CSV. Please try again.'
+          : 'Error al exportar CSV. Por favor intente de nuevo.'
+      );
+    }
+  }, [results, language]);
+
+  /**
+   * Handle PNG export
+   */
+  const handleExportPNG = useCallback(() => {
+    try {
+      // Access canvas from Chart.js ref
+      const canvas = chartRef.current?.canvas;
+      if (!canvas) {
+        console.warn(`[${new Date().toISOString()}] [ResultsPanel] Cannot export PNG: chart not rendered`);
+        alert(
+          language === 'en'
+            ? 'Chart not ready. Please wait a moment and try again.'
+            : 'El gráfico no está listo. Espere un momento e intente de nuevo.'
+        );
+        return;
+      }
+
+      const filename = getTimestampedFilename('stress_chart', 'png');
+      downloadChartAsPNG(canvas, filename);
+
+      console.log(`[${new Date().toISOString()}] [ResultsPanel] PNG export successful: ${filename}`);
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] [ResultsPanel] PNG export failed:`, error);
+      alert(
+        language === 'en'
+          ? 'Failed to export chart. Please try again.'
+          : 'Error al exportar gráfico. Por favor intente de nuevo.'
+      );
+    }
+  }, [language]);
 
   // Loading State
   if (isLoading) {
     return (
       <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-        <div className="animate-pulse space-y-6">
+        <div className="space-y-6">
           {/* Header skeleton */}
           <div>
-            <div className="h-6 bg-gray-200 rounded w-1/3 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+            <SkeletonLoader variant="text" lines={2} height="h-6" />
           </div>
 
           {/* Summary stats skeleton */}
-          <div className="grid grid-cols-3 gap-4">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="bg-gray-50 rounded-lg p-4">
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-                <div className="h-8 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <SkeletonStatCard />
+            <SkeletonStatCard />
+            <SkeletonStatCard />
           </div>
 
           {/* Chart skeleton */}
-          <div className="h-64 bg-gray-100 rounded-lg"></div>
+          <SkeletonLoader variant="chart" className="h-64" />
 
           {/* Table skeleton */}
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-            {[1, 2, 3, 4, 5].map(i => (
-              <div key={i} className="h-12 bg-gray-50 rounded"></div>
-            ))}
+          <div className="space-y-3">
+            <SkeletonLoader variant="text" lines={1} height="h-5" className="w-1/3" />
+            <SkeletonLoader variant="card" />
           </div>
-        </div>
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-500">{labels.loading[language]}</p>
+
+          {/* Loading message with spinner */}
+          <div className="pt-4 border-t">
+            <LoadingSpinner
+              size="md"
+              color="text-blue-600"
+              text={labels.loading[language]}
+              center
+            />
+          </div>
         </div>
       </div>
     );
@@ -154,13 +229,13 @@ export function ResultsPanel({
           <h3 className="text-sm font-semibold text-gray-700 mb-3">
             {labels.summaryTitle[language]}
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
             {/* Average Stress */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-              <p className="text-xs font-medium text-blue-700 uppercase tracking-wide mb-1">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 md:p-4 border border-blue-200">
+              <p className="text-[10px] md:text-xs font-medium text-blue-700 uppercase tracking-wide mb-1">
                 {labels.avgStress[language]}
               </p>
-              <p className="text-3xl font-bold text-blue-900">
+              <p className="text-2xl md:text-3xl font-bold text-blue-900">
                 {(displayResults.summary.avg_stress * 100).toFixed(1)}%
               </p>
               <div className="mt-2 flex items-center">
@@ -174,17 +249,17 @@ export function ResultsPanel({
             </div>
 
             {/* Peak Stress */}
-            <div className={`rounded-lg p-4 border ${
+            <div className={`rounded-lg p-3 md:p-4 border ${
               displayResults.summary.max_stress > 1.0
                 ? 'bg-gradient-to-br from-red-50 to-red-100 border-red-200'
                 : 'bg-gradient-to-br from-green-50 to-green-100 border-green-200'
             }`}>
-              <p className={`text-xs font-medium uppercase tracking-wide mb-1 ${
+              <p className={`text-[10px] md:text-xs font-medium uppercase tracking-wide mb-1 ${
                 displayResults.summary.max_stress > 1.0 ? 'text-red-700' : 'text-green-700'
               }`}>
                 {labels.peakStress[language]}
               </p>
-              <p className={`text-3xl font-bold ${
+              <p className={`text-2xl md:text-3xl font-bold ${
                 displayResults.summary.max_stress > 1.0 ? 'text-red-900' : 'text-green-900'
               }`}>
                 {(displayResults.summary.max_stress * 100).toFixed(1)}%
@@ -204,12 +279,12 @@ export function ResultsPanel({
             </div>
 
             {/* High-Stress Days */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200">
-              <p className="text-xs font-medium text-orange-700 uppercase tracking-wide mb-1">
+            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-3 md:p-4 border border-orange-200">
+              <p className="text-[10px] md:text-xs font-medium text-orange-700 uppercase tracking-wide mb-1">
                 {labels.highStressDays[language]}
               </p>
-              <p className="text-3xl font-bold text-orange-900">{highStressDays}</p>
-              <p className="text-xs text-orange-700 mt-2">
+              <p className="text-2xl md:text-3xl font-bold text-orange-900">{highStressDays}</p>
+              <p className="text-[10px] md:text-xs text-orange-700 mt-2">
                 {((highStressDays / displayResults.daily_results.length) * 100).toFixed(0)}%{' '}
                 {language === 'en' ? 'of period' : 'del período'}
               </p>
@@ -231,87 +306,99 @@ export function ResultsPanel({
             {labels.chartTitle[language]}
           </h3>
           <StressChart
+            ref={chartRef}
             data={displayResults.daily_results}
             language={language}
             height={300}
           />
         </div>
 
-        {/* Top 5 Stressed Regions Table */}
+        {/* Top 5 Stressed Regions Table - horizontal scroll on mobile */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          <h3 className="text-xs md:text-sm font-semibold text-gray-700 mb-2 md:mb-3">
             {labels.topRegionsTitle[language]}
           </h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    #
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    {labels.regionName[language]}
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    {labels.avgStressCol[language]}
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                    {labels.peakStressCol[language]}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {displayResults.summary.top_stressed_regions.map((region, index) => (
-                  <tr key={region.region_id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {index + 1}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                      {region.region_name}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        region.avg_stress > 1.0
-                          ? 'bg-red-100 text-red-800'
-                          : region.avg_stress > 0.9
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-green-100 text-green-800'
-                      }`}>
-                        {(region.avg_stress * 100).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                      {((region.avg_stress + 0.1) * 100).toFixed(1)}%
-                    </td>
+          <div className="overflow-x-auto -mx-2 md:mx-0">
+            <div className="inline-block min-w-full align-middle px-2 md:px-0">
+              <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-2 md:px-4 py-2 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      #
+                    </th>
+                    <th className="px-2 md:px-4 py-2 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      {labels.regionName[language]}
+                    </th>
+                    <th className="px-2 md:px-4 py-2 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      {labels.avgStressCol[language]}
+                    </th>
+                    <th className="px-2 md:px-4 py-2 md:py-3 text-left text-[10px] md:text-xs font-medium text-gray-700 uppercase tracking-wider">
+                      {labels.peakStressCol[language]}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {displayResults.summary.top_stressed_regions.map((region, index) => (
+                    <tr key={region.region_id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm font-medium text-gray-900">
+                        {index + 1}
+                      </td>
+                      <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-gray-900">
+                        {region.region_name}
+                      </td>
+                      <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm">
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] md:text-xs font-medium ${
+                          region.avg_stress > 1.0
+                            ? 'bg-red-100 text-red-800'
+                            : region.avg_stress > 0.9
+                              ? 'bg-yellow-100 text-yellow-800'
+                              : 'bg-green-100 text-green-800'
+                        }`}>
+                          {(region.avg_stress * 100).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td className="px-2 md:px-4 py-2 md:py-3 whitespace-nowrap text-xs md:text-sm text-gray-500">
+                        {((region.avg_stress + 0.1) * 100).toFixed(1)}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         {/* Export Buttons */}
         <div className="flex items-center justify-end space-x-3 pt-4 border-t">
           <button
-            disabled
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+            onClick={handleExportCSV}
+            disabled={!results}
+            className="inline-flex items-center px-3 md:px-4 py-2 border border-gray-300 rounded-lg text-xs md:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            aria-label={language === 'en' ? 'Export data as CSV' : 'Exportar datos como CSV'}
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-1.5 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            {labels.exportCSV[language]}
+            <span className="hidden sm:inline">{labels.exportCSV[language]}</span>
+            <span className="sm:hidden">CSV</span>
           </button>
           <button
-            disabled
-            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-400 bg-gray-50 cursor-not-allowed"
+            onClick={handleExportPNG}
+            disabled={!results}
+            className="inline-flex items-center px-3 md:px-4 py-2 border border-gray-300 rounded-lg text-xs md:text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            aria-label={language === 'en' ? 'Export chart as PNG image' : 'Exportar gráfico como imagen PNG'}
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-1.5 md:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            {labels.exportPNG[language]}
+            <span className="hidden sm:inline">{labels.exportPNG[language]}</span>
+            <span className="sm:hidden">PNG</span>
           </button>
         </div>
       </div>
     </div>
   );
 }
+
+// Memoized export for performance optimization
+export const ResultsPanel = memo(ResultsPanelComponent);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -51,15 +51,19 @@ interface StressChartProps {
  * - Bilingual support (EN/ES)
  * - Tooltips with formatted data
  * - Grid lines and axis labels
+ * - Supports ref forwarding for PNG export
  *
  * @example
+ * const chartRef = useRef();
  * <StressChart
+ *   ref={chartRef}
  *   data={simulationResults}
  *   language="en"
  *   height={300}
  * />
  */
-export function StressChart({ data, language = 'en', height = 300 }: StressChartProps) {
+export const StressChart = forwardRef<ChartJS<'line'> | undefined, StressChartProps>(
+  function StressChart({ data, language = 'en', height = 300 }, ref) {
   const labels = {
     title: { en: 'Infrastructure Stress Over Time', es: 'Estrés de Infraestructura en el Tiempo' },
     yAxis: { en: 'Stress Ratio', es: 'Relación de Estrés' },
@@ -241,7 +245,7 @@ export function StressChart({ data, language = 'en', height = 300 }: StressChart
 
   return (
     <div className="relative" style={{ height }}>
-      <Line data={chartData} options={options} />
+      <Line ref={ref} data={chartData} options={options} />
 
       {/* Legend note below chart */}
       <div className="mt-2 flex items-center justify-center text-xs text-gray-500">
@@ -256,7 +260,7 @@ export function StressChart({ data, language = 'en', height = 300 }: StressChart
       </div>
     </div>
   );
-}
+});
 
 interface EnergyMixChartProps {
   /** Array of simulation results to visualize */

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { IngestStats, IngestRequest, IngestResponse } from '@/lib/types';
+import { LoadingSpinner } from './LoadingSpinner';
 
 /**
  * Upload status types
@@ -293,17 +294,17 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
     const isDisabled = uploadData.status === 'uploading';
 
     return (
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-          <span className="text-lg">{colors.icon}</span>
+      <div className="space-y-2 md:space-y-3">
+        <h3 className="text-xs sm:text-sm font-semibold text-gray-900 flex items-center gap-2">
+          <span className="text-base sm:text-lg">{colors.icon}</span>
           {title}
         </h3>
 
-        {/* Upload Area */}
+        {/* Upload Area - smaller on mobile */}
         <div
           onDrop={(e) => handleDrop(e, type)}
           onDragOver={handleDragOver}
-          className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all ${colors.border} ${colors.bg} ${
+          className={`relative border-2 border-dashed rounded-lg p-4 md:p-8 text-center transition-all touch-manipulation ${colors.border} ${colors.bg} ${
             isDisabled ? 'opacity-50 cursor-not-allowed' : `${colors.hover} cursor-pointer`
           }`}
         >
@@ -315,10 +316,10 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
             disabled={isDisabled}
           />
 
-          {/* Icon */}
-          <div className="mb-3">
+          {/* Icon - smaller on mobile */}
+          <div className="mb-2 md:mb-3">
             <svg
-              className={`mx-auto h-12 w-12 ${colors.text}`}
+              className={`mx-auto h-8 w-8 md:h-12 md:w-12 ${colors.text}`}
               stroke="currentColor"
               fill="none"
               viewBox="0 0 48 48"
@@ -333,12 +334,12 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
             </svg>
           </div>
 
-          {/* Text */}
-          <p className="text-sm text-gray-600 mb-1">
+          {/* Text - smaller on mobile */}
+          <p className="text-xs md:text-sm text-gray-600 mb-1">
             {labels.dragDrop[language]}{' '}
             <span className={`font-medium ${colors.text}`}>{labels.clickUpload[language]}</span>
           </p>
-          <p className="text-xs text-gray-500">{labels.csvOnly[language]}</p>
+          <p className="text-[10px] md:text-xs text-gray-500">{labels.csvOnly[language]}</p>
         </div>
 
         {/* File Info */}
@@ -374,28 +375,13 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
 
         {/* Status Messages */}
         {uploadData.status === 'uploading' && (
-          <div className="flex items-center justify-center space-x-3 py-4 bg-blue-50 rounded-lg border border-blue-200">
-            <svg
-              className="animate-spin h-6 w-6 text-blue-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            <span className="text-sm font-medium text-blue-900">{labels.uploading[language]}</span>
+          <div className="py-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+            <LoadingSpinner
+              size="md"
+              color="text-blue-600"
+              text={labels.uploading[language]}
+              center
+            />
           </div>
         )}
 
@@ -489,11 +475,11 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
           </div>
         )}
 
-        {/* Action Buttons */}
+        {/* Action Buttons - touch-friendly */}
         {uploadData.file && uploadData.status === 'idle' && (
           <button
             onClick={() => handleUpload(type)}
-            className={`w-full px-4 py-3 ${colors.button} text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm`}
+            className={`w-full px-4 py-3 min-h-[44px] ${colors.button} text-white text-sm md:text-base font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm touch-manipulation`}
           >
             {labels.uploadButton[language]}
           </button>
@@ -502,7 +488,7 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
         {uploadData.status === 'success' && (
           <button
             onClick={() => handleReset(type)}
-            className="w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm"
+            className="w-full px-4 py-3 min-h-[44px] bg-gray-600 hover:bg-gray-700 text-white text-sm md:text-base font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm touch-manipulation"
           >
             {labels.uploadAgain[language]}
           </button>
@@ -511,7 +497,7 @@ export function UploadPanel({ language = 'en', onUpload }: UploadPanelProps) {
         {uploadData.status === 'error' && (
           <button
             onClick={() => handleReset(type)}
-            className="w-full px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm"
+            className="w-full px-4 py-3 min-h-[44px] bg-gray-600 hover:bg-gray-700 text-white text-sm md:text-base font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors shadow-sm touch-manipulation"
           >
             {labels.uploadAgain[language]}
           </button>

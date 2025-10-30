@@ -1,0 +1,1681 @@
+date,region_name,crop_type,yield_kg_per_hectare,rainfall_mm,temperature_avg_c,soil_moisture_pct
+2024-09-15,San Salvador,coffee,821,24.2,24.1,37.1
+2024-09-15,San Salvador,sugar_cane,62709,24.2,24.1,37.1
+2024-09-15,San Salvador,corn,1803,24.2,24.1,37.1
+2024-09-15,San Salvador,beans,783,24.2,24.1,37.1
+2024-09-15,La Libertad,coffee,597,24.2,29.9,33.8
+2024-09-15,La Libertad,sugar_cane,57722,24.2,29.9,33.8
+2024-09-15,La Libertad,corn,1457,24.2,29.9,33.8
+2024-09-15,La Libertad,beans,595,24.2,29.9,33.8
+2024-09-15,Santa Ana,coffee,927,24.2,20.4,40.8
+2024-09-15,Santa Ana,sugar_cane,53115,24.2,20.4,40.8
+2024-09-15,Santa Ana,corn,2063,24.2,20.4,40.8
+2024-09-15,Santa Ana,beans,698,24.2,20.4,40.8
+2024-09-15,Sonsonate,coffee,599,24.2,26.1,41.4
+2024-09-15,Sonsonate,sugar_cane,68985,24.2,26.1,41.4
+2024-09-15,Sonsonate,corn,1866,24.2,26.1,41.4
+2024-09-15,Sonsonate,beans,611,24.2,26.1,41.4
+2024-09-15,La Paz,coffee,637,24.2,26.5,35.6
+2024-09-15,La Paz,sugar_cane,62267,24.2,26.5,35.6
+2024-09-15,La Paz,corn,1895,24.2,26.5,35.6
+2024-09-15,La Paz,beans,627,24.2,26.5,35.6
+2024-09-15,Usulután,coffee,688,24.2,28.6,41.1
+2024-09-15,Usulután,sugar_cane,71563,24.2,28.6,41.1
+2024-09-15,Usulután,corn,1600,24.2,28.6,41.1
+2024-09-15,Usulután,beans,651,24.2,28.6,41.1
+2024-09-15,San Miguel,coffee,885,24.2,22.6,35
+2024-09-15,San Miguel,sugar_cane,55788,24.2,22.6,35
+2024-09-15,San Miguel,corn,1889,24.2,22.6,35
+2024-09-15,San Miguel,beans,720,24.2,22.6,35
+2024-09-15,Morazán,coffee,947,24.2,18.2,37.4
+2024-09-15,Morazán,sugar_cane,44944,24.2,18.2,37.4
+2024-09-15,Morazán,corn,1743,24.2,18.2,37.4
+2024-09-15,Morazán,beans,640,24.2,18.2,37.4
+2024-09-15,La Unión,coffee,710,24.2,27.1,38.5
+2024-09-15,La Unión,sugar_cane,70263,24.2,27.1,38.5
+2024-09-15,La Unión,corn,2050,24.2,27.1,38.5
+2024-09-15,La Unión,beans,659,24.2,27.1,38.5
+2024-09-15,Cuscatlán,coffee,663,24.2,23.2,33.7
+2024-09-15,Cuscatlán,sugar_cane,53687,24.2,23.2,33.7
+2024-09-15,Cuscatlán,corn,1527,24.2,23.2,33.7
+2024-09-15,Cuscatlán,beans,586,24.2,23.2,33.7
+2024-09-15,Cabañas,coffee,879,24.2,24.4,40.6
+2024-09-15,Cabañas,sugar_cane,64473,24.2,24.4,40.6
+2024-09-15,Cabañas,corn,2019,24.2,24.4,40.6
+2024-09-15,Cabañas,beans,719,24.2,24.4,40.6
+2024-09-15,Chalatenango,coffee,971,24.2,19.8,37.6
+2024-09-15,Chalatenango,sugar_cane,41648,24.2,19.8,37.6
+2024-09-15,Chalatenango,corn,2048,24.2,19.8,37.6
+2024-09-15,Chalatenango,beans,611,24.2,19.8,37.6
+2024-09-15,Ahuachapán,coffee,905,24.2,19.7,33.9
+2024-09-15,Ahuachapán,sugar_cane,39549,24.2,19.7,33.9
+2024-09-15,Ahuachapán,corn,1634,24.2,19.7,33.9
+2024-09-15,Ahuachapán,beans,587,24.2,19.7,33.9
+2024-09-15,San Vicente,coffee,755,24.2,26,34.4
+2024-09-15,San Vicente,sugar_cane,49918,24.2,26,34.4
+2024-09-15,San Vicente,corn,1711,24.2,26,34.4
+2024-09-15,San Vicente,beans,685,24.2,26,34.4
+2024-09-16,San Salvador,coffee,749,32,23.9,34.6
+2024-09-16,San Salvador,sugar_cane,53958,32,23.9,34.6
+2024-09-16,San Salvador,corn,1492,32,23.9,34.6
+2024-09-16,San Salvador,beans,1031,32,23.9,34.6
+2024-09-16,La Libertad,coffee,534,32,26.3,25.6
+2024-09-16,La Libertad,sugar_cane,56387,32,26.3,25.6
+2024-09-16,La Libertad,corn,1736,32,26.3,25.6
+2024-09-16,La Libertad,beans,849,32,26.3,25.6
+2024-09-16,Santa Ana,coffee,1125,32,20.8,36.9
+2024-09-16,Santa Ana,sugar_cane,52806,32,20.8,36.9
+2024-09-16,Santa Ana,corn,1799,32,20.8,36.9
+2024-09-16,Santa Ana,beans,1249,32,20.8,36.9
+2024-09-16,Sonsonate,coffee,545,32,27.8,34.7
+2024-09-16,Sonsonate,sugar_cane,57741,32,27.8,34.7
+2024-09-16,Sonsonate,corn,1606,32,27.8,34.7
+2024-09-16,Sonsonate,beans,923,32,27.8,34.7
+2024-09-16,La Paz,coffee,613,32,27.5,26.1
+2024-09-16,La Paz,sugar_cane,58992,32,27.5,26.1
+2024-09-16,La Paz,corn,1581,32,27.5,26.1
+2024-09-16,La Paz,beans,939,32,27.5,26.1
+2024-09-16,Usulután,coffee,569,32,28.7,34.9
+2024-09-16,Usulután,sugar_cane,55760,32,28.7,34.9
+2024-09-16,Usulután,corn,1328,32,28.7,34.9
+2024-09-16,Usulután,beans,948,32,28.7,34.9
+2024-09-16,San Miguel,coffee,697,32,25.1,32.1
+2024-09-16,San Miguel,sugar_cane,47928,32,25.1,32.1
+2024-09-16,San Miguel,corn,1507,32,25.1,32.1
+2024-09-16,San Miguel,beans,1046,32,25.1,32.1
+2024-09-16,Morazán,coffee,952,32,20,31.1
+2024-09-16,Morazán,sugar_cane,43800,32,20,31.1
+2024-09-16,Morazán,corn,1708,32,20,31.1
+2024-09-16,Morazán,beans,947,32,20,31.1
+2024-09-16,La Unión,coffee,535,32,29.3,30.9
+2024-09-16,La Unión,sugar_cane,62785,32,29.3,30.9
+2024-09-16,La Unión,corn,1405,32,29.3,30.9
+2024-09-16,La Unión,beans,967,32,29.3,30.9
+2024-09-16,Cuscatlán,coffee,704,32,25.9,31.6
+2024-09-16,Cuscatlán,sugar_cane,53456,32,25.9,31.6
+2024-09-16,Cuscatlán,corn,1503,32,25.9,31.6
+2024-09-16,Cuscatlán,beans,995,32,25.9,31.6
+2024-09-16,Cabañas,coffee,710,32,23,34.5
+2024-09-16,Cabañas,sugar_cane,49900,32,23,34.5
+2024-09-16,Cabañas,corn,1717,32,23,34.5
+2024-09-16,Cabañas,beans,945,32,23,34.5
+2024-09-16,Chalatenango,coffee,844,32,20.9,33.2
+2024-09-16,Chalatenango,sugar_cane,43693,32,20.9,33.2
+2024-09-16,Chalatenango,corn,1543,32,20.9,33.2
+2024-09-16,Chalatenango,beans,905,32,20.9,33.2
+2024-09-16,Ahuachapán,coffee,948,32,20.4,24.3
+2024-09-16,Ahuachapán,sugar_cane,45172,32,20.4,24.3
+2024-09-16,Ahuachapán,corn,1639,32,20.4,24.3
+2024-09-16,Ahuachapán,beans,922,32,20.4,24.3
+2024-09-16,San Vicente,coffee,704,32,22.9,32.4
+2024-09-16,San Vicente,sugar_cane,45802,32,22.9,32.4
+2024-09-16,San Vicente,corn,1733,32,22.9,32.4
+2024-09-16,San Vicente,beans,1031,32,22.9,32.4
+2024-09-17,San Salvador,coffee,790,35.6,25.6,26.1
+2024-09-17,San Salvador,sugar_cane,49499,35.6,25.6,26.1
+2024-09-17,San Salvador,corn,1540,35.6,25.6,26.1
+2024-09-17,San Salvador,beans,1006,35.6,25.6,26.1
+2024-09-17,La Libertad,coffee,594,35.6,29.5,24.1
+2024-09-17,La Libertad,sugar_cane,57067,35.6,29.5,24.1
+2024-09-17,La Libertad,corn,1550,35.6,29.5,24.1
+2024-09-17,La Libertad,beans,890,35.6,29.5,24.1
+2024-09-17,Santa Ana,coffee,970,35.6,20,28.6
+2024-09-17,Santa Ana,sugar_cane,46651,35.6,20,28.6
+2024-09-17,Santa Ana,corn,1575,35.6,20,28.6
+2024-09-17,Santa Ana,beans,1027,35.6,20,28.6
+2024-09-17,Sonsonate,coffee,600,35.6,30.2,30.2
+2024-09-17,Sonsonate,sugar_cane,55448,35.6,30.2,30.2
+2024-09-17,Sonsonate,corn,1413,35.6,30.2,30.2
+2024-09-17,Sonsonate,beans,873,35.6,30.2,30.2
+2024-09-17,La Paz,coffee,612,35.6,30,27.4
+2024-09-17,La Paz,sugar_cane,53336,35.6,30,27.4
+2024-09-17,La Paz,corn,1416,35.6,30,27.4
+2024-09-17,La Paz,beans,912,35.6,30,27.4
+2024-09-17,Usulután,coffee,537,35.6,27.4,26.7
+2024-09-17,Usulután,sugar_cane,53534,35.6,27.4,26.7
+2024-09-17,Usulután,corn,1794,35.6,27.4,26.7
+2024-09-17,Usulután,beans,942,35.6,27.4,26.7
+2024-09-17,San Miguel,coffee,717,35.6,24.9,25.3
+2024-09-17,San Miguel,sugar_cane,50323,35.6,24.9,25.3
+2024-09-17,San Miguel,corn,1771,35.6,24.9,25.3
+2024-09-17,San Miguel,beans,1042,35.6,24.9,25.3
+2024-09-17,Morazán,coffee,923,35.6,18.7,25.6
+2024-09-17,Morazán,sugar_cane,39539,35.6,18.7,25.6
+2024-09-17,Morazán,corn,1577,35.6,18.7,25.6
+2024-09-17,Morazán,beans,960,35.6,18.7,25.6
+2024-09-17,La Unión,coffee,608,35.6,27.8,25.4
+2024-09-17,La Unión,sugar_cane,53838,35.6,27.8,25.4
+2024-09-17,La Unión,corn,1776,35.6,27.8,25.4
+2024-09-17,La Unión,beans,939,35.6,27.8,25.4
+2024-09-17,Cuscatlán,coffee,717,35.6,23.4,25.5
+2024-09-17,Cuscatlán,sugar_cane,48273,35.6,23.4,25.5
+2024-09-17,Cuscatlán,corn,1555,35.6,23.4,25.5
+2024-09-17,Cuscatlán,beans,963,35.6,23.4,25.5
+2024-09-17,Cabañas,coffee,714,35.6,23.1,27.1
+2024-09-17,Cabañas,sugar_cane,51555,35.6,23.1,27.1
+2024-09-17,Cabañas,corn,1697,35.6,23.1,27.1
+2024-09-17,Cabañas,beans,1023,35.6,23.1,27.1
+2024-09-17,Chalatenango,coffee,887,35.6,21.6,30.3
+2024-09-17,Chalatenango,sugar_cane,42532,35.6,21.6,30.3
+2024-09-17,Chalatenango,corn,1705,35.6,21.6,30.3
+2024-09-17,Chalatenango,beans,969,35.6,21.6,30.3
+2024-09-17,Ahuachapán,coffee,892,35.6,18.7,26.8
+2024-09-17,Ahuachapán,sugar_cane,37531,35.6,18.7,26.8
+2024-09-17,Ahuachapán,corn,1501,35.6,18.7,26.8
+2024-09-17,Ahuachapán,beans,805,35.6,18.7,26.8
+2024-09-17,San Vicente,coffee,728,35.6,22.8,26
+2024-09-17,San Vicente,sugar_cane,55771,35.6,22.8,26
+2024-09-17,San Vicente,corn,1701,35.6,22.8,26
+2024-09-17,San Vicente,beans,1073,35.6,22.8,26
+2024-09-18,San Salvador,coffee,675,33.5,26.7,20.3
+2024-09-18,San Salvador,sugar_cane,54356,33.5,26.7,20.3
+2024-09-18,San Salvador,corn,1574,33.5,26.7,20.3
+2024-09-18,San Salvador,beans,898,33.5,26.7,20.3
+2024-09-18,La Libertad,coffee,615,33.5,27.3,22
+2024-09-18,La Libertad,sugar_cane,62193,33.5,27.3,22
+2024-09-18,La Libertad,corn,1767,33.5,27.3,22
+2024-09-18,La Libertad,beans,855,33.5,27.3,22
+2024-09-18,Santa Ana,coffee,881,33.5,21.1,25.8
+2024-09-18,Santa Ana,sugar_cane,48620,33.5,21.1,25.8
+2024-09-18,Santa Ana,corn,1652,33.5,21.1,25.8
+2024-09-18,Santa Ana,beans,1014,33.5,21.1,25.8
+2024-09-18,Sonsonate,coffee,637,33.5,30.3,26.3
+2024-09-18,Sonsonate,sugar_cane,57111,33.5,30.3,26.3
+2024-09-18,Sonsonate,corn,1582,33.5,30.3,26.3
+2024-09-18,Sonsonate,beans,921,33.5,30.3,26.3
+2024-09-18,La Paz,coffee,529,33.5,28.9,26.7
+2024-09-18,La Paz,sugar_cane,58936,33.5,28.9,26.7
+2024-09-18,La Paz,corn,1568,33.5,28.9,26.7
+2024-09-18,La Paz,beans,953,33.5,28.9,26.7
+2024-09-18,Usulután,coffee,639,33.5,28.4,28.3
+2024-09-18,Usulután,sugar_cane,54154,33.5,28.4,28.3
+2024-09-18,Usulután,corn,1442,33.5,28.4,28.3
+2024-09-18,Usulután,beans,875,33.5,28.4,28.3
+2024-09-18,San Miguel,coffee,715,33.5,26.2,21.7
+2024-09-18,San Miguel,sugar_cane,55026,33.5,26.2,21.7
+2024-09-18,San Miguel,corn,1676,33.5,26.2,21.7
+2024-09-18,San Miguel,beans,878,33.5,26.2,21.7
+2024-09-18,Morazán,coffee,857,33.5,21.8,26.7
+2024-09-18,Morazán,sugar_cane,49822,33.5,21.8,26.7
+2024-09-18,Morazán,corn,1621,33.5,21.8,26.7
+2024-09-18,Morazán,beans,1049,33.5,21.8,26.7
+2024-09-18,La Unión,coffee,562,33.5,29.1,23
+2024-09-18,La Unión,sugar_cane,54312,33.5,29.1,23
+2024-09-18,La Unión,corn,1597,33.5,29.1,23
+2024-09-18,La Unión,beans,893,33.5,29.1,23
+2024-09-18,Cuscatlán,coffee,823,33.5,24.7,21.4
+2024-09-18,Cuscatlán,sugar_cane,49182,33.5,24.7,21.4
+2024-09-18,Cuscatlán,corn,1583,33.5,24.7,21.4
+2024-09-18,Cuscatlán,beans,1051,33.5,24.7,21.4
+2024-09-18,Cabañas,coffee,828,33.5,24.9,21
+2024-09-18,Cabañas,sugar_cane,48889,33.5,24.9,21
+2024-09-18,Cabañas,corn,1600,33.5,24.9,21
+2024-09-18,Cabañas,beans,920,33.5,24.9,21
+2024-09-18,Chalatenango,coffee,884,33.5,19.7,29.8
+2024-09-18,Chalatenango,sugar_cane,40268,33.5,19.7,29.8
+2024-09-18,Chalatenango,corn,1553,33.5,19.7,29.8
+2024-09-18,Chalatenango,beans,912,33.5,19.7,29.8
+2024-09-18,Ahuachapán,coffee,915,33.5,22.6,23.5
+2024-09-18,Ahuachapán,sugar_cane,43702,33.5,22.6,23.5
+2024-09-18,Ahuachapán,corn,1794,33.5,22.6,23.5
+2024-09-18,Ahuachapán,beans,932,33.5,22.6,23.5
+2024-09-18,San Vicente,coffee,811,33.5,24.6,23.1
+2024-09-18,San Vicente,sugar_cane,56149,33.5,24.6,23.1
+2024-09-18,San Vicente,corn,1703,33.5,24.6,23.1
+2024-09-18,San Vicente,beans,910,33.5,24.6,23.1
+2024-09-19,San Salvador,coffee,778,25.3,23.8,20
+2024-09-19,San Salvador,sugar_cane,53191,25.3,23.8,20
+2024-09-19,San Salvador,corn,1699,25.3,23.8,20
+2024-09-19,San Salvador,beans,675,25.3,23.8,20
+2024-09-19,La Libertad,coffee,515,25.3,30.5,20
+2024-09-19,La Libertad,sugar_cane,54107,25.3,30.5,20
+2024-09-19,La Libertad,corn,1495,25.3,30.5,20
+2024-09-19,La Libertad,beans,518,25.3,30.5,20
+2024-09-19,Santa Ana,coffee,816,25.3,19.9,27.1
+2024-09-19,Santa Ana,sugar_cane,36119,25.3,19.9,27.1
+2024-09-19,Santa Ana,corn,1715,25.3,19.9,27.1
+2024-09-19,Santa Ana,beans,592,25.3,19.9,27.1
+2024-09-19,Sonsonate,coffee,587,25.3,28.9,25.6
+2024-09-19,Sonsonate,sugar_cane,52214,25.3,28.9,25.6
+2024-09-19,Sonsonate,corn,1405,25.3,28.9,25.6
+2024-09-19,Sonsonate,beans,590,25.3,28.9,25.6
+2024-09-19,La Paz,coffee,522,25.3,30.1,21.7
+2024-09-19,La Paz,sugar_cane,58502,25.3,30.1,21.7
+2024-09-19,La Paz,corn,1454,25.3,30.1,21.7
+2024-09-19,La Paz,beans,605,25.3,30.1,21.7
+2024-09-19,Usulután,coffee,577,25.3,28.6,27.5
+2024-09-19,Usulután,sugar_cane,61934,25.3,28.6,27.5
+2024-09-19,Usulután,corn,1606,25.3,28.6,27.5
+2024-09-19,Usulután,beans,591,25.3,28.6,27.5
+2024-09-19,San Miguel,coffee,751,25.3,25.3,20
+2024-09-19,San Miguel,sugar_cane,51860,25.3,25.3,20
+2024-09-19,San Miguel,corn,1535,25.3,25.3,20
+2024-09-19,San Miguel,beans,631,25.3,25.3,20
+2024-09-19,Morazán,coffee,826,25.3,22.5,27
+2024-09-19,Morazán,sugar_cane,40361,25.3,22.5,27
+2024-09-19,Morazán,corn,1754,25.3,22.5,27
+2024-09-19,Morazán,beans,598,25.3,22.5,27
+2024-09-19,La Unión,coffee,593,25.3,29.2,20
+2024-09-19,La Unión,sugar_cane,58411,25.3,29.2,20
+2024-09-19,La Unión,corn,1507,25.3,29.2,20
+2024-09-19,La Unión,beans,604,25.3,29.2,20
+2024-09-19,Cuscatlán,coffee,772,25.3,24.9,20.1
+2024-09-19,Cuscatlán,sugar_cane,49625,25.3,24.9,20.1
+2024-09-19,Cuscatlán,corn,1631,25.3,24.9,20.1
+2024-09-19,Cuscatlán,beans,647,25.3,24.9,20.1
+2024-09-19,Cabañas,coffee,667,25.3,23.5,20.7
+2024-09-19,Cabañas,sugar_cane,52104,25.3,23.5,20.7
+2024-09-19,Cabañas,corn,1794,25.3,23.5,20.7
+2024-09-19,Cabañas,beans,698,25.3,23.5,20.7
+2024-09-19,Chalatenango,coffee,886,25.3,21.2,20
+2024-09-19,Chalatenango,sugar_cane,44478,25.3,21.2,20
+2024-09-19,Chalatenango,corn,1501,25.3,21.2,20
+2024-09-19,Chalatenango,beans,615,25.3,21.2,20
+2024-09-19,Ahuachapán,coffee,801,25.3,20.1,20
+2024-09-19,Ahuachapán,sugar_cane,46088,25.3,20.1,20
+2024-09-19,Ahuachapán,corn,1779,25.3,20.1,20
+2024-09-19,Ahuachapán,beans,682,25.3,20.1,20
+2024-09-19,San Vicente,coffee,755,25.3,23.7,20
+2024-09-19,San Vicente,sugar_cane,44863,25.3,23.7,20
+2024-09-19,San Vicente,corn,1525,25.3,23.7,20
+2024-09-19,San Vicente,beans,599,25.3,23.7,20
+2024-09-20,San Salvador,coffee,891,45.8,25.9,23.3
+2024-09-20,San Salvador,sugar_cane,56704,45.8,25.9,23.3
+2024-09-20,San Salvador,corn,2470,45.8,25.9,23.3
+2024-09-20,San Salvador,beans,987,45.8,25.9,23.3
+2024-09-20,La Libertad,coffee,688,45.8,31.3,28.5
+2024-09-20,La Libertad,sugar_cane,54136,45.8,31.3,28.5
+2024-09-20,La Libertad,corn,2128,45.8,31.3,28.5
+2024-09-20,La Libertad,beans,946,45.8,31.3,28.5
+2024-09-20,Santa Ana,coffee,858,45.8,19.6,28.2
+2024-09-20,Santa Ana,sugar_cane,38353,45.8,19.6,28.2
+2024-09-20,Santa Ana,corn,2272,45.8,19.6,28.2
+2024-09-20,Santa Ana,beans,949,45.8,19.6,28.2
+2024-09-20,Sonsonate,coffee,635,45.8,31.1,23.3
+2024-09-20,Sonsonate,sugar_cane,60521,45.8,31.1,23.3
+2024-09-20,Sonsonate,corn,2049,45.8,31.1,23.3
+2024-09-20,Sonsonate,beans,857,45.8,31.1,23.3
+2024-09-20,La Paz,coffee,659,45.8,29.9,20.5
+2024-09-20,La Paz,sugar_cane,65225,45.8,29.9,20.5
+2024-09-20,La Paz,corn,2038,45.8,29.9,20.5
+2024-09-20,La Paz,beans,932,45.8,29.9,20.5
+2024-09-20,Usulután,coffee,690,45.8,28.3,30.2
+2024-09-20,Usulután,sugar_cane,65774,45.8,28.3,30.2
+2024-09-20,Usulután,corn,1915,45.8,28.3,30.2
+2024-09-20,Usulután,beans,819,45.8,28.3,30.2
+2024-09-20,San Miguel,coffee,697,45.8,27.3,25.8
+2024-09-20,San Miguel,sugar_cane,58261,45.8,27.3,25.8
+2024-09-20,San Miguel,corn,2381,45.8,27.3,25.8
+2024-09-20,San Miguel,beans,881,45.8,27.3,25.8
+2024-09-20,Morazán,coffee,1017,45.8,20.7,31.3
+2024-09-20,Morazán,sugar_cane,44605,45.8,20.7,31.3
+2024-09-20,Morazán,corn,2249,45.8,20.7,31.3
+2024-09-20,Morazán,beans,1018,45.8,20.7,31.3
+2024-09-20,La Unión,coffee,689,45.8,28.7,20
+2024-09-20,La Unión,sugar_cane,65122,45.8,28.7,20
+2024-09-20,La Unión,corn,2023,45.8,28.7,20
+2024-09-20,La Unión,beans,922,45.8,28.7,20
+2024-09-20,Cuscatlán,coffee,738,45.8,27.2,25.1
+2024-09-20,Cuscatlán,sugar_cane,53940,45.8,27.2,25.1
+2024-09-20,Cuscatlán,corn,2508,45.8,27.2,25.1
+2024-09-20,Cuscatlán,beans,873,45.8,27.2,25.1
+2024-09-20,Cabañas,coffee,776,45.8,24.5,20.6
+2024-09-20,Cabañas,sugar_cane,61260,45.8,24.5,20.6
+2024-09-20,Cabañas,corn,2281,45.8,24.5,20.6
+2024-09-20,Cabañas,beans,916,45.8,24.5,20.6
+2024-09-20,Chalatenango,coffee,1039,45.8,20.2,25.4
+2024-09-20,Chalatenango,sugar_cane,49211,45.8,20.2,25.4
+2024-09-20,Chalatenango,corn,2288,45.8,20.2,25.4
+2024-09-20,Chalatenango,beans,988,45.8,20.2,25.4
+2024-09-20,Ahuachapán,coffee,883,45.8,22.3,21.9
+2024-09-20,Ahuachapán,sugar_cane,43943,45.8,22.3,21.9
+2024-09-20,Ahuachapán,corn,2265,45.8,22.3,21.9
+2024-09-20,Ahuachapán,beans,898,45.8,22.3,21.9
+2024-09-20,San Vicente,coffee,677,45.8,26.5,21.7
+2024-09-20,San Vicente,sugar_cane,57150,45.8,26.5,21.7
+2024-09-20,San Vicente,corn,2480,45.8,26.5,21.7
+2024-09-20,San Vicente,beans,946,45.8,26.5,21.7
+2024-09-21,San Salvador,coffee,771,49.9,25.9,29.4
+2024-09-21,San Salvador,sugar_cane,61470,49.9,25.9,29.4
+2024-09-21,San Salvador,corn,2401,49.9,25.9,29.4
+2024-09-21,San Salvador,beans,1015,49.9,25.9,29.4
+2024-09-21,La Libertad,coffee,600,49.9,30.2,26.9
+2024-09-21,La Libertad,sugar_cane,57090,49.9,30.2,26.9
+2024-09-21,La Libertad,corn,1928,49.9,30.2,26.9
+2024-09-21,La Libertad,beans,922,49.9,30.2,26.9
+2024-09-21,Santa Ana,coffee,1119,49.9,21.2,35.2
+2024-09-21,Santa Ana,sugar_cane,55500,49.9,21.2,35.2
+2024-09-21,Santa Ana,corn,2521,49.9,21.2,35.2
+2024-09-21,Santa Ana,beans,1084,49.9,21.2,35.2
+2024-09-21,Sonsonate,coffee,630,49.9,31.6,24.8
+2024-09-21,Sonsonate,sugar_cane,63187,49.9,31.6,24.8
+2024-09-21,Sonsonate,corn,2053,49.9,31.6,24.8
+2024-09-21,Sonsonate,beans,900,49.9,31.6,24.8
+2024-09-21,La Paz,coffee,625,49.9,29.3,24
+2024-09-21,La Paz,sugar_cane,60395,49.9,29.3,24
+2024-09-21,La Paz,corn,1896,49.9,29.3,24
+2024-09-21,La Paz,beans,962,49.9,29.3,24
+2024-09-21,Usulután,coffee,653,49.9,30.5,28.9
+2024-09-21,Usulután,sugar_cane,65161,49.9,30.5,28.9
+2024-09-21,Usulután,corn,2024,49.9,30.5,28.9
+2024-09-21,Usulután,beans,905,49.9,30.5,28.9
+2024-09-21,San Miguel,coffee,748,49.9,26.8,32.6
+2024-09-21,San Miguel,sugar_cane,57623,49.9,26.8,32.6
+2024-09-21,San Miguel,corn,2478,49.9,26.8,32.6
+2024-09-21,San Miguel,beans,880,49.9,26.8,32.6
+2024-09-21,Morazán,coffee,1195,49.9,23.7,35.2
+2024-09-21,Morazán,sugar_cane,54719,49.9,23.7,35.2
+2024-09-21,Morazán,corn,2484,49.9,23.7,35.2
+2024-09-21,Morazán,beans,1051,49.9,23.7,35.2
+2024-09-21,La Unión,coffee,701,49.9,28.4,22.8
+2024-09-21,La Unión,sugar_cane,66956,49.9,28.4,22.8
+2024-09-21,La Unión,corn,2159,49.9,28.4,22.8
+2024-09-21,La Unión,beans,886,49.9,28.4,22.8
+2024-09-21,Cuscatlán,coffee,777,49.9,24.8,27.6
+2024-09-21,Cuscatlán,sugar_cane,57779,49.9,24.8,27.6
+2024-09-21,Cuscatlán,corn,2530,49.9,24.8,27.6
+2024-09-21,Cuscatlán,beans,1052,49.9,24.8,27.6
+2024-09-21,Cabañas,coffee,792,49.9,25.6,26.8
+2024-09-21,Cabañas,sugar_cane,53849,49.9,25.6,26.8
+2024-09-21,Cabañas,corn,2326,49.9,25.6,26.8
+2024-09-21,Cabañas,beans,969,49.9,25.6,26.8
+2024-09-21,Chalatenango,coffee,889,49.9,20.3,30.5
+2024-09-21,Chalatenango,sugar_cane,47294,49.9,20.3,30.5
+2024-09-21,Chalatenango,corn,2403,49.9,20.3,30.5
+2024-09-21,Chalatenango,beans,1061,49.9,20.3,30.5
+2024-09-21,Ahuachapán,coffee,1032,49.9,21,27.1
+2024-09-21,Ahuachapán,sugar_cane,49019,49.9,21,27.1
+2024-09-21,Ahuachapán,corn,2412,49.9,21,27.1
+2024-09-21,Ahuachapán,beans,1009,49.9,21,27.1
+2024-09-21,San Vicente,coffee,820,49.9,25.5,28.8
+2024-09-21,San Vicente,sugar_cane,56290,49.9,25.5,28.8
+2024-09-21,San Vicente,corn,2514,49.9,25.5,28.8
+2024-09-21,San Vicente,beans,986,49.9,25.5,28.8
+2024-09-22,San Salvador,coffee,833,47.2,25.7,32.9
+2024-09-22,San Salvador,sugar_cane,60794,47.2,25.7,32.9
+2024-09-22,San Salvador,corn,2259,47.2,25.7,32.9
+2024-09-22,San Salvador,beans,975,47.2,25.7,32.9
+2024-09-22,La Libertad,coffee,635,47.2,31,33.2
+2024-09-22,La Libertad,sugar_cane,57988,47.2,31,33.2
+2024-09-22,La Libertad,corn,2162,47.2,31,33.2
+2024-09-22,La Libertad,beans,833,47.2,31,33.2
+2024-09-22,Santa Ana,coffee,1204,47.2,20.3,37.1
+2024-09-22,Santa Ana,sugar_cane,53566,47.2,20.3,37.1
+2024-09-22,Santa Ana,corn,2820,47.2,20.3,37.1
+2024-09-22,Santa Ana,beans,1124,47.2,20.3,37.1
+2024-09-22,Sonsonate,coffee,701,47.2,29.7,25.7
+2024-09-22,Sonsonate,sugar_cane,63436,47.2,29.7,25.7
+2024-09-22,Sonsonate,corn,2277,47.2,29.7,25.7
+2024-09-22,Sonsonate,beans,869,47.2,29.7,25.7
+2024-09-22,La Paz,coffee,642,47.2,28.6,22.5
+2024-09-22,La Paz,sugar_cane,58151,47.2,28.6,22.5
+2024-09-22,La Paz,corn,1956,47.2,28.6,22.5
+2024-09-22,La Paz,beans,901,47.2,28.6,22.5
+2024-09-22,Usulután,coffee,667,47.2,29.1,31.4
+2024-09-22,Usulután,sugar_cane,59694,47.2,29.1,31.4
+2024-09-22,Usulután,corn,2207,47.2,29.1,31.4
+2024-09-22,Usulután,beans,920,47.2,29.1,31.4
+2024-09-22,San Miguel,coffee,815,47.2,25.2,27.9
+2024-09-22,San Miguel,sugar_cane,51032,47.2,25.2,27.9
+2024-09-22,San Miguel,corn,2216,47.2,25.2,27.9
+2024-09-22,San Miguel,beans,916,47.2,25.2,27.9
+2024-09-22,Morazán,coffee,903,47.2,23.6,29.8
+2024-09-22,Morazán,sugar_cane,51623,47.2,23.6,29.8
+2024-09-22,Morazán,corn,2117,47.2,23.6,29.8
+2024-09-22,Morazán,beans,979,47.2,23.6,29.8
+2024-09-22,La Unión,coffee,579,47.2,31.6,27.6
+2024-09-22,La Unión,sugar_cane,61968,47.2,31.6,27.6
+2024-09-22,La Unión,corn,2246,47.2,31.6,27.6
+2024-09-22,La Unión,beans,926,47.2,31.6,27.6
+2024-09-22,Cuscatlán,coffee,693,47.2,27.5,30.1
+2024-09-22,Cuscatlán,sugar_cane,58352,47.2,27.5,30.1
+2024-09-22,Cuscatlán,corn,2356,47.2,27.5,30.1
+2024-09-22,Cuscatlán,beans,890,47.2,27.5,30.1
+2024-09-22,Cabañas,coffee,803,47.2,27.7,28.7
+2024-09-22,Cabañas,sugar_cane,51230,47.2,27.7,28.7
+2024-09-22,Cabañas,corn,2183,47.2,27.7,28.7
+2024-09-22,Cabañas,beans,860,47.2,27.7,28.7
+2024-09-22,Chalatenango,coffee,951,47.2,21.5,33.9
+2024-09-22,Chalatenango,sugar_cane,44193,47.2,21.5,33.9
+2024-09-22,Chalatenango,corn,2441,47.2,21.5,33.9
+2024-09-22,Chalatenango,beans,972,47.2,21.5,33.9
+2024-09-22,Ahuachapán,coffee,949,47.2,22.9,29.9
+2024-09-22,Ahuachapán,sugar_cane,51402,47.2,22.9,29.9
+2024-09-22,Ahuachapán,corn,2333,47.2,22.9,29.9
+2024-09-22,Ahuachapán,beans,1059,47.2,22.9,29.9
+2024-09-22,San Vicente,coffee,760,47.2,27.2,26.6
+2024-09-22,San Vicente,sugar_cane,60457,47.2,27.2,26.6
+2024-09-22,San Vicente,corn,2161,47.2,27.2,26.6
+2024-09-22,San Vicente,beans,946,47.2,27.2,26.6
+2024-09-23,San Salvador,coffee,769,52.8,27.8,33.7
+2024-09-23,San Salvador,sugar_cane,53039,52.8,27.8,33.7
+2024-09-23,San Salvador,corn,2149,52.8,27.8,33.7
+2024-09-23,San Salvador,beans,913,52.8,27.8,33.7
+2024-09-23,La Libertad,coffee,687,52.8,31.6,32.4
+2024-09-23,La Libertad,sugar_cane,56211,52.8,31.6,32.4
+2024-09-23,La Libertad,corn,1923,52.8,31.6,32.4
+2024-09-23,La Libertad,beans,916,52.8,31.6,32.4
+2024-09-23,Santa Ana,coffee,1029,52.8,22.9,33.8
+2024-09-23,Santa Ana,sugar_cane,52540,52.8,22.9,33.8
+2024-09-23,Santa Ana,corn,2187,52.8,22.9,33.8
+2024-09-23,Santa Ana,beans,1073,52.8,22.9,33.8
+2024-09-23,Sonsonate,coffee,626,52.8,29.3,27.3
+2024-09-23,Sonsonate,sugar_cane,59618,52.8,29.3,27.3
+2024-09-23,Sonsonate,corn,2163,52.8,29.3,27.3
+2024-09-23,Sonsonate,beans,920,52.8,29.3,27.3
+2024-09-23,La Paz,coffee,610,52.8,32.1,25.1
+2024-09-23,La Paz,sugar_cane,57778,52.8,32.1,25.1
+2024-09-23,La Paz,corn,2201,52.8,32.1,25.1
+2024-09-23,La Paz,beans,817,52.8,32.1,25.1
+2024-09-23,Usulután,coffee,712,52.8,30.9,33.8
+2024-09-23,Usulután,sugar_cane,64861,52.8,30.9,33.8
+2024-09-23,Usulután,corn,2130,52.8,30.9,33.8
+2024-09-23,Usulután,beans,857,52.8,30.9,33.8
+2024-09-23,San Miguel,coffee,792,52.8,27,27.8
+2024-09-23,San Miguel,sugar_cane,56570,52.8,27,27.8
+2024-09-23,San Miguel,corn,2147,52.8,27,27.8
+2024-09-23,San Miguel,beans,880,52.8,27,27.8
+2024-09-23,Morazán,coffee,894,52.8,22.9,27.4
+2024-09-23,Morazán,sugar_cane,51793,52.8,22.9,27.4
+2024-09-23,Morazán,corn,2302,52.8,22.9,27.4
+2024-09-23,Morazán,beans,1044,52.8,22.9,27.4
+2024-09-23,La Unión,coffee,658,52.8,30.6,33.5
+2024-09-23,La Unión,sugar_cane,56622,52.8,30.6,33.5
+2024-09-23,La Unión,corn,2278,52.8,30.6,33.5
+2024-09-23,La Unión,beans,845,52.8,30.6,33.5
+2024-09-23,Cuscatlán,coffee,796,52.8,24.2,31.7
+2024-09-23,Cuscatlán,sugar_cane,60771,52.8,24.2,31.7
+2024-09-23,Cuscatlán,corn,2271,52.8,24.2,31.7
+2024-09-23,Cuscatlán,beans,1063,52.8,24.2,31.7
+2024-09-23,Cabañas,coffee,820,52.8,27.3,32.9
+2024-09-23,Cabañas,sugar_cane,53843,52.8,27.3,32.9
+2024-09-23,Cabañas,corn,2328,52.8,27.3,32.9
+2024-09-23,Cabañas,beans,889,52.8,27.3,32.9
+2024-09-23,Chalatenango,coffee,1067,52.8,20.8,38.5
+2024-09-23,Chalatenango,sugar_cane,55670,52.8,20.8,38.5
+2024-09-23,Chalatenango,corn,2714,52.8,20.8,38.5
+2024-09-23,Chalatenango,beans,1244,52.8,20.8,38.5
+2024-09-23,Ahuachapán,coffee,895,52.8,21,32.1
+2024-09-23,Ahuachapán,sugar_cane,50350,52.8,21,32.1
+2024-09-23,Ahuachapán,corn,2263,52.8,21,32.1
+2024-09-23,Ahuachapán,beans,1000,52.8,21,32.1
+2024-09-23,San Vicente,coffee,850,52.8,24.7,34.6
+2024-09-23,San Vicente,sugar_cane,57126,52.8,24.7,34.6
+2024-09-23,San Vicente,corn,2241,52.8,24.7,34.6
+2024-09-23,San Vicente,beans,949,52.8,24.7,34.6
+2024-09-24,San Salvador,coffee,1047,57.5,25.3,35.6
+2024-09-24,San Salvador,sugar_cane,69700,57.5,25.3,35.6
+2024-09-24,San Salvador,corn,2688,57.5,25.3,35.6
+2024-09-24,San Salvador,beans,1244,57.5,25.3,35.6
+2024-09-24,La Libertad,coffee,621,57.5,28.5,34.3
+2024-09-24,La Libertad,sugar_cane,58912,57.5,28.5,34.3
+2024-09-24,La Libertad,corn,1966,57.5,28.5,34.3
+2024-09-24,La Libertad,beans,823,57.5,28.5,34.3
+2024-09-24,Santa Ana,coffee,1073,57.5,21.9,39.9
+2024-09-24,Santa Ana,sugar_cane,59439,57.5,21.9,39.9
+2024-09-24,Santa Ana,corn,2563,57.5,21.9,39.9
+2024-09-24,Santa Ana,beans,1121,57.5,21.9,39.9
+2024-09-24,Sonsonate,coffee,691,57.5,28.9,31.1
+2024-09-24,Sonsonate,sugar_cane,68842,57.5,28.9,31.1
+2024-09-24,Sonsonate,corn,2067,57.5,28.9,31.1
+2024-09-24,Sonsonate,beans,944,57.5,28.9,31.1
+2024-09-24,La Paz,coffee,595,57.5,32.2,31.6
+2024-09-24,La Paz,sugar_cane,55528,57.5,32.2,31.6
+2024-09-24,La Paz,corn,2312,57.5,32.2,31.6
+2024-09-24,La Paz,beans,953,57.5,32.2,31.6
+2024-09-24,Usulután,coffee,671,57.5,29.4,32.8
+2024-09-24,Usulután,sugar_cane,60100,57.5,29.4,32.8
+2024-09-24,Usulután,corn,2047,57.5,29.4,32.8
+2024-09-24,Usulután,beans,867,57.5,29.4,32.8
+2024-09-24,San Miguel,coffee,903,57.5,26,33.1
+2024-09-24,San Miguel,sugar_cane,55694,57.5,26,33.1
+2024-09-24,San Miguel,corn,2495,57.5,26,33.1
+2024-09-24,San Miguel,beans,984,57.5,26,33.1
+2024-09-24,Morazán,coffee,979,57.5,20.6,31.7
+2024-09-24,Morazán,sugar_cane,51447,57.5,20.6,31.7
+2024-09-24,Morazán,corn,2430,57.5,20.6,31.7
+2024-09-24,Morazán,beans,918,57.5,20.6,31.7
+2024-09-24,La Unión,coffee,672,57.5,29.3,31.8
+2024-09-24,La Unión,sugar_cane,69255,57.5,29.3,31.8
+2024-09-24,La Unión,corn,2071,57.5,29.3,31.8
+2024-09-24,La Unión,beans,871,57.5,29.3,31.8
+2024-09-24,Cuscatlán,coffee,821,57.5,27.3,33.4
+2024-09-24,Cuscatlán,sugar_cane,62876,57.5,27.3,33.4
+2024-09-24,Cuscatlán,corn,2229,57.5,27.3,33.4
+2024-09-24,Cuscatlán,beans,950,57.5,27.3,33.4
+2024-09-24,Cabañas,coffee,740,57.5,26.2,34.7
+2024-09-24,Cabañas,sugar_cane,56090,57.5,26.2,34.7
+2024-09-24,Cabañas,corn,2449,57.5,26.2,34.7
+2024-09-24,Cabañas,beans,869,57.5,26.2,34.7
+2024-09-24,Chalatenango,coffee,1090,57.5,24.3,38.7
+2024-09-24,Chalatenango,sugar_cane,56813,57.5,24.3,38.7
+2024-09-24,Chalatenango,corn,2644,57.5,24.3,38.7
+2024-09-24,Chalatenango,beans,1239,57.5,24.3,38.7
+2024-09-24,Ahuachapán,coffee,1014,57.5,21.1,31.2
+2024-09-24,Ahuachapán,sugar_cane,47823,57.5,21.1,31.2
+2024-09-24,Ahuachapán,corn,2122,57.5,21.1,31.2
+2024-09-24,Ahuachapán,beans,1003,57.5,21.1,31.2
+2024-09-24,San Vicente,coffee,927,57.5,26.6,35.9
+2024-09-24,San Vicente,sugar_cane,72035,57.5,26.6,35.9
+2024-09-24,San Vicente,corn,2718,57.5,26.6,35.9
+2024-09-24,San Vicente,beans,1065,57.5,26.6,35.9
+2024-09-25,San Salvador,coffee,918,53.4,25.4,38.8
+2024-09-25,San Salvador,sugar_cane,65834,53.4,25.4,38.8
+2024-09-25,San Salvador,corn,2864,53.4,25.4,38.8
+2024-09-25,San Salvador,beans,1247,53.4,25.4,38.8
+2024-09-25,La Libertad,coffee,769,53.4,30.9,38.9
+2024-09-25,La Libertad,sugar_cane,67972,53.4,30.9,38.9
+2024-09-25,La Libertad,corn,2436,53.4,30.9,38.9
+2024-09-25,La Libertad,beans,1014,53.4,30.9,38.9
+2024-09-25,Santa Ana,coffee,1189,53.4,23.6,40.9
+2024-09-25,Santa Ana,sugar_cane,54604,53.4,23.6,40.9
+2024-09-25,Santa Ana,corn,2552,53.4,23.6,40.9
+2024-09-25,Santa Ana,beans,1207,53.4,23.6,40.9
+2024-09-25,Sonsonate,coffee,609,53.4,30,32.5
+2024-09-25,Sonsonate,sugar_cane,60922,53.4,30,32.5
+2024-09-25,Sonsonate,corn,2276,53.4,30,32.5
+2024-09-25,Sonsonate,beans,936,53.4,30,32.5
+2024-09-25,La Paz,coffee,657,53.4,29.9,32.3
+2024-09-25,La Paz,sugar_cane,66442,53.4,29.9,32.3
+2024-09-25,La Paz,corn,1963,53.4,29.9,32.3
+2024-09-25,La Paz,beans,849,53.4,29.9,32.3
+2024-09-25,Usulután,coffee,811,53.4,29.8,38.2
+2024-09-25,Usulután,sugar_cane,67048,53.4,29.8,38.2
+2024-09-25,Usulután,corn,2722,53.4,29.8,38.2
+2024-09-25,Usulután,beans,993,53.4,29.8,38.2
+2024-09-25,San Miguel,coffee,940,53.4,27.3,37.7
+2024-09-25,San Miguel,sugar_cane,66663,53.4,27.3,37.7
+2024-09-25,San Miguel,corn,2558,53.4,27.3,37.7
+2024-09-25,San Miguel,beans,962,53.4,27.3,37.7
+2024-09-25,Morazán,coffee,1059,53.4,24.2,28.7
+2024-09-25,Morazán,sugar_cane,54413,53.4,24.2,28.7
+2024-09-25,Morazán,corn,2467,53.4,24.2,28.7
+2024-09-25,Morazán,beans,934,53.4,24.2,28.7
+2024-09-25,La Unión,coffee,624,53.4,29.9,29.2
+2024-09-25,La Unión,sugar_cane,61941,53.4,29.9,29.2
+2024-09-25,La Unión,corn,2171,53.4,29.9,29.2
+2024-09-25,La Unión,beans,854,53.4,29.9,29.2
+2024-09-25,Cuscatlán,coffee,927,53.4,25.7,32.9
+2024-09-25,Cuscatlán,sugar_cane,60626,53.4,25.7,32.9
+2024-09-25,Cuscatlán,corn,2562,53.4,25.7,32.9
+2024-09-25,Cuscatlán,beans,1048,53.4,25.7,32.9
+2024-09-25,Cabañas,coffee,800,53.4,28.4,32.3
+2024-09-25,Cabañas,sugar_cane,57914,53.4,28.4,32.3
+2024-09-25,Cabañas,corn,2159,53.4,28.4,32.3
+2024-09-25,Cabañas,beans,864,53.4,28.4,32.3
+2024-09-25,Chalatenango,coffee,1204,53.4,24,39.2
+2024-09-25,Chalatenango,sugar_cane,56745,53.4,24,39.2
+2024-09-25,Chalatenango,corn,2759,53.4,24,39.2
+2024-09-25,Chalatenango,beans,1100,53.4,24,39.2
+2024-09-25,Ahuachapán,coffee,956,53.4,24.4,33.7
+2024-09-25,Ahuachapán,sugar_cane,53762,53.4,24.4,33.7
+2024-09-25,Ahuachapán,corn,2395,53.4,24.4,33.7
+2024-09-25,Ahuachapán,beans,979,53.4,24.4,33.7
+2024-09-25,San Vicente,coffee,1091,53.4,25.6,35.6
+2024-09-25,San Vicente,sugar_cane,72066,53.4,25.6,35.6
+2024-09-25,San Vicente,corn,2949,53.4,25.6,35.6
+2024-09-25,San Vicente,beans,1040,53.4,25.6,35.6
+2024-09-26,San Salvador,coffee,1029,67.9,25.5,38.5
+2024-09-26,San Salvador,sugar_cane,73499,67.9,25.5,38.5
+2024-09-26,San Salvador,corn,2941,67.9,25.5,38.5
+2024-09-26,San Salvador,beans,1058,67.9,25.5,38.5
+2024-09-26,La Libertad,coffee,719,67.9,32.1,36.6
+2024-09-26,La Libertad,sugar_cane,75655,67.9,32.1,36.6
+2024-09-26,La Libertad,corn,2510,67.9,32.1,36.6
+2024-09-26,La Libertad,beans,1028,67.9,32.1,36.6
+2024-09-26,Santa Ana,coffee,1067,67.9,23.4,41.5
+2024-09-26,Santa Ana,sugar_cane,56524,67.9,23.4,41.5
+2024-09-26,Santa Ana,corn,2897,67.9,23.4,41.5
+2024-09-26,Santa Ana,beans,1251,67.9,23.4,41.5
+2024-09-26,Sonsonate,coffee,707,67.9,31,36.7
+2024-09-26,Sonsonate,sugar_cane,76792,67.9,31,36.7
+2024-09-26,Sonsonate,corn,2623,67.9,31,36.7
+2024-09-26,Sonsonate,beans,1007,67.9,31,36.7
+2024-09-26,La Paz,coffee,721,67.9,32.6,35.1
+2024-09-26,La Paz,sugar_cane,78242,67.9,32.6,35.1
+2024-09-26,La Paz,corn,2475,67.9,32.6,35.1
+2024-09-26,La Paz,beans,972,67.9,32.6,35.1
+2024-09-26,Usulután,coffee,757,67.9,30.4,44.9
+2024-09-26,Usulután,sugar_cane,78867,67.9,30.4,44.9
+2024-09-26,Usulután,corn,2633,67.9,30.4,44.9
+2024-09-26,Usulután,beans,1072,67.9,30.4,44.9
+2024-09-26,San Miguel,coffee,811,67.9,27.7,37.8
+2024-09-26,San Miguel,sugar_cane,65694,67.9,27.7,37.8
+2024-09-26,San Miguel,corn,2903,67.9,27.7,37.8
+2024-09-26,San Miguel,beans,970,67.9,27.7,37.8
+2024-09-26,Morazán,coffee,1216,67.9,21.4,38.2
+2024-09-26,Morazán,sugar_cane,61151,67.9,21.4,38.2
+2024-09-26,Morazán,corn,2694,67.9,21.4,38.2
+2024-09-26,Morazán,beans,1233,67.9,21.4,38.2
+2024-09-26,La Unión,coffee,609,67.9,30,33.2
+2024-09-26,La Unión,sugar_cane,58565,67.9,30,33.2
+2024-09-26,La Unión,corn,2039,67.9,30,33.2
+2024-09-26,La Unión,beans,821,67.9,30,33.2
+2024-09-26,Cuscatlán,coffee,690,67.9,27.4,34.6
+2024-09-26,Cuscatlán,sugar_cane,58250,67.9,27.4,34.6
+2024-09-26,Cuscatlán,corn,2422,67.9,27.4,34.6
+2024-09-26,Cuscatlán,beans,901,67.9,27.4,34.6
+2024-09-26,Cabañas,coffee,765,67.9,27.8,34.7
+2024-09-26,Cabañas,sugar_cane,59879,67.9,27.8,34.7
+2024-09-26,Cabañas,corn,2562,67.9,27.8,34.7
+2024-09-26,Cabañas,beans,829,67.9,27.8,34.7
+2024-09-26,Chalatenango,coffee,1153,67.9,23.7,45.1
+2024-09-26,Chalatenango,sugar_cane,56077,67.9,23.7,45.1
+2024-09-26,Chalatenango,corn,2815,67.9,23.7,45.1
+2024-09-26,Chalatenango,beans,1104,67.9,23.7,45.1
+2024-09-26,Ahuachapán,coffee,1216,67.9,22.4,38.8
+2024-09-26,Ahuachapán,sugar_cane,65352,67.9,22.4,38.8
+2024-09-26,Ahuachapán,corn,3011,67.9,22.4,38.8
+2024-09-26,Ahuachapán,beans,1058,67.9,22.4,38.8
+2024-09-26,San Vicente,coffee,897,67.9,26.4,43.9
+2024-09-26,San Vicente,sugar_cane,69657,67.9,26.4,43.9
+2024-09-26,San Vicente,corn,2721,67.9,26.4,43.9
+2024-09-26,San Vicente,beans,1074,67.9,26.4,43.9
+2024-09-27,San Salvador,coffee,814,73.2,27.3,45.9
+2024-09-27,San Salvador,sugar_cane,67015,73.2,27.3,45.9
+2024-09-27,San Salvador,corn,2552,73.2,27.3,45.9
+2024-09-27,San Salvador,beans,1073,73.2,27.3,45.9
+2024-09-27,La Libertad,coffee,803,73.2,31.5,44.1
+2024-09-27,La Libertad,sugar_cane,73338,73.2,31.5,44.1
+2024-09-27,La Libertad,corn,2522,73.2,31.5,44.1
+2024-09-27,La Libertad,beans,1061,73.2,31.5,44.1
+2024-09-27,Santa Ana,coffee,1036,73.2,23.1,40.8
+2024-09-27,Santa Ana,sugar_cane,59547,73.2,23.1,40.8
+2024-09-27,Santa Ana,corn,2742,73.2,23.1,40.8
+2024-09-27,Santa Ana,beans,1113,73.2,23.1,40.8
+2024-09-27,Sonsonate,coffee,792,73.2,31.7,45.1
+2024-09-27,Sonsonate,sugar_cane,71222,73.2,31.7,45.1
+2024-09-27,Sonsonate,corn,2244,73.2,31.7,45.1
+2024-09-27,Sonsonate,beans,1074,73.2,31.7,45.1
+2024-09-27,La Paz,coffee,698,73.2,30.9,37.2
+2024-09-27,La Paz,sugar_cane,72284,73.2,30.9,37.2
+2024-09-27,La Paz,corn,2638,73.2,30.9,37.2
+2024-09-27,La Paz,beans,1043,73.2,30.9,37.2
+2024-09-27,Usulután,coffee,807,73.2,31.7,48.7
+2024-09-27,Usulután,sugar_cane,79735,73.2,31.7,48.7
+2024-09-27,Usulután,corn,2594,73.2,31.7,48.7
+2024-09-27,Usulután,beans,1024,73.2,31.7,48.7
+2024-09-27,San Miguel,coffee,957,73.2,27.4,43.8
+2024-09-27,San Miguel,sugar_cane,68776,73.2,27.4,43.8
+2024-09-27,San Miguel,corn,2892,73.2,27.4,43.8
+2024-09-27,San Miguel,beans,1071,73.2,27.4,43.8
+2024-09-27,Morazán,coffee,1216,73.2,23.1,39.6
+2024-09-27,Morazán,sugar_cane,61003,73.2,23.1,39.6
+2024-09-27,Morazán,corn,2501,73.2,23.1,39.6
+2024-09-27,Morazán,beans,1065,73.2,23.1,39.6
+2024-09-27,La Unión,coffee,800,73.2,29.1,37.2
+2024-09-27,La Unión,sugar_cane,78301,73.2,29.1,37.2
+2024-09-27,La Unión,corn,2370,73.2,29.1,37.2
+2024-09-27,La Unión,beans,1105,73.2,29.1,37.2
+2024-09-27,Cuscatlán,coffee,1057,73.2,25.6,37.4
+2024-09-27,Cuscatlán,sugar_cane,68887,73.2,25.6,37.4
+2024-09-27,Cuscatlán,corn,2796,73.2,25.6,37.4
+2024-09-27,Cuscatlán,beans,1097,73.2,25.6,37.4
+2024-09-27,Cabañas,coffee,831,73.2,27.2,43.3
+2024-09-27,Cabañas,sugar_cane,70909,73.2,27.2,43.3
+2024-09-27,Cabañas,corn,2559,73.2,27.2,43.3
+2024-09-27,Cabañas,beans,1098,73.2,27.2,43.3
+2024-09-27,Chalatenango,coffee,1059,73.2,24.4,48.4
+2024-09-27,Chalatenango,sugar_cane,63381,73.2,24.4,48.4
+2024-09-27,Chalatenango,corn,2822,73.2,24.4,48.4
+2024-09-27,Chalatenango,beans,1172,73.2,24.4,48.4
+2024-09-27,Ahuachapán,coffee,1068,73.2,21.1,39.5
+2024-09-27,Ahuachapán,sugar_cane,58392,73.2,21.1,39.5
+2024-09-27,Ahuachapán,corn,2841,73.2,21.1,39.5
+2024-09-27,Ahuachapán,beans,1037,73.2,21.1,39.5
+2024-09-27,San Vicente,coffee,1056,73.2,25.9,42.5
+2024-09-27,San Vicente,sugar_cane,71710,73.2,25.9,42.5
+2024-09-27,San Vicente,corn,2863,73.2,25.9,42.5
+2024-09-27,San Vicente,beans,1164,73.2,25.9,42.5
+2024-09-28,San Salvador,coffee,848,64.8,26.3,45
+2024-09-28,San Salvador,sugar_cane,63889,64.8,26.3,45
+2024-09-28,San Salvador,corn,2858,64.8,26.3,45
+2024-09-28,San Salvador,beans,980,64.8,26.3,45
+2024-09-28,La Libertad,coffee,700,64.8,31.7,41
+2024-09-28,La Libertad,sugar_cane,78722,64.8,31.7,41
+2024-09-28,La Libertad,corn,2578,64.8,31.7,41
+2024-09-28,La Libertad,beans,1060,64.8,31.7,41
+2024-09-28,Santa Ana,coffee,1053,64.8,22.1,39.7
+2024-09-28,Santa Ana,sugar_cane,58063,64.8,22.1,39.7
+2024-09-28,Santa Ana,corn,2872,64.8,22.1,39.7
+2024-09-28,Santa Ana,beans,1057,64.8,22.1,39.7
+2024-09-28,Sonsonate,coffee,735,64.8,31,42.3
+2024-09-28,Sonsonate,sugar_cane,72822,64.8,31,42.3
+2024-09-28,Sonsonate,corn,2312,64.8,31,42.3
+2024-09-28,Sonsonate,beans,995,64.8,31,42.3
+2024-09-28,La Paz,coffee,720,64.8,31.3,42
+2024-09-28,La Paz,sugar_cane,67829,64.8,31.3,42
+2024-09-28,La Paz,corn,2364,64.8,31.3,42
+2024-09-28,La Paz,beans,974,64.8,31.3,42
+2024-09-28,Usulután,coffee,712,64.8,29.2,47.6
+2024-09-28,Usulután,sugar_cane,73309,64.8,29.2,47.6
+2024-09-28,Usulután,corn,2454,64.8,29.2,47.6
+2024-09-28,Usulután,beans,955,64.8,29.2,47.6
+2024-09-28,San Miguel,coffee,937,64.8,26,43.3
+2024-09-28,San Miguel,sugar_cane,76613,64.8,26,43.3
+2024-09-28,San Miguel,corn,2932,64.8,26,43.3
+2024-09-28,San Miguel,beans,1201,64.8,26,43.3
+2024-09-28,Morazán,coffee,1213,64.8,22.5,43
+2024-09-28,Morazán,sugar_cane,56773,64.8,22.5,43
+2024-09-28,Morazán,corn,2875,64.8,22.5,43
+2024-09-28,Morazán,beans,1176,64.8,22.5,43
+2024-09-28,La Unión,coffee,752,64.8,31,35.8
+2024-09-28,La Unión,sugar_cane,78651,64.8,31,35.8
+2024-09-28,La Unión,corn,2584,64.8,31,35.8
+2024-09-28,La Unión,beans,1010,64.8,31,35.8
+2024-09-28,Cuscatlán,coffee,836,64.8,28.8,42.1
+2024-09-28,Cuscatlán,sugar_cane,66152,64.8,28.8,42.1
+2024-09-28,Cuscatlán,corn,2687,64.8,28.8,42.1
+2024-09-28,Cuscatlán,beans,1103,64.8,28.8,42.1
+2024-09-28,Cabañas,coffee,821,64.8,28.1,45
+2024-09-28,Cabañas,sugar_cane,69632,64.8,28.1,45
+2024-09-28,Cabañas,corn,2610,64.8,28.1,45
+2024-09-28,Cabañas,beans,1137,64.8,28.1,45
+2024-09-28,Chalatenango,coffee,1150,64.8,22.7,46.3
+2024-09-28,Chalatenango,sugar_cane,60478,64.8,22.7,46.3
+2024-09-28,Chalatenango,corn,2792,64.8,22.7,46.3
+2024-09-28,Chalatenango,beans,1108,64.8,22.7,46.3
+2024-09-28,Ahuachapán,coffee,1132,64.8,21.9,38.7
+2024-09-28,Ahuachapán,sugar_cane,62009,64.8,21.9,38.7
+2024-09-28,Ahuachapán,corn,3014,64.8,21.9,38.7
+2024-09-28,Ahuachapán,beans,1102,64.8,21.9,38.7
+2024-09-28,San Vicente,coffee,841,64.8,26.1,38.3
+2024-09-28,San Vicente,sugar_cane,68414,64.8,26.1,38.3
+2024-09-28,San Vicente,corn,2824,64.8,26.1,38.3
+2024-09-28,San Vicente,beans,1128,64.8,26.1,38.3
+2024-09-29,San Salvador,coffee,952,76.5,27.5,50.6
+2024-09-29,San Salvador,sugar_cane,79948,76.5,27.5,50.6
+2024-09-29,San Salvador,corn,2824,76.5,27.5,50.6
+2024-09-29,San Salvador,beans,1000,76.5,27.5,50.6
+2024-09-29,La Libertad,coffee,717,76.5,32.9,48.9
+2024-09-29,La Libertad,sugar_cane,79981,76.5,32.9,48.9
+2024-09-29,La Libertad,corn,2458,76.5,32.9,48.9
+2024-09-29,La Libertad,beans,993,76.5,32.9,48.9
+2024-09-29,Santa Ana,coffee,1083,76.5,21.7,48
+2024-09-29,Santa Ana,sugar_cane,57471,76.5,21.7,48
+2024-09-29,Santa Ana,corn,2572,76.5,21.7,48
+2024-09-29,Santa Ana,beans,1240,76.5,21.7,48
+2024-09-29,Sonsonate,coffee,689,76.5,31.5,43.9
+2024-09-29,Sonsonate,sugar_cane,76784,76.5,31.5,43.9
+2024-09-29,Sonsonate,corn,2286,76.5,31.5,43.9
+2024-09-29,Sonsonate,beans,1079,76.5,31.5,43.9
+2024-09-29,La Paz,coffee,827,76.5,29.2,43.1
+2024-09-29,La Paz,sugar_cane,78220,76.5,29.2,43.1
+2024-09-29,La Paz,corn,2684,76.5,29.2,43.1
+2024-09-29,La Paz,beans,1093,76.5,29.2,43.1
+2024-09-29,Usulután,coffee,768,76.5,32.8,52.2
+2024-09-29,Usulután,sugar_cane,71840,76.5,32.8,52.2
+2024-09-29,Usulután,corn,2322,76.5,32.8,52.2
+2024-09-29,Usulután,beans,1046,76.5,32.8,52.2
+2024-09-29,San Miguel,coffee,923,76.5,28.8,47.8
+2024-09-29,San Miguel,sugar_cane,78548,76.5,28.8,47.8
+2024-09-29,San Miguel,corn,2252,76.5,28.8,47.8
+2024-09-29,San Miguel,beans,1101,76.5,28.8,47.8
+2024-09-29,Morazán,coffee,1241,76.5,21.6,41.6
+2024-09-29,Morazán,sugar_cane,64410,76.5,21.6,41.6
+2024-09-29,Morazán,corn,2506,76.5,21.6,41.6
+2024-09-29,Morazán,beans,1177,76.5,21.6,41.6
+2024-09-29,La Unión,coffee,700,76.5,32.3,45.3
+2024-09-29,La Unión,sugar_cane,76261,76.5,32.3,45.3
+2024-09-29,La Unión,corn,2537,76.5,32.3,45.3
+2024-09-29,La Unión,beans,1072,76.5,32.3,45.3
+2024-09-29,Cuscatlán,coffee,851,76.5,26.1,48.7
+2024-09-29,Cuscatlán,sugar_cane,70119,76.5,26.1,48.7
+2024-09-29,Cuscatlán,corn,2815,76.5,26.1,48.7
+2024-09-29,Cuscatlán,beans,1045,76.5,26.1,48.7
+2024-09-29,Cabañas,coffee,936,76.5,28.1,48.3
+2024-09-29,Cabañas,sugar_cane,77869,76.5,28.1,48.3
+2024-09-29,Cabañas,corn,2269,76.5,28.1,48.3
+2024-09-29,Cabañas,beans,1040,76.5,28.1,48.3
+2024-09-29,Chalatenango,coffee,1088,76.5,22.7,48.2
+2024-09-29,Chalatenango,sugar_cane,60656,76.5,22.7,48.2
+2024-09-29,Chalatenango,corn,2492,76.5,22.7,48.2
+2024-09-29,Chalatenango,beans,1085,76.5,22.7,48.2
+2024-09-29,Ahuachapán,coffee,1047,76.5,24.1,46.7
+2024-09-29,Ahuachapán,sugar_cane,67206,76.5,24.1,46.7
+2024-09-29,Ahuachapán,corn,2486,76.5,24.1,46.7
+2024-09-29,Ahuachapán,beans,1040,76.5,24.1,46.7
+2024-09-29,San Vicente,coffee,896,76.5,27.2,43.5
+2024-09-29,San Vicente,sugar_cane,69736,76.5,27.2,43.5
+2024-09-29,San Vicente,corn,2647,76.5,27.2,43.5
+2024-09-29,San Vicente,beans,1100,76.5,27.2,43.5
+2024-09-30,San Salvador,coffee,956,66.2,25.7,44.9
+2024-09-30,San Salvador,sugar_cane,72693,66.2,25.7,44.9
+2024-09-30,San Salvador,corn,2973,66.2,25.7,44.9
+2024-09-30,San Salvador,beans,1046,66.2,25.7,44.9
+2024-09-30,La Libertad,coffee,742,66.2,29.3,45.3
+2024-09-30,La Libertad,sugar_cane,84702,66.2,29.3,45.3
+2024-09-30,La Libertad,corn,2232,66.2,29.3,45.3
+2024-09-30,La Libertad,beans,1078,66.2,29.3,45.3
+2024-09-30,Santa Ana,coffee,1122,66.2,22.1,46.2
+2024-09-30,Santa Ana,sugar_cane,62173,66.2,22.1,46.2
+2024-09-30,Santa Ana,corn,2878,66.2,22.1,46.2
+2024-09-30,Santa Ana,beans,1097,66.2,22.1,46.2
+2024-09-30,Sonsonate,coffee,725,66.2,30.9,47.9
+2024-09-30,Sonsonate,sugar_cane,69601,66.2,30.9,47.9
+2024-09-30,Sonsonate,corn,2509,66.2,30.9,47.9
+2024-09-30,Sonsonate,beans,1024,66.2,30.9,47.9
+2024-09-30,La Paz,coffee,808,66.2,31.3,39.3
+2024-09-30,La Paz,sugar_cane,76722,66.2,31.3,39.3
+2024-09-30,La Paz,corn,2696,66.2,31.3,39.3
+2024-09-30,La Paz,beans,975,66.2,31.3,39.3
+2024-09-30,Usulután,coffee,792,66.2,31,49.4
+2024-09-30,Usulután,sugar_cane,76736,66.2,31,49.4
+2024-09-30,Usulután,corn,2645,66.2,31,49.4
+2024-09-30,Usulután,beans,977,66.2,31,49.4
+2024-09-30,San Miguel,coffee,887,66.2,27,46.6
+2024-09-30,San Miguel,sugar_cane,66912,66.2,27,46.6
+2024-09-30,San Miguel,corn,2694,66.2,27,46.6
+2024-09-30,San Miguel,beans,1085,66.2,27,46.6
+2024-09-30,Morazán,coffee,1179,66.2,22.3,39
+2024-09-30,Morazán,sugar_cane,54945,66.2,22.3,39
+2024-09-30,Morazán,corn,2783,66.2,22.3,39
+2024-09-30,Morazán,beans,1225,66.2,22.3,39
+2024-09-30,La Unión,coffee,801,66.2,29.3,42.1
+2024-09-30,La Unión,sugar_cane,83334,66.2,29.3,42.1
+2024-09-30,La Unión,corn,2240,66.2,29.3,42.1
+2024-09-30,La Unión,beans,1091,66.2,29.3,42.1
+2024-09-30,Cuscatlán,coffee,1097,66.2,25.8,47.1
+2024-09-30,Cuscatlán,sugar_cane,69340,66.2,25.8,47.1
+2024-09-30,Cuscatlán,corn,2911,66.2,25.8,47.1
+2024-09-30,Cuscatlán,beans,1066,66.2,25.8,47.1
+2024-09-30,Cabañas,coffee,904,66.2,28.4,43.8
+2024-09-30,Cabañas,sugar_cane,66098,66.2,28.4,43.8
+2024-09-30,Cabañas,corn,2287,66.2,28.4,43.8
+2024-09-30,Cabañas,beans,966,66.2,28.4,43.8
+2024-09-30,Chalatenango,coffee,1167,66.2,24.4,47.4
+2024-09-30,Chalatenango,sugar_cane,63278,66.2,24.4,47.4
+2024-09-30,Chalatenango,corn,2612,66.2,24.4,47.4
+2024-09-30,Chalatenango,beans,1199,66.2,24.4,47.4
+2024-09-30,Ahuachapán,coffee,1234,66.2,24.5,42.4
+2024-09-30,Ahuachapán,sugar_cane,69083,66.2,24.5,42.4
+2024-09-30,Ahuachapán,corn,3004,66.2,24.5,42.4
+2024-09-30,Ahuachapán,beans,1156,66.2,24.5,42.4
+2024-09-30,San Vicente,coffee,811,66.2,26.6,43
+2024-09-30,San Vicente,sugar_cane,67262,66.2,26.6,43
+2024-09-30,San Vicente,corn,2966,66.2,26.6,43
+2024-09-30,San Vicente,beans,1062,66.2,26.6,43
+2024-10-01,San Salvador,coffee,885,61.2,28.8,38.4
+2024-10-01,San Salvador,sugar_cane,66069,61.2,28.8,38.4
+2024-10-01,San Salvador,corn,2628,61.2,28.8,38.4
+2024-10-01,San Salvador,beans,1037,61.2,28.8,38.4
+2024-10-01,La Libertad,coffee,803,61.2,30.2,43.7
+2024-10-01,La Libertad,sugar_cane,68230,61.2,30.2,43.7
+2024-10-01,La Libertad,corn,2517,61.2,30.2,43.7
+2024-10-01,La Libertad,beans,962,61.2,30.2,43.7
+2024-10-01,Santa Ana,coffee,1185,61.2,24.7,42
+2024-10-01,Santa Ana,sugar_cane,63459,61.2,24.7,42
+2024-10-01,Santa Ana,corn,2709,61.2,24.7,42
+2024-10-01,Santa Ana,beans,1101,61.2,24.7,42
+2024-10-01,Sonsonate,coffee,718,61.2,31.2,47.8
+2024-10-01,Sonsonate,sugar_cane,70639,61.2,31.2,47.8
+2024-10-01,Sonsonate,corn,2615,61.2,31.2,47.8
+2024-10-01,Sonsonate,beans,977,61.2,31.2,47.8
+2024-10-01,La Paz,coffee,791,61.2,30.7,36.9
+2024-10-01,La Paz,sugar_cane,78636,61.2,30.7,36.9
+2024-10-01,La Paz,corn,2340,61.2,30.7,36.9
+2024-10-01,La Paz,beans,1138,61.2,30.7,36.9
+2024-10-01,Usulután,coffee,792,61.2,32.2,43.2
+2024-10-01,Usulután,sugar_cane,71695,61.2,32.2,43.2
+2024-10-01,Usulután,corn,2256,61.2,32.2,43.2
+2024-10-01,Usulután,beans,1117,61.2,32.2,43.2
+2024-10-01,San Miguel,coffee,924,61.2,27.5,40.3
+2024-10-01,San Miguel,sugar_cane,69375,61.2,27.5,40.3
+2024-10-01,San Miguel,corn,2558,61.2,27.5,40.3
+2024-10-01,San Miguel,beans,986,61.2,27.5,40.3
+2024-10-01,Morazán,coffee,1110,61.2,21.3,37.5
+2024-10-01,Morazán,sugar_cane,57359,61.2,21.3,37.5
+2024-10-01,Morazán,corn,2597,61.2,21.3,37.5
+2024-10-01,Morazán,beans,1164,61.2,21.3,37.5
+2024-10-01,La Unión,coffee,769,61.2,32.4,39.3
+2024-10-01,La Unión,sugar_cane,73245,61.2,32.4,39.3
+2024-10-01,La Unión,corn,2455,61.2,32.4,39.3
+2024-10-01,La Unión,beans,1018,61.2,32.4,39.3
+2024-10-01,Cuscatlán,coffee,872,61.2,28.2,43
+2024-10-01,Cuscatlán,sugar_cane,73674,61.2,28.2,43
+2024-10-01,Cuscatlán,corn,2340,61.2,28.2,43
+2024-10-01,Cuscatlán,beans,998,61.2,28.2,43
+2024-10-01,Cabañas,coffee,843,61.2,29,42.4
+2024-10-01,Cabañas,sugar_cane,67510,61.2,29,42.4
+2024-10-01,Cabañas,corn,2463,61.2,29,42.4
+2024-10-01,Cabañas,beans,1035,61.2,29,42.4
+2024-10-01,Chalatenango,coffee,1076,61.2,23.1,42
+2024-10-01,Chalatenango,sugar_cane,64756,61.2,23.1,42
+2024-10-01,Chalatenango,corn,2677,61.2,23.1,42
+2024-10-01,Chalatenango,beans,1252,61.2,23.1,42
+2024-10-01,Ahuachapán,coffee,1233,61.2,23.9,41.8
+2024-10-01,Ahuachapán,sugar_cane,60529,61.2,23.9,41.8
+2024-10-01,Ahuachapán,corn,2519,61.2,23.9,41.8
+2024-10-01,Ahuachapán,beans,1110,61.2,23.9,41.8
+2024-10-01,San Vicente,coffee,945,61.2,28.3,44.4
+2024-10-01,San Vicente,sugar_cane,62447,61.2,28.3,44.4
+2024-10-01,San Vicente,corn,2361,61.2,28.3,44.4
+2024-10-01,San Vicente,beans,1114,61.2,28.3,44.4
+2024-10-02,San Salvador,coffee,917,81.4,27.5,45.6
+2024-10-02,San Salvador,sugar_cane,69484,81.4,27.5,45.6
+2024-10-02,San Salvador,corn,2499,81.4,27.5,45.6
+2024-10-02,San Salvador,beans,1023,81.4,27.5,45.6
+2024-10-02,La Libertad,coffee,701,81.4,31.6,47.2
+2024-10-02,La Libertad,sugar_cane,81611,81.4,31.6,47.2
+2024-10-02,La Libertad,corn,2533,81.4,31.6,47.2
+2024-10-02,La Libertad,beans,1123,81.4,31.6,47.2
+2024-10-02,Santa Ana,coffee,1174,81.4,23.9,48.6
+2024-10-02,Santa Ana,sugar_cane,62840,81.4,23.9,48.6
+2024-10-02,Santa Ana,corn,2692,81.4,23.9,48.6
+2024-10-02,Santa Ana,beans,1192,81.4,23.9,48.6
+2024-10-02,Sonsonate,coffee,837,81.4,29.6,47.7
+2024-10-02,Sonsonate,sugar_cane,92519,81.4,29.6,47.7
+2024-10-02,Sonsonate,corn,2596,81.4,29.6,47.7
+2024-10-02,Sonsonate,beans,932,81.4,29.6,47.7
+2024-10-02,La Paz,coffee,805,81.4,29.2,39.3
+2024-10-02,La Paz,sugar_cane,85892,81.4,29.2,39.3
+2024-10-02,La Paz,corn,2535,81.4,29.2,39.3
+2024-10-02,La Paz,beans,981,81.4,29.2,39.3
+2024-10-02,Usulután,coffee,811,81.4,30.7,48.9
+2024-10-02,Usulután,sugar_cane,88619,81.4,30.7,48.9
+2024-10-02,Usulután,corn,2657,81.4,30.7,48.9
+2024-10-02,Usulután,beans,1133,81.4,30.7,48.9
+2024-10-02,San Miguel,coffee,971,81.4,25.6,49.3
+2024-10-02,San Miguel,sugar_cane,78917,81.4,25.6,49.3
+2024-10-02,San Miguel,corn,2918,81.4,25.6,49.3
+2024-10-02,San Miguel,beans,1262,81.4,25.6,49.3
+2024-10-02,Morazán,coffee,1261,81.4,22.6,42.6
+2024-10-02,Morazán,sugar_cane,70793,81.4,22.6,42.6
+2024-10-02,Morazán,corn,2899,81.4,22.6,42.6
+2024-10-02,Morazán,beans,1142,81.4,22.6,42.6
+2024-10-02,La Unión,coffee,693,81.4,32.1,46.4
+2024-10-02,La Unión,sugar_cane,88205,81.4,32.1,46.4
+2024-10-02,La Unión,corn,2409,81.4,32.1,46.4
+2024-10-02,La Unión,beans,1038,81.4,32.1,46.4
+2024-10-02,Cuscatlán,coffee,975,81.4,25.5,50.7
+2024-10-02,Cuscatlán,sugar_cane,73195,81.4,25.5,50.7
+2024-10-02,Cuscatlán,corn,2903,81.4,25.5,50.7
+2024-10-02,Cuscatlán,beans,1190,81.4,25.5,50.7
+2024-10-02,Cabañas,coffee,939,81.4,25.9,47.7
+2024-10-02,Cabañas,sugar_cane,83565,81.4,25.9,47.7
+2024-10-02,Cabañas,corn,2526,81.4,25.9,47.7
+2024-10-02,Cabañas,beans,1148,81.4,25.9,47.7
+2024-10-02,Chalatenango,coffee,1092,81.4,24.7,47.7
+2024-10-02,Chalatenango,sugar_cane,75754,81.4,24.7,47.7
+2024-10-02,Chalatenango,corn,2686,81.4,24.7,47.7
+2024-10-02,Chalatenango,beans,1053,81.4,24.7,47.7
+2024-10-02,Ahuachapán,coffee,1218,81.4,21.7,47.2
+2024-10-02,Ahuachapán,sugar_cane,71388,81.4,21.7,47.2
+2024-10-02,Ahuachapán,corn,2490,81.4,21.7,47.2
+2024-10-02,Ahuachapán,beans,1068,81.4,21.7,47.2
+2024-10-02,San Vicente,coffee,970,81.4,27.8,46.3
+2024-10-02,San Vicente,sugar_cane,72180,81.4,27.8,46.3
+2024-10-02,San Vicente,corn,2900,81.4,27.8,46.3
+2024-10-02,San Vicente,beans,1103,81.4,27.8,46.3
+2024-10-03,San Salvador,coffee,977,83,26.1,49.7
+2024-10-03,San Salvador,sugar_cane,77844,83,26.1,49.7
+2024-10-03,San Salvador,corn,2838,83,26.1,49.7
+2024-10-03,San Salvador,beans,1088,83,26.1,49.7
+2024-10-03,La Libertad,coffee,764,83,32,50.8
+2024-10-03,La Libertad,sugar_cane,87315,83,32,50.8
+2024-10-03,La Libertad,corn,2599,83,32,50.8
+2024-10-03,La Libertad,beans,1104,83,32,50.8
+2024-10-03,Santa Ana,coffee,1105,83,24.8,46.9
+2024-10-03,Santa Ana,sugar_cane,67180,83,24.8,46.9
+2024-10-03,Santa Ana,corn,2995,83,24.8,46.9
+2024-10-03,Santa Ana,beans,1257,83,24.8,46.9
+2024-10-03,Sonsonate,coffee,697,83,28.9,53
+2024-10-03,Sonsonate,sugar_cane,81359,83,28.9,53
+2024-10-03,Sonsonate,corn,2661,83,28.9,53
+2024-10-03,Sonsonate,beans,936,83,28.9,53
+2024-10-03,La Paz,coffee,809,83,31.4,46.8
+2024-10-03,La Paz,sugar_cane,78278,83,31.4,46.8
+2024-10-03,La Paz,corn,2396,83,31.4,46.8
+2024-10-03,La Paz,beans,1077,83,31.4,46.8
+2024-10-03,Usulután,coffee,717,83,32.4,47.4
+2024-10-03,Usulután,sugar_cane,73059,83,32.4,47.4
+2024-10-03,Usulután,corn,2643,83,32.4,47.4
+2024-10-03,Usulután,beans,1126,83,32.4,47.4
+2024-10-03,San Miguel,coffee,867,83,28.2,50.4
+2024-10-03,San Miguel,sugar_cane,69692,83,28.2,50.4
+2024-10-03,San Miguel,corn,2387,83,28.2,50.4
+2024-10-03,San Miguel,beans,957,83,28.2,50.4
+2024-10-03,Morazán,coffee,1225,83,21.3,44.3
+2024-10-03,Morazán,sugar_cane,62278,83,21.3,44.3
+2024-10-03,Morazán,corn,2900,83,21.3,44.3
+2024-10-03,Morazán,beans,1089,83,21.3,44.3
+2024-10-03,La Unión,coffee,809,83,30.5,47
+2024-10-03,La Unión,sugar_cane,84788,83,30.5,47
+2024-10-03,La Unión,corn,2232,83,30.5,47
+2024-10-03,La Unión,beans,1051,83,30.5,47
+2024-10-03,Cuscatlán,coffee,1065,83,26,50.1
+2024-10-03,Cuscatlán,sugar_cane,75447,83,26,50.1
+2024-10-03,Cuscatlán,corn,2581,83,26,50.1
+2024-10-03,Cuscatlán,beans,1195,83,26,50.1
+2024-10-03,Cabañas,coffee,905,83,27.5,54.5
+2024-10-03,Cabañas,sugar_cane,71575,83,27.5,54.5
+2024-10-03,Cabañas,corn,2997,83,27.5,54.5
+2024-10-03,Cabañas,beans,971,83,27.5,54.5
+2024-10-03,Chalatenango,coffee,1138,83,24.1,50.4
+2024-10-03,Chalatenango,sugar_cane,69225,83,24.1,50.4
+2024-10-03,Chalatenango,corn,2486,83,24.1,50.4
+2024-10-03,Chalatenango,beans,1197,83,24.1,50.4
+2024-10-03,Ahuachapán,coffee,1156,83,24.8,50.5
+2024-10-03,Ahuachapán,sugar_cane,71761,83,24.8,50.5
+2024-10-03,Ahuachapán,corn,2551,83,24.8,50.5
+2024-10-03,Ahuachapán,beans,1150,83,24.8,50.5
+2024-10-03,San Vicente,coffee,979,83,28.2,47.7
+2024-10-03,San Vicente,sugar_cane,79981,83,28.2,47.7
+2024-10-03,San Vicente,corn,2320,83,28.2,47.7
+2024-10-03,San Vicente,beans,955,83,28.2,47.7
+2024-10-04,San Salvador,coffee,921,88.5,28.2,51.4
+2024-10-04,San Salvador,sugar_cane,78522,88.5,28.2,51.4
+2024-10-04,San Salvador,corn,2695,88.5,28.2,51.4
+2024-10-04,San Salvador,beans,946,88.5,28.2,51.4
+2024-10-04,La Libertad,coffee,795,88.5,29.9,53.2
+2024-10-04,La Libertad,sugar_cane,83657,88.5,29.9,53.2
+2024-10-04,La Libertad,corn,2230,88.5,29.9,53.2
+2024-10-04,La Libertad,beans,949,88.5,29.9,53.2
+2024-10-04,Santa Ana,coffee,1107,88.5,21.1,47.6
+2024-10-04,Santa Ana,sugar_cane,72017,88.5,21.1,47.6
+2024-10-04,Santa Ana,corn,2812,88.5,21.1,47.6
+2024-10-04,Santa Ana,beans,1187,88.5,21.1,47.6
+2024-10-04,Sonsonate,coffee,774,88.5,29,59.5
+2024-10-04,Sonsonate,sugar_cane,90111,88.5,29,59.5
+2024-10-04,Sonsonate,corn,2412,88.5,29,59.5
+2024-10-04,Sonsonate,beans,1094,88.5,29,59.5
+2024-10-04,La Paz,coffee,797,88.5,31.1,52.6
+2024-10-04,La Paz,sugar_cane,81447,88.5,31.1,52.6
+2024-10-04,La Paz,corn,2436,88.5,31.1,52.6
+2024-10-04,La Paz,beans,1131,88.5,31.1,52.6
+2024-10-04,Usulután,coffee,805,88.5,30,52.4
+2024-10-04,Usulután,sugar_cane,83861,88.5,30,52.4
+2024-10-04,Usulután,corn,2718,88.5,30,52.4
+2024-10-04,Usulután,beans,1001,88.5,30,52.4
+2024-10-04,San Miguel,coffee,931,88.5,26.3,51.9
+2024-10-04,San Miguel,sugar_cane,70613,88.5,26.3,51.9
+2024-10-04,San Miguel,corn,2934,88.5,26.3,51.9
+2024-10-04,San Miguel,beans,966,88.5,26.3,51.9
+2024-10-04,Morazán,coffee,1241,88.5,20.9,54.7
+2024-10-04,Morazán,sugar_cane,68133,88.5,20.9,54.7
+2024-10-04,Morazán,corn,2721,88.5,20.9,54.7
+2024-10-04,Morazán,beans,1151,88.5,20.9,54.7
+2024-10-04,La Unión,coffee,731,88.5,29.2,56
+2024-10-04,La Unión,sugar_cane,93236,88.5,29.2,56
+2024-10-04,La Unión,corn,2498,88.5,29.2,56
+2024-10-04,La Unión,beans,978,88.5,29.2,56
+2024-10-04,Cuscatlán,coffee,992,88.5,25.2,54.7
+2024-10-04,Cuscatlán,sugar_cane,72641,88.5,25.2,54.7
+2024-10-04,Cuscatlán,corn,2832,88.5,25.2,54.7
+2024-10-04,Cuscatlán,beans,1242,88.5,25.2,54.7
+2024-10-04,Cabañas,coffee,960,88.5,28.4,59
+2024-10-04,Cabañas,sugar_cane,69918,88.5,28.4,59
+2024-10-04,Cabañas,corn,2469,88.5,28.4,59
+2024-10-04,Cabañas,beans,1117,88.5,28.4,59
+2024-10-04,Chalatenango,coffee,1215,88.5,22,56.3
+2024-10-04,Chalatenango,sugar_cane,66097,88.5,22,56.3
+2024-10-04,Chalatenango,corn,2549,88.5,22,56.3
+2024-10-04,Chalatenango,beans,1113,88.5,22,56.3
+2024-10-04,Ahuachapán,coffee,1084,88.5,21.3,50.7
+2024-10-04,Ahuachapán,sugar_cane,71237,88.5,21.3,50.7
+2024-10-04,Ahuachapán,corn,2636,88.5,21.3,50.7
+2024-10-04,Ahuachapán,beans,1239,88.5,21.3,50.7
+2024-10-04,San Vicente,coffee,973,88.5,26.1,55.2
+2024-10-04,San Vicente,sugar_cane,72129,88.5,26.1,55.2
+2024-10-04,San Vicente,corn,2871,88.5,26.1,55.2
+2024-10-04,San Vicente,beans,955,88.5,26.1,55.2
+2024-10-05,San Salvador,coffee,1053,85.7,25.5,53.5
+2024-10-05,San Salvador,sugar_cane,75924,85.7,25.5,53.5
+2024-10-05,San Salvador,corn,2937,85.7,25.5,53.5
+2024-10-05,San Salvador,beans,1206,85.7,25.5,53.5
+2024-10-05,La Libertad,coffee,705,85.7,31.3,55.3
+2024-10-05,La Libertad,sugar_cane,75106,85.7,31.3,55.3
+2024-10-05,La Libertad,corn,2381,85.7,31.3,55.3
+2024-10-05,La Libertad,beans,1006,85.7,31.3,55.3
+2024-10-05,Santa Ana,coffee,1248,85.7,21.5,54.2
+2024-10-05,Santa Ana,sugar_cane,61455,85.7,21.5,54.2
+2024-10-05,Santa Ana,corn,2521,85.7,21.5,54.2
+2024-10-05,Santa Ana,beans,1045,85.7,21.5,54.2
+2024-10-05,Sonsonate,coffee,816,85.7,31.1,59.8
+2024-10-05,Sonsonate,sugar_cane,88668,85.7,31.1,59.8
+2024-10-05,Sonsonate,corn,2500,85.7,31.1,59.8
+2024-10-05,Sonsonate,beans,1003,85.7,31.1,59.8
+2024-10-05,La Paz,coffee,699,85.7,31.2,51.9
+2024-10-05,La Paz,sugar_cane,86986,85.7,31.2,51.9
+2024-10-05,La Paz,corn,2262,85.7,31.2,51.9
+2024-10-05,La Paz,beans,1069,85.7,31.2,51.9
+2024-10-05,Usulután,coffee,782,85.7,28.9,50.8
+2024-10-05,Usulután,sugar_cane,84512,85.7,28.9,50.8
+2024-10-05,Usulután,corn,2361,85.7,28.9,50.8
+2024-10-05,Usulután,beans,1021,85.7,28.9,50.8
+2024-10-05,San Miguel,coffee,949,85.7,27.9,55.6
+2024-10-05,San Miguel,sugar_cane,74902,85.7,27.9,55.6
+2024-10-05,San Miguel,corn,2789,85.7,27.9,55.6
+2024-10-05,San Miguel,beans,1119,85.7,27.9,55.6
+2024-10-05,Morazán,coffee,1063,85.7,22.5,55.9
+2024-10-05,Morazán,sugar_cane,61467,85.7,22.5,55.9
+2024-10-05,Morazán,corn,2775,85.7,22.5,55.9
+2024-10-05,Morazán,beans,1087,85.7,22.5,55.9
+2024-10-05,La Unión,coffee,839,85.7,31.5,52.4
+2024-10-05,La Unión,sugar_cane,81498,85.7,31.5,52.4
+2024-10-05,La Unión,corn,2467,85.7,31.5,52.4
+2024-10-05,La Unión,beans,1013,85.7,31.5,52.4
+2024-10-05,Cuscatlán,coffee,1037,85.7,24.9,53.8
+2024-10-05,Cuscatlán,sugar_cane,83200,85.7,24.9,53.8
+2024-10-05,Cuscatlán,corn,2630,85.7,24.9,53.8
+2024-10-05,Cuscatlán,beans,1147,85.7,24.9,53.8
+2024-10-05,Cabañas,coffee,940,85.7,26.4,55.3
+2024-10-05,Cabañas,sugar_cane,73634,85.7,26.4,55.3
+2024-10-05,Cabañas,corn,2997,85.7,26.4,55.3
+2024-10-05,Cabañas,beans,1106,85.7,26.4,55.3
+2024-10-05,Chalatenango,coffee,1190,85.7,23.1,60.2
+2024-10-05,Chalatenango,sugar_cane,75912,85.7,23.1,60.2
+2024-10-05,Chalatenango,corn,2719,85.7,23.1,60.2
+2024-10-05,Chalatenango,beans,1190,85.7,23.1,60.2
+2024-10-05,Ahuachapán,coffee,1097,85.7,21.6,56.6
+2024-10-05,Ahuachapán,sugar_cane,63605,85.7,21.6,56.6
+2024-10-05,Ahuachapán,corn,2815,85.7,21.6,56.6
+2024-10-05,Ahuachapán,beans,1107,85.7,21.6,56.6
+2024-10-05,San Vicente,coffee,822,85.7,27.9,55.2
+2024-10-05,San Vicente,sugar_cane,75358,85.7,27.9,55.2
+2024-10-05,San Vicente,corn,2495,85.7,27.9,55.2
+2024-10-05,San Vicente,beans,975,85.7,27.9,55.2
+2024-10-06,San Salvador,coffee,822,74.1,26.4,56.8
+2024-10-06,San Salvador,sugar_cane,71998,74.1,26.4,56.8
+2024-10-06,San Salvador,corn,2793,74.1,26.4,56.8
+2024-10-06,San Salvador,beans,1085,74.1,26.4,56.8
+2024-10-06,La Libertad,coffee,700,74.1,31.4,53.8
+2024-10-06,La Libertad,sugar_cane,80378,74.1,31.4,53.8
+2024-10-06,La Libertad,corn,2231,74.1,31.4,53.8
+2024-10-06,La Libertad,beans,1117,74.1,31.4,53.8
+2024-10-06,Santa Ana,coffee,1261,74.1,24.1,51.4
+2024-10-06,Santa Ana,sugar_cane,60148,74.1,24.1,51.4
+2024-10-06,Santa Ana,corn,2674,74.1,24.1,51.4
+2024-10-06,Santa Ana,beans,1116,74.1,24.1,51.4
+2024-10-06,Sonsonate,coffee,828,74.1,29.2,54.6
+2024-10-06,Sonsonate,sugar_cane,74293,74.1,29.2,54.6
+2024-10-06,Sonsonate,corn,2492,74.1,29.2,54.6
+2024-10-06,Sonsonate,beans,1058,74.1,29.2,54.6
+2024-10-06,La Paz,coffee,774,74.1,28.7,50.6
+2024-10-06,La Paz,sugar_cane,80112,74.1,28.7,50.6
+2024-10-06,La Paz,corn,2377,74.1,28.7,50.6
+2024-10-06,La Paz,beans,1109,74.1,28.7,50.6
+2024-10-06,Usulután,coffee,837,74.1,31.7,53.9
+2024-10-06,Usulután,sugar_cane,74351,74.1,31.7,53.9
+2024-10-06,Usulután,corn,2556,74.1,31.7,53.9
+2024-10-06,Usulután,beans,983,74.1,31.7,53.9
+2024-10-06,San Miguel,coffee,905,74.1,25.8,50.6
+2024-10-06,San Miguel,sugar_cane,65674,74.1,25.8,50.6
+2024-10-06,San Miguel,corn,2738,74.1,25.8,50.6
+2024-10-06,San Miguel,beans,1077,74.1,25.8,50.6
+2024-10-06,Morazán,coffee,1150,74.1,20.5,53.9
+2024-10-06,Morazán,sugar_cane,61848,74.1,20.5,53.9
+2024-10-06,Morazán,corn,2772,74.1,20.5,53.9
+2024-10-06,Morazán,beans,1231,74.1,20.5,53.9
+2024-10-06,La Unión,coffee,836,74.1,28.7,54.6
+2024-10-06,La Unión,sugar_cane,79956,74.1,28.7,54.6
+2024-10-06,La Unión,corn,2249,74.1,28.7,54.6
+2024-10-06,La Unión,beans,1078,74.1,28.7,54.6
+2024-10-06,Cuscatlán,coffee,920,74.1,25.2,51.1
+2024-10-06,Cuscatlán,sugar_cane,73150,74.1,25.2,51.1
+2024-10-06,Cuscatlán,corn,2565,74.1,25.2,51.1
+2024-10-06,Cuscatlán,beans,1047,74.1,25.2,51.1
+2024-10-06,Cabañas,coffee,1095,74.1,25.7,55.2
+2024-10-06,Cabañas,sugar_cane,72984,74.1,25.7,55.2
+2024-10-06,Cabañas,corn,2928,74.1,25.7,55.2
+2024-10-06,Cabañas,beans,1116,74.1,25.7,55.2
+2024-10-06,Chalatenango,coffee,1120,74.1,22.7,54.8
+2024-10-06,Chalatenango,sugar_cane,62855,74.1,22.7,54.8
+2024-10-06,Chalatenango,corn,2934,74.1,22.7,54.8
+2024-10-06,Chalatenango,beans,1037,74.1,22.7,54.8
+2024-10-06,Ahuachapán,coffee,1057,74.1,23.6,49
+2024-10-06,Ahuachapán,sugar_cane,67194,74.1,23.6,49
+2024-10-06,Ahuachapán,corn,2792,74.1,23.6,49
+2024-10-06,Ahuachapán,beans,1237,74.1,23.6,49
+2024-10-06,San Vicente,coffee,1083,74.1,24.5,50.9
+2024-10-06,San Vicente,sugar_cane,78362,74.1,24.5,50.9
+2024-10-06,San Vicente,corn,3012,74.1,24.5,50.9
+2024-10-06,San Vicente,beans,1060,74.1,24.5,50.9
+2024-10-07,San Salvador,coffee,987,86.8,27.5,60.3
+2024-10-07,San Salvador,sugar_cane,80597,86.8,27.5,60.3
+2024-10-07,San Salvador,corn,3085,86.8,27.5,60.3
+2024-10-07,San Salvador,beans,1133,86.8,27.5,60.3
+2024-10-07,La Libertad,coffee,771,86.8,32.1,52.3
+2024-10-07,La Libertad,sugar_cane,83714,86.8,32.1,52.3
+2024-10-07,La Libertad,corn,2554,86.8,32.1,52.3
+2024-10-07,La Libertad,beans,1114,86.8,32.1,52.3
+2024-10-07,Santa Ana,coffee,1119,86.8,24,51.3
+2024-10-07,Santa Ana,sugar_cane,71934,86.8,24,51.3
+2024-10-07,Santa Ana,corn,2641,86.8,24,51.3
+2024-10-07,Santa Ana,beans,1037,86.8,24,51.3
+2024-10-07,Sonsonate,coffee,838,86.8,30.9,55.9
+2024-10-07,Sonsonate,sugar_cane,88442,86.8,30.9,55.9
+2024-10-07,Sonsonate,corn,2300,86.8,30.9,55.9
+2024-10-07,Sonsonate,beans,1044,86.8,30.9,55.9
+2024-10-07,La Paz,coffee,690,86.8,30.7,48.6
+2024-10-07,La Paz,sugar_cane,87187,86.8,30.7,48.6
+2024-10-07,La Paz,corn,2664,86.8,30.7,48.6
+2024-10-07,La Paz,beans,971,86.8,30.7,48.6
+2024-10-07,Usulután,coffee,818,86.8,31.1,54
+2024-10-07,Usulután,sugar_cane,81191,86.8,31.1,54
+2024-10-07,Usulután,corn,2634,86.8,31.1,54
+2024-10-07,Usulután,beans,1001,86.8,31.1,54
+2024-10-07,San Miguel,coffee,957,86.8,26.6,55.5
+2024-10-07,San Miguel,sugar_cane,82424,86.8,26.6,55.5
+2024-10-07,San Miguel,corn,2784,86.8,26.6,55.5
+2024-10-07,San Miguel,beans,1055,86.8,26.6,55.5
+2024-10-07,Morazán,coffee,1235,86.8,21.5,59.6
+2024-10-07,Morazán,sugar_cane,62718,86.8,21.5,59.6
+2024-10-07,Morazán,corn,2863,86.8,21.5,59.6
+2024-10-07,Morazán,beans,1085,86.8,21.5,59.6
+2024-10-07,La Unión,coffee,705,86.8,30.5,56.5
+2024-10-07,La Unión,sugar_cane,81585,86.8,30.5,56.5
+2024-10-07,La Unión,corn,2243,86.8,30.5,56.5
+2024-10-07,La Unión,beans,1091,86.8,30.5,56.5
+2024-10-07,Cuscatlán,coffee,915,86.8,27.4,48.9
+2024-10-07,Cuscatlán,sugar_cane,72212,86.8,27.4,48.9
+2024-10-07,Cuscatlán,corn,2688,86.8,27.4,48.9
+2024-10-07,Cuscatlán,beans,934,86.8,27.4,48.9
+2024-10-07,Cabañas,coffee,896,86.8,26.6,54.2
+2024-10-07,Cabañas,sugar_cane,81188,86.8,26.6,54.2
+2024-10-07,Cabañas,corn,2643,86.8,26.6,54.2
+2024-10-07,Cabañas,beans,983,86.8,26.6,54.2
+2024-10-07,Chalatenango,coffee,1060,86.8,21.2,54.1
+2024-10-07,Chalatenango,sugar_cane,59808,86.8,21.2,54.1
+2024-10-07,Chalatenango,corn,2626,86.8,21.2,54.1
+2024-10-07,Chalatenango,beans,1232,86.8,21.2,54.1
+2024-10-07,Ahuachapán,coffee,1074,86.8,22.9,57.5
+2024-10-07,Ahuachapán,sugar_cane,71290,86.8,22.9,57.5
+2024-10-07,Ahuachapán,corn,2546,86.8,22.9,57.5
+2024-10-07,Ahuachapán,beans,1049,86.8,22.9,57.5
+2024-10-07,San Vicente,coffee,959,86.8,24.6,48.8
+2024-10-07,San Vicente,sugar_cane,71490,86.8,24.6,48.8
+2024-10-07,San Vicente,corn,2975,86.8,24.6,48.8
+2024-10-07,San Vicente,beans,1134,86.8,24.6,48.8
+2024-10-08,San Salvador,coffee,972,60.4,25.3,54.5
+2024-10-08,San Salvador,sugar_cane,73063,60.4,25.3,54.5
+2024-10-08,San Salvador,corn,2692,60.4,25.3,54.5
+2024-10-08,San Salvador,beans,1260,60.4,25.3,54.5
+2024-10-08,La Libertad,coffee,817,60.4,29,51.7
+2024-10-08,La Libertad,sugar_cane,81330,60.4,29,51.7
+2024-10-08,La Libertad,corn,2621,60.4,29,51.7
+2024-10-08,La Libertad,beans,1052,60.4,29,51.7
+2024-10-08,Santa Ana,coffee,1054,60.4,20.3,42.2
+2024-10-08,Santa Ana,sugar_cane,58146,60.4,20.3,42.2
+2024-10-08,Santa Ana,corn,2786,60.4,20.3,42.2
+2024-10-08,Santa Ana,beans,1214,60.4,20.3,42.2
+2024-10-08,Sonsonate,coffee,717,60.4,31.2,46.4
+2024-10-08,Sonsonate,sugar_cane,77546,60.4,31.2,46.4
+2024-10-08,Sonsonate,corn,2327,60.4,31.2,46.4
+2024-10-08,Sonsonate,beans,1087,60.4,31.2,46.4
+2024-10-08,La Paz,coffee,703,60.4,28,49.3
+2024-10-08,La Paz,sugar_cane,69956,60.4,28,49.3
+2024-10-08,La Paz,corn,2777,60.4,28,49.3
+2024-10-08,La Paz,beans,1024,60.4,28,49.3
+2024-10-08,Usulután,coffee,818,60.4,30.4,48.3
+2024-10-08,Usulután,sugar_cane,72814,60.4,30.4,48.3
+2024-10-08,Usulután,corn,2244,60.4,30.4,48.3
+2024-10-08,Usulután,beans,1046,60.4,30.4,48.3
+2024-10-08,San Miguel,coffee,978,60.4,25.5,46.9
+2024-10-08,San Miguel,sugar_cane,68976,60.4,25.5,46.9
+2024-10-08,San Miguel,corn,2694,60.4,25.5,46.9
+2024-10-08,San Miguel,beans,1123,60.4,25.5,46.9
+2024-10-08,Morazán,coffee,1066,60.4,20.5,50.1
+2024-10-08,Morazán,sugar_cane,58907,60.4,20.5,50.1
+2024-10-08,Morazán,corn,2903,60.4,20.5,50.1
+2024-10-08,Morazán,beans,1176,60.4,20.5,50.1
+2024-10-08,La Unión,coffee,817,60.4,30.1,54.8
+2024-10-08,La Unión,sugar_cane,74134,60.4,30.1,54.8
+2024-10-08,La Unión,corn,2566,60.4,30.1,54.8
+2024-10-08,La Unión,beans,948,60.4,30.1,54.8
+2024-10-08,Cuscatlán,coffee,1067,60.4,24.9,45.9
+2024-10-08,Cuscatlán,sugar_cane,72524,60.4,24.9,45.9
+2024-10-08,Cuscatlán,corn,2772,60.4,24.9,45.9
+2024-10-08,Cuscatlán,beans,1064,60.4,24.9,45.9
+2024-10-08,Cabañas,coffee,934,60.4,25.8,44.4
+2024-10-08,Cabañas,sugar_cane,74142,60.4,25.8,44.4
+2024-10-08,Cabañas,corn,2755,60.4,25.8,44.4
+2024-10-08,Cabañas,beans,1226,60.4,25.8,44.4
+2024-10-08,Chalatenango,coffee,1066,60.4,22,52.4
+2024-10-08,Chalatenango,sugar_cane,53929,60.4,22,52.4
+2024-10-08,Chalatenango,corn,2770,60.4,22,52.4
+2024-10-08,Chalatenango,beans,1178,60.4,22,52.4
+2024-10-08,Ahuachapán,coffee,1137,60.4,22.8,54.8
+2024-10-08,Ahuachapán,sugar_cane,55661,60.4,22.8,54.8
+2024-10-08,Ahuachapán,corn,2774,60.4,22.8,54.8
+2024-10-08,Ahuachapán,beans,1091,60.4,22.8,54.8
+2024-10-08,San Vicente,coffee,1036,60.4,25.3,42.9
+2024-10-08,San Vicente,sugar_cane,74360,60.4,25.3,42.9
+2024-10-08,San Vicente,corn,2978,60.4,25.3,42.9
+2024-10-08,San Vicente,beans,1208,60.4,25.3,42.9
+2024-10-09,San Salvador,coffee,1083,84,25.7,55.2
+2024-10-09,San Salvador,sugar_cane,79166,84,25.7,55.2
+2024-10-09,San Salvador,corn,2503,84,25.7,55.2
+2024-10-09,San Salvador,beans,1106,84,25.7,55.2
+2024-10-09,La Libertad,coffee,717,84,31.5,53.7
+2024-10-09,La Libertad,sugar_cane,85921,84,31.5,53.7
+2024-10-09,La Libertad,corn,2352,84,31.5,53.7
+2024-10-09,La Libertad,beans,942,84,31.5,53.7
+2024-10-09,Santa Ana,coffee,1090,84,20.1,47.3
+2024-10-09,Santa Ana,sugar_cane,72141,84,20.1,47.3
+2024-10-09,Santa Ana,corn,3011,84,20.1,47.3
+2024-10-09,Santa Ana,beans,1041,84,20.1,47.3
+2024-10-09,Sonsonate,coffee,756,84,28.9,53.6
+2024-10-09,Sonsonate,sugar_cane,79108,84,28.9,53.6
+2024-10-09,Sonsonate,corn,2648,84,28.9,53.6
+2024-10-09,Sonsonate,beans,969,84,28.9,53.6
+2024-10-09,La Paz,coffee,752,84,31.1,53.7
+2024-10-09,La Paz,sugar_cane,75445,84,31.1,53.7
+2024-10-09,La Paz,corn,2255,84,31.1,53.7
+2024-10-09,La Paz,beans,950,84,31.1,53.7
+2024-10-09,Usulután,coffee,773,84,29.8,51.1
+2024-10-09,Usulután,sugar_cane,76789,84,29.8,51.1
+2024-10-09,Usulután,corn,2247,84,29.8,51.1
+2024-10-09,Usulután,beans,1087,84,29.8,51.1
+2024-10-09,San Miguel,coffee,869,84,26.6,54.1
+2024-10-09,San Miguel,sugar_cane,80100,84,26.6,54.1
+2024-10-09,San Miguel,corn,2673,84,26.6,54.1
+2024-10-09,San Miguel,beans,1086,84,26.6,54.1
+2024-10-09,Morazán,coffee,1096,84,23.7,54.8
+2024-10-09,Morazán,sugar_cane,67648,84,23.7,54.8
+2024-10-09,Morazán,corn,2518,84,23.7,54.8
+2024-10-09,Morazán,beans,1040,84,23.7,54.8
+2024-10-09,La Unión,coffee,693,84,27.8,55.5
+2024-10-09,La Unión,sugar_cane,83717,84,27.8,55.5
+2024-10-09,La Unión,corn,2954,84,27.8,55.5
+2024-10-09,La Unión,beans,954,84,27.8,55.5
+2024-10-09,Cuscatlán,coffee,914,84,24.9,54.3
+2024-10-09,Cuscatlán,sugar_cane,77026,84,24.9,54.3
+2024-10-09,Cuscatlán,corn,2896,84,24.9,54.3
+2024-10-09,Cuscatlán,beans,1131,84,24.9,54.3
+2024-10-09,Cabañas,coffee,1005,84,24.1,52.5
+2024-10-09,Cabañas,sugar_cane,83239,84,24.1,52.5
+2024-10-09,Cabañas,corn,2563,84,24.1,52.5
+2024-10-09,Cabañas,beans,1260,84,24.1,52.5
+2024-10-09,Chalatenango,coffee,1258,84,21,56.9
+2024-10-09,Chalatenango,sugar_cane,66693,84,21,56.9
+2024-10-09,Chalatenango,corn,2890,84,21,56.9
+2024-10-09,Chalatenango,beans,1124,84,21,56.9
+2024-10-09,Ahuachapán,coffee,1196,84,19.9,55.5
+2024-10-09,Ahuachapán,sugar_cane,55001,84,19.9,55.5
+2024-10-09,Ahuachapán,corn,2538,84,19.9,55.5
+2024-10-09,Ahuachapán,beans,1011,84,19.9,55.5
+2024-10-09,San Vicente,coffee,1035,84,24.1,45
+2024-10-09,San Vicente,sugar_cane,77899,84,24.1,45
+2024-10-09,San Vicente,corn,2665,84,24.1,45
+2024-10-09,San Vicente,beans,1123,84,24.1,45
+2024-10-10,San Salvador,coffee,844,74.8,26.6,49.3
+2024-10-10,San Salvador,sugar_cane,75052,74.8,26.6,49.3
+2024-10-10,San Salvador,corn,2489,74.8,26.6,49.3
+2024-10-10,San Salvador,beans,1047,74.8,26.6,49.3
+2024-10-10,La Libertad,coffee,803,74.8,31.2,56.6
+2024-10-10,La Libertad,sugar_cane,80123,74.8,31.2,56.6
+2024-10-10,La Libertad,corn,2654,74.8,31.2,56.6
+2024-10-10,La Libertad,beans,944,74.8,31.2,56.6
+2024-10-10,Santa Ana,coffee,1091,74.8,19.6,47.4
+2024-10-10,Santa Ana,sugar_cane,57401,74.8,19.6,47.4
+2024-10-10,Santa Ana,corn,2837,74.8,19.6,47.4
+2024-10-10,Santa Ana,beans,1096,74.8,19.6,47.4
+2024-10-10,Sonsonate,coffee,736,74.8,29.2,51.9
+2024-10-10,Sonsonate,sugar_cane,80487,74.8,29.2,51.9
+2024-10-10,Sonsonate,corn,2444,74.8,29.2,51.9
+2024-10-10,Sonsonate,beans,1055,74.8,29.2,51.9
+2024-10-10,La Paz,coffee,765,74.8,29.2,55.5
+2024-10-10,La Paz,sugar_cane,76327,74.8,29.2,55.5
+2024-10-10,La Paz,corn,2412,74.8,29.2,55.5
+2024-10-10,La Paz,beans,1071,74.8,29.2,55.5
+2024-10-10,Usulután,coffee,733,74.8,31.2,45.8
+2024-10-10,Usulután,sugar_cane,80632,74.8,31.2,45.8
+2024-10-10,Usulután,corn,2253,74.8,31.2,45.8
+2024-10-10,Usulután,beans,1016,74.8,31.2,45.8
+2024-10-10,San Miguel,coffee,966,74.8,25.4,53.6
+2024-10-10,San Miguel,sugar_cane,73595,74.8,25.4,53.6
+2024-10-10,San Miguel,corn,2852,74.8,25.4,53.6
+2024-10-10,San Miguel,beans,1189,74.8,25.4,53.6
+2024-10-10,Morazán,coffee,1218,74.8,21.4,51.3
+2024-10-10,Morazán,sugar_cane,60682,74.8,21.4,51.3
+2024-10-10,Morazán,corn,2667,74.8,21.4,51.3
+2024-10-10,Morazán,beans,1066,74.8,21.4,51.3
+2024-10-10,La Unión,coffee,705,74.8,28,54
+2024-10-10,La Unión,sugar_cane,76608,74.8,28,54
+2024-10-10,La Unión,corn,2947,74.8,28,54
+2024-10-10,La Unión,beans,1043,74.8,28,54
+2024-10-10,Cuscatlán,coffee,1045,74.8,25.1,49.5
+2024-10-10,Cuscatlán,sugar_cane,73921,74.8,25.1,49.5
+2024-10-10,Cuscatlán,corn,2605,74.8,25.1,49.5
+2024-10-10,Cuscatlán,beans,1238,74.8,25.1,49.5
+2024-10-10,Cabañas,coffee,917,74.8,25.2,48.3
+2024-10-10,Cabañas,sugar_cane,66265,74.8,25.2,48.3
+2024-10-10,Cabañas,corn,2555,74.8,25.2,48.3
+2024-10-10,Cabañas,beans,1197,74.8,25.2,48.3
+2024-10-10,Chalatenango,coffee,1187,74.8,21.3,58.8
+2024-10-10,Chalatenango,sugar_cane,61541,74.8,21.3,58.8
+2024-10-10,Chalatenango,corn,2945,74.8,21.3,58.8
+2024-10-10,Chalatenango,beans,1051,74.8,21.3,58.8
+2024-10-10,Ahuachapán,coffee,1256,74.8,21.7,53.5
+2024-10-10,Ahuachapán,sugar_cane,66283,74.8,21.7,53.5
+2024-10-10,Ahuachapán,corn,2581,74.8,21.7,53.5
+2024-10-10,Ahuachapán,beans,1156,74.8,21.7,53.5
+2024-10-10,San Vicente,coffee,1074,74.8,25.2,46
+2024-10-10,San Vicente,sugar_cane,74168,74.8,25.2,46
+2024-10-10,San Vicente,corn,2668,74.8,25.2,46
+2024-10-10,San Vicente,beans,1158,74.8,25.2,46
+2024-10-11,San Salvador,coffee,999,66.3,25.4,51.2
+2024-10-11,San Salvador,sugar_cane,73843,66.3,25.4,51.2
+2024-10-11,San Salvador,corn,2653,66.3,25.4,51.2
+2024-10-11,San Salvador,beans,1181,66.3,25.4,51.2
+2024-10-11,La Libertad,coffee,803,66.3,29.1,49.4
+2024-10-11,La Libertad,sugar_cane,75759,66.3,29.1,49.4
+2024-10-11,La Libertad,corn,2313,66.3,29.1,49.4
+2024-10-11,La Libertad,beans,1108,66.3,29.1,49.4
+2024-10-11,Santa Ana,coffee,1230,66.3,19.8,45.9
+2024-10-11,Santa Ana,sugar_cane,52343,66.3,19.8,45.9
+2024-10-11,Santa Ana,corn,2944,66.3,19.8,45.9
+2024-10-11,Santa Ana,beans,1001,66.3,19.8,45.9
+2024-10-11,Sonsonate,coffee,768,66.3,28.7,44.2
+2024-10-11,Sonsonate,sugar_cane,70055,66.3,28.7,44.2
+2024-10-11,Sonsonate,corn,2242,66.3,28.7,44.2
+2024-10-11,Sonsonate,beans,1103,66.3,28.7,44.2
+2024-10-11,La Paz,coffee,783,66.3,28.2,50.1
+2024-10-11,La Paz,sugar_cane,77458,66.3,28.2,50.1
+2024-10-11,La Paz,corn,2383,66.3,28.2,50.1
+2024-10-11,La Paz,beans,1111,66.3,28.2,50.1
+2024-10-11,Usulután,coffee,713,66.3,27.3,47.8
+2024-10-11,Usulután,sugar_cane,77333,66.3,27.3,47.8
+2024-10-11,Usulután,corn,2972,66.3,27.3,47.8
+2024-10-11,Usulután,beans,1015,66.3,27.3,47.8
+2024-10-11,San Miguel,coffee,979,66.3,26.9,53.8
+2024-10-11,San Miguel,sugar_cane,73118,66.3,26.9,53.8
+2024-10-11,San Miguel,corn,2962,66.3,26.9,53.8
+2024-10-11,San Miguel,beans,1019,66.3,26.9,53.8
+2024-10-11,Morazán,coffee,1082,66.3,23.1,53.5
+2024-10-11,Morazán,sugar_cane,62032,66.3,23.1,53.5
+2024-10-11,Morazán,corn,3019,66.3,23.1,53.5
+2024-10-11,Morazán,beans,1262,66.3,23.1,53.5
+2024-10-11,La Unión,coffee,763,66.3,29.7,50.9
+2024-10-11,La Unión,sugar_cane,80905,66.3,29.7,50.9
+2024-10-11,La Unión,corn,2471,66.3,29.7,50.9
+2024-10-11,La Unión,beans,963,66.3,29.7,50.9
+2024-10-11,Cuscatlán,coffee,979,66.3,24,47.4
+2024-10-11,Cuscatlán,sugar_cane,70713,66.3,24,47.4
+2024-10-11,Cuscatlán,corn,2535,66.3,24,47.4
+2024-10-11,Cuscatlán,beans,1185,66.3,24,47.4
+2024-10-11,Cabañas,coffee,1016,66.3,25,47
+2024-10-11,Cabañas,sugar_cane,74146,66.3,25,47
+2024-10-11,Cabañas,corn,2674,66.3,25,47
+2024-10-11,Cabañas,beans,1257,66.3,25,47
+2024-10-11,Chalatenango,coffee,1233,66.3,20.8,49
+2024-10-11,Chalatenango,sugar_cane,64850,66.3,20.8,49
+2024-10-11,Chalatenango,corn,2685,66.3,20.8,49
+2024-10-11,Chalatenango,beans,1198,66.3,20.8,49
+2024-10-11,Ahuachapán,coffee,1184,66.3,20.9,52.4
+2024-10-11,Ahuachapán,sugar_cane,60673,66.3,20.9,52.4
+2024-10-11,Ahuachapán,corn,2678,66.3,20.9,52.4
+2024-10-11,Ahuachapán,beans,1070,66.3,20.9,52.4
+2024-10-11,San Vicente,coffee,1077,66.3,24.4,46.1
+2024-10-11,San Vicente,sugar_cane,66245,66.3,24.4,46.1
+2024-10-11,San Vicente,corn,2622,66.3,24.4,46.1
+2024-10-11,San Vicente,beans,1193,66.3,24.4,46.1
+2024-10-12,San Salvador,coffee,974,72.4,24.2,52.4
+2024-10-12,San Salvador,sugar_cane,66532,72.4,24.2,52.4
+2024-10-12,San Salvador,corn,3009,72.4,24.2,52.4
+2024-10-12,San Salvador,beans,1078,72.4,24.2,52.4
+2024-10-12,La Libertad,coffee,691,72.4,27.5,46.9
+2024-10-12,La Libertad,sugar_cane,81990,72.4,27.5,46.9
+2024-10-12,La Libertad,corn,2799,72.4,27.5,46.9
+2024-10-12,La Libertad,beans,1032,72.4,27.5,46.9
+2024-10-12,Santa Ana,coffee,1202,72.4,22.8,49.8
+2024-10-12,Santa Ana,sugar_cane,56222,72.4,22.8,49.8
+2024-10-12,Santa Ana,corn,2824,72.4,22.8,49.8
+2024-10-12,Santa Ana,beans,1173,72.4,22.8,49.8
+2024-10-12,Sonsonate,coffee,689,72.4,28.8,49.3
+2024-10-12,Sonsonate,sugar_cane,78984,72.4,28.8,49.3
+2024-10-12,Sonsonate,corn,2594,72.4,28.8,49.3
+2024-10-12,Sonsonate,beans,1068,72.4,28.8,49.3
+2024-10-12,La Paz,coffee,804,72.4,30.7,47.9
+2024-10-12,La Paz,sugar_cane,68119,72.4,30.7,47.9
+2024-10-12,La Paz,corn,2246,72.4,30.7,47.9
+2024-10-12,La Paz,beans,983,72.4,30.7,47.9
+2024-10-12,Usulután,coffee,801,72.4,27.3,49.1
+2024-10-12,Usulután,sugar_cane,76216,72.4,27.3,49.1
+2024-10-12,Usulután,corn,2741,72.4,27.3,49.1
+2024-10-12,Usulután,beans,1102,72.4,27.3,49.1
+2024-10-12,San Miguel,coffee,1008,72.4,25.9,51
+2024-10-12,San Miguel,sugar_cane,67128,72.4,25.9,51
+2024-10-12,San Miguel,corn,2988,72.4,25.9,51
+2024-10-12,San Miguel,beans,1157,72.4,25.9,51
+2024-10-12,Morazán,coffee,1060,72.4,19.7,51
+2024-10-12,Morazán,sugar_cane,54286,72.4,19.7,51
+2024-10-12,Morazán,corn,2649,72.4,19.7,51
+2024-10-12,Morazán,beans,983,72.4,19.7,51
+2024-10-12,La Unión,coffee,728,72.4,29.4,47.8
+2024-10-12,La Unión,sugar_cane,73636,72.4,29.4,47.8
+2024-10-12,La Unión,corn,2310,72.4,29.4,47.8
+2024-10-12,La Unión,beans,936,72.4,29.4,47.8
+2024-10-12,Cuscatlán,coffee,1085,72.4,24.7,50.3
+2024-10-12,Cuscatlán,sugar_cane,72078,72.4,24.7,50.3
+2024-10-12,Cuscatlán,corn,2935,72.4,24.7,50.3
+2024-10-12,Cuscatlán,beans,1205,72.4,24.7,50.3
+2024-10-12,Cabañas,coffee,813,72.4,26.7,52.5
+2024-10-12,Cabañas,sugar_cane,69201,72.4,26.7,52.5
+2024-10-12,Cabañas,corn,2861,72.4,26.7,52.5
+2024-10-12,Cabañas,beans,1099,72.4,26.7,52.5
+2024-10-12,Chalatenango,coffee,1120,72.4,18.9,49
+2024-10-12,Chalatenango,sugar_cane,51468,72.4,18.9,49
+2024-10-12,Chalatenango,corn,2795,72.4,18.9,49
+2024-10-12,Chalatenango,beans,1113,72.4,18.9,49
+2024-10-12,Ahuachapán,coffee,1260,72.4,20.2,55
+2024-10-12,Ahuachapán,sugar_cane,62888,72.4,20.2,55
+2024-10-12,Ahuachapán,corn,2680,72.4,20.2,55
+2024-10-12,Ahuachapán,beans,1169,72.4,20.2,55
+2024-10-12,San Vicente,coffee,978,72.4,26.4,51.5
+2024-10-12,San Vicente,sugar_cane,72929,72.4,26.4,51.5
+2024-10-12,San Vicente,corn,2679,72.4,26.4,51.5
+2024-10-12,San Vicente,beans,958,72.4,26.4,51.5
+2024-10-13,San Salvador,coffee,1082,55.1,24,50.8
+2024-10-13,San Salvador,sugar_cane,62149,55.1,24,50.8
+2024-10-13,San Salvador,corn,2776,55.1,24,50.8
+2024-10-13,San Salvador,beans,1215,55.1,24,50.8
+2024-10-13,La Libertad,coffee,750,55.1,29.6,39.9
+2024-10-13,La Libertad,sugar_cane,67546,55.1,29.6,39.9
+2024-10-13,La Libertad,corn,2546,55.1,29.6,39.9
+2024-10-13,La Libertad,beans,1048,55.1,29.6,39.9
+2024-10-13,Santa Ana,coffee,1110,55.1,21.7,47.7
+2024-10-13,Santa Ana,sugar_cane,59767,55.1,21.7,47.7
+2024-10-13,Santa Ana,corn,2521,55.1,21.7,47.7
+2024-10-13,Santa Ana,beans,1134,55.1,21.7,47.7
+2024-10-13,Sonsonate,coffee,798,55.1,29,46.9
+2024-10-13,Sonsonate,sugar_cane,80086,55.1,29,46.9
+2024-10-13,Sonsonate,corn,2638,55.1,29,46.9
+2024-10-13,Sonsonate,beans,1131,55.1,29,46.9
+2024-10-13,La Paz,coffee,738,55.1,30.5,48.4
+2024-10-13,La Paz,sugar_cane,65521,55.1,30.5,48.4
+2024-10-13,La Paz,corn,2281,55.1,30.5,48.4
+2024-10-13,La Paz,beans,1122,55.1,30.5,48.4
+2024-10-13,Usulután,coffee,745,55.1,28.5,41.3
+2024-10-13,Usulután,sugar_cane,78548,55.1,28.5,41.3
+2024-10-13,Usulután,corn,2355,55.1,28.5,41.3
+2024-10-13,Usulután,beans,958,55.1,28.5,41.3
+2024-10-13,San Miguel,coffee,1037,55.1,24.5,46.8
+2024-10-13,San Miguel,sugar_cane,65946,55.1,24.5,46.8
+2024-10-13,San Miguel,corn,2622,55.1,24.5,46.8
+2024-10-13,San Miguel,beans,1095,55.1,24.5,46.8
+2024-10-13,Morazán,coffee,1166,55.1,21.6,48.5
+2024-10-13,Morazán,sugar_cane,57119,55.1,21.6,48.5
+2024-10-13,Morazán,corn,2768,55.1,21.6,48.5
+2024-10-13,Morazán,beans,1170,55.1,21.6,48.5
+2024-10-13,La Unión,coffee,825,55.1,27.2,44.4
+2024-10-13,La Unión,sugar_cane,80310,55.1,27.2,44.4
+2024-10-13,La Unión,corn,2743,55.1,27.2,44.4
+2024-10-13,La Unión,beans,1136,55.1,27.2,44.4
+2024-10-13,Cuscatlán,coffee,902,55.1,25.8,45.5
+2024-10-13,Cuscatlán,sugar_cane,66331,55.1,25.8,45.5
+2024-10-13,Cuscatlán,corn,2749,55.1,25.8,45.5
+2024-10-13,Cuscatlán,beans,1062,55.1,25.8,45.5
+2024-10-13,Cabañas,coffee,1076,55.1,25.6,47.8
+2024-10-13,Cabañas,sugar_cane,70230,55.1,25.6,47.8
+2024-10-13,Cabañas,corn,2878,55.1,25.6,47.8
+2024-10-13,Cabañas,beans,1239,55.1,25.6,47.8
+2024-10-13,Chalatenango,coffee,1036,55.1,21.8,41.7
+2024-10-13,Chalatenango,sugar_cane,59480,55.1,21.8,41.7
+2024-10-13,Chalatenango,corn,2542,55.1,21.8,41.7
+2024-10-13,Chalatenango,beans,1056,55.1,21.8,41.7
+2024-10-13,Ahuachapán,coffee,1160,55.1,20.4,44.7
+2024-10-13,Ahuachapán,sugar_cane,55565,55.1,20.4,44.7
+2024-10-13,Ahuachapán,corn,2543,55.1,20.4,44.7
+2024-10-13,Ahuachapán,beans,1238,55.1,20.4,44.7
+2024-10-13,San Vicente,coffee,1057,55.1,23.1,49.9
+2024-10-13,San Vicente,sugar_cane,67198,55.1,23.1,49.9
+2024-10-13,San Vicente,corn,2877,55.1,23.1,49.9
+2024-10-13,San Vicente,beans,1123,55.1,23.1,49.9
+2024-10-14,San Salvador,coffee,1008,52.4,24.3,42.3
+2024-10-14,San Salvador,sugar_cane,61000,52.4,24.3,42.3
+2024-10-14,San Salvador,corn,2915,52.4,24.3,42.3
+2024-10-14,San Salvador,beans,1156,52.4,24.3,42.3
+2024-10-14,La Libertad,coffee,692,52.4,28.4,41.7
+2024-10-14,La Libertad,sugar_cane,75908,52.4,28.4,41.7
+2024-10-14,La Libertad,corn,2229,52.4,28.4,41.7
+2024-10-14,La Libertad,beans,1122,52.4,28.4,41.7
+2024-10-14,Santa Ana,coffee,1095,52.4,20.1,40.9
+2024-10-14,Santa Ana,sugar_cane,55271,52.4,20.1,40.9
+2024-10-14,Santa Ana,corn,2930,52.4,20.1,40.9
+2024-10-14,Santa Ana,beans,1064,52.4,20.1,40.9
+2024-10-14,Sonsonate,coffee,831,52.4,29.6,46.2
+2024-10-14,Sonsonate,sugar_cane,76374,52.4,29.6,46.2
+2024-10-14,Sonsonate,corn,2372,52.4,29.6,46.2
+2024-10-14,Sonsonate,beans,1075,52.4,29.6,46.2
+2024-10-14,La Paz,coffee,703,52.4,29.8,38.7
+2024-10-14,La Paz,sugar_cane,79518,52.4,29.8,38.7
+2024-10-14,La Paz,corn,2495,52.4,29.8,38.7
+2024-10-14,La Paz,beans,1043,52.4,29.8,38.7
+2024-10-14,Usulután,coffee,799,52.4,29.1,39.7
+2024-10-14,Usulután,sugar_cane,79380,52.4,29.1,39.7
+2024-10-14,Usulután,corn,2608,52.4,29.1,39.7
+2024-10-14,Usulután,beans,1077,52.4,29.1,39.7
+2024-10-14,San Miguel,coffee,1012,52.4,24.9,45.1
+2024-10-14,San Miguel,sugar_cane,61581,52.4,24.9,45.1
+2024-10-14,San Miguel,corn,2873,52.4,24.9,45.1
+2024-10-14,San Miguel,beans,1203,52.4,24.9,45.1
+2024-10-14,Morazán,coffee,1249,52.4,21.3,39.9
+2024-10-14,Morazán,sugar_cane,54906,52.4,21.3,39.9
+2024-10-14,Morazán,corn,2712,52.4,21.3,39.9
+2024-10-14,Morazán,beans,1205,52.4,21.3,39.9
+2024-10-14,La Unión,coffee,817,52.4,27.6,36.9
+2024-10-14,La Unión,sugar_cane,74439,52.4,27.6,36.9
+2024-10-14,La Unión,corn,2989,52.4,27.6,36.9
+2024-10-14,La Unión,beans,1056,52.4,27.6,36.9
+2024-10-14,Cuscatlán,coffee,975,52.4,23.6,43.8
+2024-10-14,Cuscatlán,sugar_cane,62923,52.4,23.6,43.8
+2024-10-14,Cuscatlán,corn,2651,52.4,23.6,43.8
+2024-10-14,Cuscatlán,beans,1113,52.4,23.6,43.8
+2024-10-14,Cabañas,coffee,1018,52.4,23.2,41.2
+2024-10-14,Cabañas,sugar_cane,64260,52.4,23.2,41.2
+2024-10-14,Cabañas,corn,2685,52.4,23.2,41.2
+2024-10-14,Cabañas,beans,1112,52.4,23.2,41.2
+2024-10-14,Chalatenango,coffee,1130,52.4,19.1,43.5
+2024-10-14,Chalatenango,sugar_cane,44062,52.4,19.1,43.5
+2024-10-14,Chalatenango,corn,2678,52.4,19.1,43.5
+2024-10-14,Chalatenango,beans,1115,52.4,19.1,43.5
+2024-10-14,Ahuachapán,coffee,1185,52.4,19.7,41.3
+2024-10-14,Ahuachapán,sugar_cane,49995,52.4,19.7,41.3
+2024-10-14,Ahuachapán,corn,2876,52.4,19.7,41.3
+2024-10-14,Ahuachapán,beans,1080,52.4,19.7,41.3
+2024-10-14,San Vicente,coffee,1072,52.4,23,46.6
+2024-10-14,San Vicente,sugar_cane,65357,52.4,23,46.6
+2024-10-14,San Vicente,corn,2521,52.4,23,46.6
+2024-10-14,San Vicente,beans,1220,52.4,23,46.6

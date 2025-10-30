@@ -112,6 +112,49 @@ export const WaterSimulationSchema = z
   );
 
 /**
+ * Agriculture Simulation Request Validation
+ *
+ * Validates parameters for /api/simulate-agriculture endpoint
+ */
+export const AgricultureSimulationSchema = z
+  .object({
+    rainfall_change_pct: z
+      .number()
+      .min(-100, 'Rainfall change cannot be less than -100%')
+      .max(200, 'Rainfall change cannot exceed 200%')
+      .finite('Rainfall change must be a finite number'),
+    temperature_change_c: z
+      .number()
+      .min(-5, 'Temperature change cannot be less than -5°C')
+      .max(10, 'Temperature change cannot exceed +10°C')
+      .finite('Temperature change must be a finite number'),
+    irrigation_improvement_pct: z
+      .number()
+      .min(0, 'Irrigation improvement cannot be negative')
+      .max(100, 'Irrigation improvement cannot exceed 100%')
+      .finite('Irrigation improvement must be a finite number'),
+    crop_type: z.enum(['all', 'coffee', 'sugar_cane', 'corn', 'beans'], {
+      errorMap: () => ({ message: 'crop_type must be "all", "coffee", "sugar_cane", "corn", or "beans"' }),
+    }),
+    start_date: dateString,
+    end_date: dateString,
+  })
+  .strict()
+  .refine(
+    (data) => new Date(data.end_date) > new Date(data.start_date),
+    'End date must be after start date'
+  )
+  .refine(
+    (data) => {
+      const start = new Date(data.start_date);
+      const end = new Date(data.end_date);
+      const daysDiff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+      return daysDiff <= 365 * 5;
+    },
+    'Date range cannot exceed 5 years'
+  );
+
+/**
  * CSV Ingest Request Validation
  *
  * Validates parameters for /api/ingest endpoint

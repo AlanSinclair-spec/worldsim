@@ -273,11 +273,20 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         setMapLoaded(true);
         setError(null);
 
-        // Mapbox Standard style has built-in terrain! Just enable it with exaggeration
-        // The Standard style includes 'mapbox-dem' source automatically
+        // Add Mapbox terrain DEM source for 3D elevation
+        if (!mapInstance.getSource('mapbox-dem')) {
+          mapInstance.addSource('mapbox-dem', {
+            type: 'raster-dem',
+            url: 'mapbox://mapbox.terrain-rgb',
+            tileSize: 256,
+            maxzoom: 14
+          });
+        }
+
+        // Enable 3D terrain with exaggeration for dramatic effect
         mapInstance.setTerrain({
           source: 'mapbox-dem',
-          exaggeration: 1.5 // Enhance terrain relief for dramatic 3D effect
+          exaggeration: 1.5
         });
 
         // Note: Mapbox Standard style handles sky/atmosphere automatically

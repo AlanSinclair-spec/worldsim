@@ -120,16 +120,11 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
     localStorage.setItem('worldsim-map-3d-mode', String(newMode));
 
     if (newMode) {
-      // Switch to 3D: enable terrain, show sky, tilt camera
+      // Switch to 3D: enable terrain, tilt camera
       map.current.setTerrain({
         source: 'mapbox-dem',
         exaggeration: 1.5 // Dramatic terrain relief
       });
-      try {
-        map.current.setLayoutProperty('sky', 'visibility', 'visible');
-      } catch (e) {
-        console.log('Sky layer visibility already configured');
-      }
       map.current.easeTo({
         pitch: 60, // Tilted view for 3D perspective
         bearing: 0, // Front-facing view
@@ -137,7 +132,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         easing: (t: number) => t * (2 - t), // ease-in-out
       });
     } else {
-      // Switch to 2D: remove terrain, hide sky, flatten camera
+      // Switch to 2D: remove terrain, flatten camera
       map.current.easeTo({
         pitch: 0,
         bearing: 0,
@@ -148,11 +143,6 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       setTimeout(() => {
         if (map.current) {
           map.current.setTerrain(null);
-          try {
-            map.current.setLayoutProperty('sky', 'visibility', 'none');
-          } catch (e) {
-            console.log('Sky layer visibility already configured');
-          }
         }
       }, 1000); // Match animation duration
     }
@@ -195,11 +185,6 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         source: 'mapbox-dem',
         exaggeration: 1.5
       });
-      try {
-        map.current.setLayoutProperty('sky', 'visibility', 'visible');
-      } catch (e) {
-        console.log('Sky layer visibility already configured');
-      }
       map.current.easeTo({
         pitch: 60,
         bearing: 0,
@@ -295,12 +280,8 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
           exaggeration: 1.5 // Enhance terrain relief for dramatic 3D effect
         });
 
-        // Standard style has built-in sky layer, just ensure it's visible
-        try {
-          mapInstance.setLayoutProperty('sky', 'visibility', 'visible');
-        } catch (e) {
-          console.log('Sky layer already configured in Standard style');
-        }
+        // Note: Mapbox Standard style handles sky/atmosphere automatically
+        // No need to manually control sky layer visibility
 
         // Fit to El Salvador bounds with smooth animation (maintaining 3D view)
         mapInstance.fitBounds(

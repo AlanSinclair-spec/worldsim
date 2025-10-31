@@ -1,0 +1,18 @@
+# Test files and directories
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+tests/
+__mocks__/
+
+# Test configuration
+jest.config.js
+jest.setup.js
+playwright.config.ts
+
+# Test documentation
+TESTING_*.md
+TEST_*.md
+
+# Development scripts
+scripts/pre-launch-check.sh

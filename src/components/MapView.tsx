@@ -123,12 +123,16 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       // Switch to 3D: enable terrain, show sky, tilt camera
       map.current.setTerrain({
         source: 'mapbox-dem',
-        exaggeration: 1.5
+        exaggeration: 1.5 // Dramatic terrain relief
       });
-      map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      try {
+        map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      } catch (e) {
+        console.log('Sky layer visibility already configured');
+      }
       map.current.easeTo({
-        pitch: 60,
-        bearing: 20, // Slight rotation for better 3D perspective
+        pitch: 60, // Tilted view for 3D perspective
+        bearing: 0, // Front-facing view
         duration: 1000, // Smoother transition
         easing: (t: number) => t * (2 - t), // ease-in-out
       });
@@ -144,7 +148,11 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       setTimeout(() => {
         if (map.current) {
           map.current.setTerrain(null);
-          map.current.setLayoutProperty('sky', 'visibility', 'none');
+          try {
+            map.current.setLayoutProperty('sky', 'visibility', 'none');
+          } catch (e) {
+            console.log('Sky layer visibility already configured');
+          }
         }
       }, 1000); // Match animation duration
     }
@@ -187,10 +195,14 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
         source: 'mapbox-dem',
         exaggeration: 1.5
       });
-      map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      try {
+        map.current.setLayoutProperty('sky', 'visibility', 'visible');
+      } catch (e) {
+        console.log('Sky layer visibility already configured');
+      }
       map.current.easeTo({
         pitch: 60,
-        bearing: 20,
+        bearing: 0,
         duration: 1000, // Smoother transition
         easing: (t: number) => t * (2 - t),
       });
@@ -242,21 +254,22 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
     (mapboxgl as unknown as { accessToken: string }).accessToken = mapboxToken;
 
     try {
-      // Initialize map with professional government styling
+      // Initialize map with Mapbox Standard 3D style (global basemap with terrain, buildings, landmarks, trees)
       const mapInstance = new (mapboxgl as unknown as { Map: new (options: unknown) => MapboxMap }).Map({
         container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/light-v11', // Clean, professional base
-        center: [-88.9, 13.7], // El Salvador center
-        zoom: 8.2,
+        style: 'mapbox://styles/mapbox/standard', // Mapbox Standard 3D style with built-in terrain
+        center: [-88.8965, 13.7942], // El Salvador center (precise coordinates)
+        zoom: 8,
         pitch: 60, // Start in 3D view with terrain
-        bearing: 20, // Slight rotation for better 3D perspective
+        bearing: 0, // Slight rotation for better 3D perspective
         minZoom: 7,
-        maxZoom: 14,
+        maxZoom: 16, // Higher max zoom for Standard style
         maxBounds: [
           [-90.5, 12.8], // Southwest bound
           [-87.0, 14.5], // Northeast bound
         ],
         attributionControl: false, // Will add custom attribution
+        antialias: true, // Enable antialiasing for smoother 3D rendering
       });
       map.current = mapInstance;
 
@@ -271,37 +284,23 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
       });
 
       mapInstance.on('style.load', () => {
-        console.log('✅ Map style loaded successfully');
+        console.log('✅ Mapbox Standard style loaded successfully (3D terrain, buildings, landmarks enabled)');
         setMapLoaded(true);
         setError(null);
 
-        // Add 3D terrain source (using correct DEM source)
-        mapInstance.addSource('mapbox-dem', {
-          type: 'raster-dem',
-          url: 'mapbox://mapbox.mapbox-terrain-dem-v1',
-          tileSize: 512,
-          maxzoom: 14,
-        });
-
-        // Add sky layer for atmosphere effect
-        mapInstance.addLayer({
-          id: 'sky',
-          type: 'sky',
-          paint: {
-            'sky-type': 'atmosphere',
-            'sky-atmosphere-sun': [0.0, 90.0],
-            'sky-atmosphere-sun-intensity': 15,
-          },
-        });
-
-        // Show sky layer by default (3D mode is on by default)
-        mapInstance.setLayoutProperty('sky', 'visibility', 'visible');
-
-        // Enable 3D terrain immediately (since we start in 3D mode)
+        // Mapbox Standard style has built-in terrain! Just enable it with exaggeration
+        // The Standard style includes 'mapbox-dem' source automatically
         mapInstance.setTerrain({
           source: 'mapbox-dem',
-          exaggeration: 1.5
+          exaggeration: 1.5 // Enhance terrain relief for dramatic 3D effect
         });
+
+        // Standard style has built-in sky layer, just ensure it's visible
+        try {
+          mapInstance.setLayoutProperty('sky', 'visibility', 'visible');
+        } catch (e) {
+          console.log('Sky layer already configured in Standard style');
+        }
 
         // Fit to El Salvador bounds with smooth animation (maintaining 3D view)
         mapInstance.fitBounds(
@@ -314,7 +313,7 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
             duration: 1500, // Smooth 1.5s animation
             essential: true,
             pitch: 60, // Maintain 3D pitch
-            bearing: 20, // Maintain rotation
+            bearing: 0, // Front-facing view
           }
         );
       });

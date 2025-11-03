@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -68,6 +68,7 @@ export default function InteractivePage() {
     rainfall?: IngestStats;
   }>({});
   const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
+  const [runCount, setRunCount] = useState(0);
 
   // Refs for scrolling
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -136,13 +137,20 @@ export default function InteractivePage() {
   }, []);
 
   /**
-   * Auto-run simulation with default parameters after data upload
+   * Run simulation with uploaded data
    */
-  const autoRunSimulation = useCallback(async (dateRange: { min: string; max: string }) => {
-    console.log('🚀 Auto-running simulation with uploaded data...');
+  const runSimulation = useCallback(async () => {
+    if (!uploadedData.energy || runCount >= 2) {
+      return;
+    }
+
+    console.log('🚀 Running simulation with uploaded data...');
     setIsSimulating(true);
 
     try {
+      // Use date range from uploaded data
+      const dateRange = uploadedData.energy.date_range;
+
       // Use default parameters (no changes to baseline)
       const defaultParams = {
         solar_growth_pct: 0,
@@ -164,7 +172,7 @@ export default function InteractivePage() {
       const result = await response.json();
 
       if (result.success && result.data) {
-        console.log('✅ Auto-simulation complete!', {
+        console.log('✅ Simulation complete!', {
           daily_results: result.data.daily_results.length,
           avg_stress: result.data.summary.avg_stress,
         });
@@ -172,6 +180,7 @@ export default function InteractivePage() {
         setEnergyResults(result.data);
         setEnergyScenario(defaultParams);
         setEnergyExecutionTime(result.execution_time_ms);
+        setRunCount(prev => prev + 1);
 
         // Celebrate success!
         setTimeout(() => celebrate(), 600);
@@ -185,11 +194,14 @@ export default function InteractivePage() {
         }, 800);
       }
     } catch (error) {
-      console.error('Auto-simulation error:', error);
+      console.error('Simulation error:', error);
+      alert(language === 'en'
+        ? 'Simulation failed. Please try again.'
+        : 'Simulación fallida. Por favor, intenta de nuevo.');
     } finally {
       setIsSimulating(false);
     }
-  }, [celebrate]);
+  }, [uploadedData, runCount, celebrate, language]);
 
   /**
    * Handle CSV upload completion
@@ -208,19 +220,17 @@ export default function InteractivePage() {
   }, []);
 
   /**
-   * Auto-run simulation when both files are uploaded
-   * Watches uploadedData and triggers simulation when complete
+   * Reset all data and results
    */
-  useEffect(() => {
-    // Check if both energy and rainfall data are uploaded
-    if (uploadedData.energy && uploadedData.rainfall && !energyResults && !isSimulating) {
-      console.log('✅ Both files uploaded! Auto-running simulation...');
-
-      // Use the date range from energy data
-      const dateRange = uploadedData.energy.date_range;
-      autoRunSimulation(dateRange);
-    }
-  }, [uploadedData, energyResults, isSimulating, autoRunSimulation]);
+  const handleReset = useCallback(() => {
+    console.log('🔄 Resetting all data...');
+    setUploadedData({});
+    setEnergyResults(null);
+    setEnergyScenario(null);
+    setEnergyExecutionTime(undefined);
+    setRunCount(0);
+    setIsSimulating(false);
+  }, []);
 
   /**
    * Check if user has uploaded data
@@ -235,7 +245,13 @@ export default function InteractivePage() {
     },
     dataUploaded: { en: 'Data Ready', es: 'Datos Listos' },
     noResults: { en: 'No policy tested yet', es: 'Sin políticas probadas aún' },
-    runSimulation: { en: 'Test a policy scenario to get cabinet-ready recommendations', es: 'Pruebe un escenario de política para obtener recomendaciones' },
+    runSimulation: { en: 'Run Simulation', es: 'Ejecutar Simulación' },
+    runSimulationButton: { en: 'Run Simulation', es: 'Ejecutar Simulación' },
+    running: { en: 'Running...', es: 'Ejecutando...' },
+    resetButton: { en: 'Reset', es: 'Reiniciar' },
+    uploadBothFiles: { en: 'Upload at least one file to run simulation', es: 'Suba al menos un archivo para ejecutar la simulación' },
+    runCount: { en: 'Run {current} of 2', es: 'Ejecución {current} de 2' },
+    runsExhausted: { en: 'Reset to run again', es: 'Reiniciar para ejecutar nuevamente' },
     energyTab: { en: 'Energy Policy', es: 'Política Energética' },
     waterTab: { en: 'Water Policy', es: 'Política Hídrica' },
     agricultureTab: { en: 'Agriculture Policy', es: 'Política Agrícola' },
@@ -409,12 +425,69 @@ export default function InteractivePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 md:gap-6">
           {/* Left Column - Configuration */}
           <div className="md:col-span-1 xl:col-span-5 space-y-4 md:space-y-6">
-            {/* Upload Panel - Auto-runs simulation after both files uploaded */}
+            {/* Upload Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
                 language={language}
                 onUpload={handleUploadComplete}
               />
+            </div>
+
+            {/* Run Simulation Button */}
+            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+              <div className="space-y-4">
+                {/* Run Button */}
+                <button
+                  onClick={runSimulation}
+                  disabled={!hasUploadedData || isSimulating || runCount >= 2}
+                  className={`
+                    w-full py-4 px-6 rounded-lg font-bold text-lg transition-all duration-200 flex items-center justify-center gap-3
+                    ${!hasUploadedData || runCount >= 2
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : isSimulating
+                      ? 'bg-blue-400 text-white cursor-wait'
+                      : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
+                    }
+                  `}
+                >
+                  {isSimulating ? (
+                    <>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                      <span>{labels.running[language]}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-2xl">🚀</span>
+                      <span>{labels.runSimulationButton[language]}</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Status Text */}
+                <div className="text-center text-sm">
+                  {!hasUploadedData ? (
+                    <p className="text-gray-500">{labels.uploadBothFiles[language]}</p>
+                  ) : runCount >= 2 ? (
+                    <p className="text-orange-600 font-semibold">{labels.runsExhausted[language]}</p>
+                  ) : runCount > 0 ? (
+                    <p className="text-blue-600 font-semibold">
+                      {labels.runCount[language].replace('{current}', String(runCount))}
+                    </p>
+                  ) : null}
+                </div>
+
+                {/* Reset Button - Only show after first run */}
+                {runCount > 0 && (
+                  <button
+                    onClick={handleReset}
+                    disabled={isSimulating}
+                    className="w-full py-2 px-4 rounded-lg font-medium text-sm border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <span className="text-lg">🔄</span>
+                    <span>{labels.resetButton[language]}</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 

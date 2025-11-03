@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -193,7 +193,6 @@ export default function InteractivePage() {
 
   /**
    * Handle CSV upload completion
-   * Auto-runs simulation when both energy and rainfall data are uploaded
    */
   const handleUploadComplete = useCallback((type: 'energy' | 'rainfall', stats: IngestStats) => {
     console.log(`📊 ${type} data uploaded:`, {
@@ -202,22 +201,26 @@ export default function InteractivePage() {
       regions: stats.regions_affected.length,
     });
 
-    const newUploadedData = {
-      ...uploadedData,
+    setUploadedData(prev => ({
+      ...prev,
       [type]: stats,
-    };
+    }));
+  }, []);
 
-    setUploadedData(newUploadedData);
-
-    // Auto-run simulation if BOTH energy and rainfall data are now uploaded
-    if (newUploadedData.energy && newUploadedData.rainfall) {
+  /**
+   * Auto-run simulation when both files are uploaded
+   * Watches uploadedData and triggers simulation when complete
+   */
+  useEffect(() => {
+    // Check if both energy and rainfall data are uploaded
+    if (uploadedData.energy && uploadedData.rainfall && !energyResults && !isSimulating) {
       console.log('✅ Both files uploaded! Auto-running simulation...');
 
       // Use the date range from energy data
-      const dateRange = newUploadedData.energy.date_range;
+      const dateRange = uploadedData.energy.date_range;
       autoRunSimulation(dateRange);
     }
-  }, [uploadedData, autoRunSimulation]);
+  }, [uploadedData, energyResults, isSimulating, autoRunSimulation]);
 
   /**
    * Check if user has uploaded data

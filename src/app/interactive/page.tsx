@@ -5,9 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import confetti from 'canvas-confetti';
-import { ControlPanel } from '@/components/ControlPanel';
-import { WaterControlPanel } from '@/components/WaterControlPanel';
-import { AgricultureControlPanel } from '@/components/AgricultureControlPanel';
 import { UploadPanel } from '@/components/UploadPanel';
 import { ResultsPanelEnhanced } from '@/components/ResultsPanelEnhanced';
 import { WaterResultsPanel } from '@/components/WaterResultsPanel';
@@ -18,7 +15,6 @@ import { ScenarioComparison } from '@/components/ScenarioComparison';
 import { TrendsDashboard } from '@/components/TrendsDashboard';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
 import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
-import type { AgricultureSimulationParams } from '@/components/AgricultureControlPanel';
 
 // Lazy load MapView for better performance (largest component)
 const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
@@ -61,8 +57,9 @@ export default function InteractivePage() {
   const [language, setLanguage] = useState<'en' | 'es'>('en');
   const [activeTab, setActiveTab] = useState<'energy' | 'water' | 'agriculture' | 'economics' | 'compare' | 'trends'>('energy');
   const [energyResults, setEnergyResults] = useState<SimulationResponse | null>(null);
-  const [waterResults, setWaterResults] = useState<WaterSimulationResponse | null>(null);
-  const [agricultureResults, setAgricultureResults] = useState<any | null>(null);
+  // Keep for tab switching support, but auto-simulation only runs for energy
+  const [waterResults] = useState<WaterSimulationResponse | null>(null);
+  const [agricultureResults] = useState<any | null>(null);
   const [energyScenario, setEnergyScenario] = useState<SimulationScenario | null>(null);
   const [energyExecutionTime, setEnergyExecutionTime] = useState<number | undefined>(undefined);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -139,146 +136,64 @@ export default function InteractivePage() {
   }, []);
 
   /**
-   * Handle energy simulation completion
+   * Auto-run simulation with default parameters after data upload
    */
-  const handleEnergySimulationComplete = useCallback((
-    simulationResults: SimulationResponse,
-    simulationScenario?: SimulationScenario,
-    execTime?: number
-  ) => {
-    console.log('⚡ Energy simulation complete!', {
-      daily_results: simulationResults.daily_results.length,
-      avg_stress: simulationResults.summary.avg_stress,
-    });
-
-    setEnergyResults(simulationResults);
-    setEnergyScenario(simulationScenario || null);
-    setEnergyExecutionTime(execTime);
-    setIsSimulating(false);
-
-    // Celebrate success!
-    setTimeout(() => celebrate(), 600);
-
-    // Smooth scroll to results section
-    setTimeout(() => {
-      resultsRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }, 500);
-
-    // Pulse the map
-    if (mapRef.current) {
-      mapRef.current.classList.add('animate-pulse-once');
-      setTimeout(() => {
-        mapRef.current?.classList.remove('animate-pulse-once');
-      }, 1000);
-    }
-  }, []);
-
-  /**
-   * Handle water simulation completion
-   */
-  const handleWaterSimulationComplete = useCallback((
-    simulationResults: WaterSimulationResponse
-  ) => {
-    console.log('💧 Water simulation complete!', {
-      daily_results: simulationResults.daily_results.length,
-      avg_stress: simulationResults.summary.avg_stress,
-    });
-
-    setWaterResults(simulationResults);
-    setIsSimulating(false);
-
-    // Celebrate success!
-    setTimeout(() => celebrate(), 600);
-
-    // Smooth scroll to results section
-    setTimeout(() => {
-      resultsRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }, 500);
-
-    // Pulse the map
-    if (mapRef.current) {
-      mapRef.current.classList.add('animate-pulse-once');
-      setTimeout(() => {
-        mapRef.current?.classList.remove('animate-pulse-once');
-      }, 1000);
-    }
-  }, []);
-
-  /**
-   * Handle agriculture simulation completion
-   */
-  const handleAgricultureSimulationComplete = useCallback(async (
-    params: AgricultureSimulationParams
-  ) => {
+  const autoRunSimulation = useCallback(async (dateRange: { min: string; max: string }) => {
+    console.log('🚀 Auto-running simulation with uploaded data...');
     setIsSimulating(true);
 
     try {
-      console.log('🌾 Starting agriculture simulation...', params);
+      // Use default parameters (no changes to baseline)
+      const defaultParams = {
+        solar_growth_pct: 0,
+        rainfall_change_pct: 0,
+        start_date: dateRange.min,
+        end_date: dateRange.max,
+      };
 
-      // Call agriculture simulation API
-      const response = await fetch('/api/simulate-agriculture', {
+      const response = await fetch('/api/simulate', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(defaultParams),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Agriculture simulation failed');
+        throw new Error('Simulation failed');
       }
 
       const result = await response.json();
 
       if (result.success && result.data) {
-        console.log('🌾 Agriculture simulation complete!', {
+        console.log('✅ Auto-simulation complete!', {
           daily_results: result.data.daily_results.length,
           avg_stress: result.data.summary.avg_stress,
-          total_yield_loss_pct: result.data.summary.total_yield_loss_pct,
         });
 
-        setAgricultureResults(result.data);
-        setIsSimulating(false);
+        setEnergyResults(result.data);
+        setEnergyScenario(defaultParams);
+        setEnergyExecutionTime(result.execution_time_ms);
 
         // Celebrate success!
         setTimeout(() => celebrate(), 600);
 
-        // Smooth scroll to results section
+        // Smooth scroll to results
         setTimeout(() => {
           resultsRef.current?.scrollIntoView({
             behavior: 'smooth',
-            block: 'nearest',
+            block: 'start',
           });
-        }, 500);
-
-        // Pulse the map
-        if (mapRef.current) {
-          mapRef.current.classList.add('animate-pulse-once');
-          setTimeout(() => {
-            mapRef.current?.classList.remove('animate-pulse-once');
-          }, 1000);
-        }
-      } else {
-        throw new Error('Invalid response from agriculture simulation');
+        }, 800);
       }
     } catch (error) {
-      console.error('❌ Agriculture simulation error:', error);
+      console.error('Auto-simulation error:', error);
+    } finally {
       setIsSimulating(false);
-      alert(error instanceof Error ? error.message : 'Agriculture simulation failed');
     }
-  }, []);
+  }, [celebrate]);
 
   /**
    * Handle CSV upload completion
-   * Called when UploadPanel successfully uploads data
-   * Memoized with useCallback for performance
+   * Auto-runs simulation when both energy and rainfall data are uploaded
    */
   const handleUploadComplete = useCallback((type: 'energy' | 'rainfall', stats: IngestStats) => {
     console.log(`📊 ${type} data uploaded:`, {
@@ -287,11 +202,22 @@ export default function InteractivePage() {
       regions: stats.regions_affected.length,
     });
 
-    setUploadedData(prev => ({
-      ...prev,
+    const newUploadedData = {
+      ...uploadedData,
       [type]: stats,
-    }));
-  }, []);
+    };
+
+    setUploadedData(newUploadedData);
+
+    // Auto-run simulation if BOTH energy and rainfall data are now uploaded
+    if (newUploadedData.energy && newUploadedData.rainfall) {
+      console.log('✅ Both files uploaded! Auto-running simulation...');
+
+      // Use the date range from energy data
+      const dateRange = newUploadedData.energy.date_range;
+      autoRunSimulation(dateRange);
+    }
+  }, [uploadedData, autoRunSimulation]);
 
   /**
    * Check if user has uploaded data
@@ -480,36 +406,13 @@ export default function InteractivePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 md:gap-6">
           {/* Left Column - Configuration */}
           <div className="md:col-span-1 xl:col-span-5 space-y-4 md:space-y-6">
-            {/* Upload Panel */}
+            {/* Upload Panel - Auto-runs simulation after both files uploaded */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
                 language={language}
                 onUpload={handleUploadComplete}
               />
             </div>
-
-            {/* Control Panel - Conditional based on activeTab (hidden for economics, compare, and trends tabs) */}
-            {activeTab !== 'economics' && activeTab !== 'compare' && activeTab !== 'trends' && (
-              <div className="transform hover:scale-[1.01] transition-all duration-200">
-                {activeTab === 'energy' ? (
-                  <ControlPanel
-                    language={language}
-                    onSimulationComplete={handleEnergySimulationComplete}
-                  />
-                ) : activeTab === 'water' ? (
-                  <WaterControlPanel
-                    language={language}
-                    onSimulationComplete={handleWaterSimulationComplete}
-                  />
-                ) : (
-                  <AgricultureControlPanel
-                    language={language}
-                    onRunSimulation={handleAgricultureSimulationComplete}
-                    loading={isSimulating}
-                  />
-                )}
-              </div>
-            )}
           </div>
 
           {/* Middle Column - Map */}

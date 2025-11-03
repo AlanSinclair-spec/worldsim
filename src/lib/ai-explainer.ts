@@ -44,6 +44,35 @@ export interface AIExplanationResponse {
   }[];
   confidence_score: number;
   generated_at: string;
+  // Enhanced fields (v3.1+)
+  executiveSummary?: string;
+  investmentRequired?: {
+    amount: number;
+    explanation: string;
+  };
+  economicLossPrevented?: {
+    amount: number;
+    explanation: string;
+  };
+  roi?: {
+    value: number;
+    explanation: string;
+  };
+  inputParametersImpact?: string;
+  visualizationRecommendations?: string;
+  regionalBreakdown?: {
+    region: string;
+    stressLevel: number;
+    analysis: string;
+    recommendation: string;
+    timeline: string;
+    estimatedCost: number;
+  }[];
+  priorityActions?: {
+    action: string;
+    timeline: string;
+    cost: number;
+  }[];
 }
 
 /**
@@ -66,23 +95,35 @@ export async function generateSimulationExplanation(
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
       temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 2500,
+      response_format: { type: 'json_object' },
     });
 
-    const response = completion.choices[0].message.content || '';
+    const response = completion.choices[0].message.content || '{}';
 
-    // Parse structured response
-    const parsed = parseAIResponse(response, language);
+    // Parse JSON response
+    const parsed = JSON.parse(response);
 
     return {
-      ...parsed,
-      confidence_score: 0.85, // Based on GPT-4's reliability
+      summary: parsed.summary || '',
+      key_insights: parsed.key_insights || [],
+      risks: parsed.risks || [],
+      recommendations: parsed.recommendations || [],
+      executiveSummary: parsed.executiveSummary,
+      investmentRequired: parsed.investmentRequired,
+      economicLossPrevented: parsed.economicLossPrevented,
+      roi: parsed.roi,
+      inputParametersImpact: parsed.inputParametersImpact,
+      visualizationRecommendations: parsed.visualizationRecommendations,
+      regionalBreakdown: parsed.regionalBreakdown,
+      priorityActions: parsed.priorityActions,
+      confidence_score: 0.88, // Based on GPT-4o's reliability
       generated_at: new Date().toISOString(),
     };
   } catch (error) {
@@ -96,54 +137,16 @@ export async function generateSimulationExplanation(
  */
 function buildSystemPrompt(language: 'en' | 'es'): string {
   if (language === 'es') {
-    return `Eres un asesor experto en políticas para el gobierno de El Salvador.
-Tu trabajo es explicar resultados complejos de simulación en un lenguaje claro y accionable para ministros de gabinete.
-
-REGLAS:
-- Escribe en español
-- Sé conciso (máximo 250 palabras)
-- Enfócate en insights accionables
-- Incluye números específicos de los datos
-- Menciona las 3 regiones más afectadas
-- Proporciona recomendaciones concretas con plazos (30/90/180 días)
-- Usa tono ejecutivo (confiado, claro, urgente cuando sea necesario)
-- SIN jerga técnica
-- Formato: 5-7 párrafos cortos
-
-ESTRUCTURA DE RESPUESTA:
-1. RESUMEN: 2-3 oraciones sobre el escenario probado y hallazgos clave
-2. INSIGHTS CLAVE: 3-4 puntos específicos (usa "•" para cada punto)
-3. RIESGOS: 2-3 riesgos principales (usa "⚠️" para cada riesgo)
-4. RECOMENDACIONES: 3-4 acciones prioritarias con formato:
-   [PRIORIDAD] Título
-   Descripción breve
-   Plazo: X días
-   Costo estimado: $X M (si aplica)`;
+    return `Eres un asesor senior de políticas para el gobierno de El Salvador con experiencia en infraestructura.
+Proporciona recomendaciones basadas en datos y accionables basadas en resultados de simulación.
+Siempre cita números específicos y nombres de departamentos.
+Responde en formato JSON con la estructura exacta especificada.`;
   }
 
-  return `You are an expert policy advisor for El Salvador's government.
-Your job is to explain complex simulation results in clear, actionable language for cabinet ministers.
-
-RULES:
-- Write in English
-- Be concise (max 250 words)
-- Focus on actionable insights
-- Include specific numbers from the data
-- Mention top 3 affected regions
-- Provide concrete recommendations with timelines (30/90/180 days)
-- Use executive tone (confident, clear, urgent when needed)
-- NO jargon or technical terms
-- Format as 5-7 short paragraphs
-
-RESPONSE STRUCTURE:
-1. SUMMARY: 2-3 sentences about the scenario tested and key findings
-2. KEY INSIGHTS: 3-4 specific points (use "•" for each)
-3. RISKS: 2-3 main risks (use "⚠️" for each)
-4. RECOMMENDATIONS: 3-4 priority actions with format:
-   [PRIORITY] Title
-   Brief description
-   Timeline: X days
-   Estimated cost: $X M (if applicable)`;
+  return `You are a senior policy advisor for El Salvador's government with expertise in infrastructure.
+Provide data-driven, actionable recommendations based on simulation results.
+Always cite specific numbers and department names.
+Respond in JSON format with the exact structure specified.`;
 }
 
 /**
@@ -155,177 +158,184 @@ function buildUserPrompt(
   params: Record<string, unknown>,
   language: 'en' | 'es'
 ): string {
-  const stressValue = results.summary?.avg_stress ?? results.summary?.avg_crop_stress ?? 0;
-  const topRegions = results.summary?.top_stressed_regions
-    ?.slice(0, 3)
-    .map((r) => r.region_name || r.name)
-    .join(', ');
-  const economicExposure = results.economic_analysis?.total_economic_exposure_usd
-    ? `$${(results.economic_analysis.total_economic_exposure_usd / 1_000_000).toFixed(1)}M`
-    : 'N/A';
-  const investment = results.economic_analysis?.infrastructure_investment_usd
-    ? `$${(results.economic_analysis.infrastructure_investment_usd / 1_000_000).toFixed(1)}M`
-    : 'N/A';
-  const roi = results.economic_analysis?.roi_5_year
-    ? `${(results.economic_analysis.roi_5_year * 100).toFixed(1)}%`
-    : 'N/A';
-  const annualSavings = results.economic_analysis?.annual_costs_prevented_usd
-    ? `$${(results.economic_analysis.annual_costs_prevented_usd / 1_000_000).toFixed(1)}M/year`
-    : 'N/A';
+  const stressValue = (results.summary?.avg_stress ?? results.summary?.avg_crop_stress ?? 0) * 100;
+  const topRegions = results.summary?.top_stressed_regions || [];
+
+  const topRegionsData = topRegions
+    .slice(0, 5)
+    .map((r, i) => `${i + 1}. ${r.region_name || r.name}: ${((r.avg_stress || 0) * 100).toFixed(1)}% stress`)
+    .join('\n');
 
   if (language === 'es') {
-    return `Analiza esta simulación de ${type} para El Salvador:
+    return `Analiza esta simulación de ${type} para El Salvador y proporciona una recomendación de política comprensiva.
 
-ESCENARIO PROBADO:
-${JSON.stringify(params, null, 2)}
+DATOS DE SIMULACIÓN:
+Escenario: ${type}
+Parámetros de entrada: ${JSON.stringify(params, null, 2)}
+Estrés promedio: ${stressValue.toFixed(1)}%
 
-RESULTADOS:
-- Estrés promedio: ${stressValue.toFixed(1)}%
-- Regiones más afectadas: ${topRegions}
-- Exposición económica: ${economicExposure}
-- Inversión recomendada: ${investment}
-- ROI (5 años): ${roi}
-- Ahorros anuales: ${annualSavings}
+TOP 5 REGIONES ESTRESADAS:
+${topRegionsData}
 
-Proporciona un análisis ejecutivo explicando:
-1. Qué escenario se probó y por qué importa
-2. Hallazgos clave (qué regiones más afectadas, gravedad del problema)
-3. Implicaciones económicas (exposición vs inversión)
-4. Riesgos principales si no se actúa
-5. Acciones urgentes necesarias (con cronograma: 30/90/180 días y costos)
+PROPORCIONA UN ANÁLISIS COMPRENSIVO CON ESTAS SECCIONES EXACTAS:
 
-Escribe para un ministro que debe informar al presidente.`;
+1. INVERSIÓN REQUERIDA
+Calcula inversión realista basada en niveles de estrés:
+- Si estrés promedio < 30%: Mantenimiento base ($1M por región)
+- Si estrés promedio 30-60%: Mejoras específicas ($2.5M por región afectada)
+- Si estrés promedio > 60%: Expansión de emergencia ($5M por región afectada)
+Proporciona cantidad total en millones de $.
+
+2. PÉRDIDA ECONÓMICA PREVENIDA
+Estima pérdidas económicas prevenidas por esta inversión:
+- Considera población afectada
+- Costos de fallo de infraestructura
+- Disrupción económica
+Proporciona cantidad total en millones de $ (típicamente 2-4x la inversión).
+
+3. RETORNO DE INVERSIÓN
+Calcula ROI = Pérdida Económica Prevenida / Inversión Requerida
+Expresa como multiplicador (ej., 3.2x significa $3.20 retornados por $1 invertido)
+
+4. IMPACTO DE PARÁMETROS DE ENTRADA
+Explica cómo los parámetros de entrada (crecimiento solar, cambios de lluvia, etc.) impulsaron estos resultados.
+
+5. RESULTADO E INSIGHTS
+Proporciona 3-5 insights clave sobre:
+- Qué regiones necesitan atención inmediata
+- Causas raíz del estrés
+- Implicaciones a largo plazo
+
+6. DESGLOSE REGIONAL
+Para cada una de las 3 regiones más estresadas, proporciona:
+- Nivel de estrés específico
+- Por qué esta región está afectada
+- Acción recomendada
+- Cronograma
+- Costo estimado
+
+Responde en formato JSON con esta estructura:
+{
+  "summary": "2-3 oraciones",
+  "key_insights": ["insight1", "insight2", "insight3"],
+  "risks": ["riesgo1", "riesgo2", "riesgo3"],
+  "recommendations": [
+    {
+      "priority": "critical" | "high" | "medium" | "low",
+      "title": "título",
+      "description": "descripción",
+      "timeline": "30 días",
+      "estimated_cost_usd": 50000000
+    }
+  ],
+  "executiveSummary": "resumen ejecutivo para políticos",
+  "investmentRequired": { "amount": número, "explanation": "explicación" },
+  "economicLossPrevented": { "amount": número, "explanation": "explicación" },
+  "roi": { "value": número, "explanation": "explicación" },
+  "inputParametersImpact": "análisis de impacto",
+  "regionalBreakdown": [
+    {
+      "region": "nombre",
+      "stressLevel": número,
+      "analysis": "análisis",
+      "recommendation": "recomendación",
+      "timeline": "cronograma",
+      "estimatedCost": número
+    }
+  ],
+  "priorityActions": [
+    { "action": "acción", "timeline": "cronograma", "cost": número }
+  ]
+}`;
   }
 
-  return `Analyze this ${type} simulation for El Salvador:
+  return `Analyze this ${type} simulation for El Salvador and provide comprehensive policy recommendations.
 
-SCENARIO TESTED:
-${JSON.stringify(params, null, 2)}
+SIMULATION DATA:
+Scenario: ${type}
+Input Parameters: ${JSON.stringify(params, null, 2)}
+Average Stress: ${stressValue.toFixed(1)}%
 
-RESULTS:
-- Average stress: ${stressValue.toFixed(1)}%
-- Most affected regions: ${topRegions}
-- Economic exposure: ${economicExposure}
-- Recommended investment: ${investment}
-- ROI (5-year): ${roi}
-- Annual savings: ${annualSavings}
+TOP 5 STRESSED REGIONS:
+${topRegionsData}
 
-Provide an executive analysis explaining:
-1. What scenario was tested and why it matters
-2. Key findings (which regions most affected, severity of problem)
-3. Economic implications (exposure vs investment)
-4. Main risks if no action is taken
-5. Urgent actions needed (with timeline: 30/90/180 days and costs)
+PROVIDE A COMPREHENSIVE POLICY ANALYSIS WITH THESE EXACT SECTIONS:
 
-Write for a cabinet minister who needs to brief the president.`;
+1. INVESTMENT REQUIRED
+Calculate realistic investment needed based on stress levels:
+- If avg stress < 30%: Baseline maintenance ($1M per region)
+- If avg stress 30-60%: Targeted upgrades ($2.5M per affected region)
+- If avg stress > 60%: Emergency expansion ($5M per affected region)
+Provide total $ amount in millions.
+
+2. ECONOMIC LOSS PREVENTED
+Estimate economic losses prevented by this investment:
+- Consider population affected
+- Infrastructure failure costs
+- Economic disruption
+Provide total $ amount in millions (typically 2-4x the investment).
+
+3. RETURN ON INVESTMENT
+Calculate ROI = Economic Loss Prevented / Investment Required
+Express as multiplier (e.g., 3.2x means $3.20 returned per $1 invested)
+
+4. INPUT PARAMETERS IMPACT
+Explain how the input parameters (solar growth, rainfall changes, etc.) drove these results.
+
+5. OUTCOME & INSIGHTS
+Provide 3-5 key insights about:
+- Which regions need immediate attention
+- Root causes of stress
+- Long-term implications
+
+6. REGIONAL BREAKDOWN
+For each of the top 3 stressed regions, provide:
+- Specific stress level
+- Why this region is affected
+- Recommended action
+- Timeline
+- Estimated cost
+
+CRITICAL REQUIREMENTS:
+- Be specific with department names (San Salvador, Santa Ana, etc.)
+- Use concrete numbers and timelines
+- Prioritize actions (Immediate, Short-term, Long-term)
+- Consider El Salvador's geography and infrastructure
+- Recommendations must be actionable
+- Explain your reasoning
+
+Respond in JSON format with this structure:
+{
+  "summary": "2-3 sentences",
+  "key_insights": ["insight1", "insight2", "insight3"],
+  "risks": ["risk1", "risk2", "risk3"],
+  "recommendations": [
+    {
+      "priority": "critical" | "high" | "medium" | "low",
+      "title": "title",
+      "description": "description",
+      "timeline": "30 days",
+      "estimated_cost_usd": 50000000
+    }
+  ],
+  "executiveSummary": "executive summary for policy makers",
+  "investmentRequired": { "amount": number, "explanation": "explanation" },
+  "economicLossPrevented": { "amount": number, "explanation": "explanation" },
+  "roi": { "value": number, "explanation": "explanation" },
+  "inputParametersImpact": "impact analysis",
+  "regionalBreakdown": [
+    {
+      "region": "name",
+      "stressLevel": number,
+      "analysis": "analysis",
+      "recommendation": "recommendation",
+      "timeline": "timeline",
+      "estimatedCost": number
+    }
+  ],
+  "priorityActions": [
+    { "action": "action", "timeline": "timeline", "cost": number }
+  ]
+}`;
 }
 
-/**
- * Parse AI response into structured format
- */
-function parseAIResponse(
-  response: string,
-  language: 'en' | 'es'
-): Omit<AIExplanationResponse, 'confidence_score' | 'generated_at'> {
-  const sections = response.split('\n\n');
-
-  // Extract summary (first paragraph)
-  const summary = sections[0] || '';
-
-  // Extract key insights (look for bullet points)
-  const insights: string[] = [];
-  const insightsMatch = response.match(/[•·-]\s+(.+?)(?=\n[•·-]|\n\n|\n⚠️|$)/gs);
-  if (insightsMatch) {
-    insightsMatch.forEach((match) => {
-      const clean = match.replace(/^[•·-]\s+/, '').trim();
-      if (clean && !clean.startsWith('⚠️')) insights.push(clean);
-    });
-  }
-
-  // Extract risks (look for warning emoji)
-  const risks: string[] = [];
-  const risksMatch = response.match(/⚠️\s*(.+?)(?=\n⚠️|\n\n|\n\[|$)/gs);
-  if (risksMatch) {
-    risksMatch.forEach((match) => {
-      const clean = match.replace(/^⚠️\s*/, '').trim();
-      if (clean) risks.push(clean);
-    });
-  }
-
-  // Extract recommendations
-  const recommendations: AIExplanationResponse['recommendations'] = [];
-  const recsMatch = response.match(/\[(CRITICAL|CRÍTICO|HIGH|ALTO|MEDIUM|MEDIO|LOW|BAJO)\]\s+(.+?)(?=\n\[|\n\n|$)/gis);
-  if (recsMatch) {
-    recsMatch.forEach((match) => {
-      const priorityMatch = match.match(/\[(CRITICAL|CRÍTICO|HIGH|ALTO|MEDIUM|MEDIO|LOW|BAJO)\]/i);
-      const priority = priorityMatch
-        ? mapPriority(priorityMatch[1])
-        : 'medium';
-
-      const content = match.replace(/\[.+?\]\s+/, '').trim();
-      const lines = content.split('\n');
-      const title = lines[0] || '';
-      const description = lines[1] || '';
-
-      // Extract timeline
-      const timelineMatch = content.match(/(?:Timeline|Plazo):\s*(\d+\s*(?:days|días|months|meses))/i);
-      const timeline = timelineMatch ? timelineMatch[1] : '90 days';
-
-      // Extract cost
-      const costMatch = content.match(/\$(\d+(?:\.\d+)?)\s*M/);
-      const cost = costMatch ? parseFloat(costMatch[1]) * 1_000_000 : undefined;
-
-      recommendations.push({
-        priority,
-        title,
-        description,
-        timeline,
-        estimated_cost_usd: cost,
-      });
-    });
-  }
-
-  // Fallback: create default structure if parsing failed
-  if (insights.length === 0) {
-    insights.push(language === 'en' ? 'Analysis completed' : 'Análisis completado');
-  }
-  if (risks.length === 0) {
-    risks.push(
-      language === 'en'
-        ? 'Risks assessment in progress'
-        : 'Evaluación de riesgos en progreso'
-    );
-  }
-  if (recommendations.length === 0) {
-    recommendations.push({
-      priority: 'high',
-      title: language === 'en' ? 'Review full analysis' : 'Revisar análisis completo',
-      description:
-        language === 'en'
-          ? 'Detailed recommendations require further review'
-          : 'Las recomendaciones detalladas requieren revisión adicional',
-      timeline: '30 days',
-    });
-  }
-
-  return {
-    summary,
-    key_insights: insights.slice(0, 4),
-    risks: risks.slice(0, 3),
-    recommendations: recommendations.slice(0, 4),
-  };
-}
-
-/**
- * Map priority string to enum
- */
-function mapPriority(
-  priority: string
-): 'critical' | 'high' | 'medium' | 'low' {
-  const normalized = priority.toLowerCase();
-  if (normalized.includes('critical') || normalized.includes('crítico'))
-    return 'critical';
-  if (normalized.includes('high') || normalized.includes('alto')) return 'high';
-  if (normalized.includes('low') || normalized.includes('bajo')) return 'low';
-  return 'medium';
-}

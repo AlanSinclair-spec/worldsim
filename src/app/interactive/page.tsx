@@ -16,9 +16,8 @@ import { ExecutiveSummary } from '@/components/ExecutiveSummary';
 import { EconomicsDashboard } from '@/components/EconomicsDashboard';
 import { ScenarioComparison } from '@/components/ScenarioComparison';
 import { TrendsDashboard } from '@/components/TrendsDashboard';
-import { PolicyScenarios } from '@/components/PolicyScenarios';
 import { SkeletonLoader } from '@/components/SkeletonLoader';
-import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse, WaterSimulationScenario } from '@/lib/types';
+import type { SimulationResponse, SimulationScenario, IngestStats, WaterSimulationResponse } from '@/lib/types';
 import type { AgricultureSimulationParams } from '@/components/AgricultureControlPanel';
 
 // Lazy load MapView for better performance (largest component)
@@ -71,7 +70,6 @@ export default function InteractivePage() {
     energy?: IngestStats;
     rainfall?: IngestStats;
   }>({});
-  const [selectedScenario, setSelectedScenario] = useState<SimulationScenario | WaterSimulationScenario | null>(null);
   const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
 
   // Refs for scrolling
@@ -108,14 +106,6 @@ export default function InteractivePage() {
         origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
       });
     }, 250);
-  }, []);
-
-  /**
-   * Handle scenario selection from PolicyScenarios component
-   */
-  const handleScenarioSelect = useCallback((scenario: SimulationScenario | WaterSimulationScenario) => {
-    console.log('📋 Scenario selected:', scenario);
-    setSelectedScenario(scenario);
   }, []);
 
   /**
@@ -490,15 +480,6 @@ export default function InteractivePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-12 gap-4 md:gap-6">
           {/* Left Column - Configuration */}
           <div className="md:col-span-1 xl:col-span-5 space-y-4 md:space-y-6">
-            {/* Policy Scenarios - Quick Start */}
-            <div className="transform hover:scale-[1.01] transition-all duration-200">
-              <PolicyScenarios
-                category={activeTab}
-                language={language}
-                onScenarioSelect={handleScenarioSelect}
-              />
-            </div>
-
             {/* Upload Panel */}
             <div className="transform hover:scale-[1.01] transition-all duration-200">
               <UploadPanel
@@ -514,13 +495,11 @@ export default function InteractivePage() {
                   <ControlPanel
                     language={language}
                     onSimulationComplete={handleEnergySimulationComplete}
-                    initialScenario={selectedScenario && 'solar_growth_pct' in selectedScenario ? selectedScenario : null}
                   />
                 ) : activeTab === 'water' ? (
                   <WaterControlPanel
                     language={language}
                     onSimulationComplete={handleWaterSimulationComplete}
-                    initialScenario={selectedScenario && 'water_demand_growth_pct' in selectedScenario ? selectedScenario : null}
                   />
                 ) : (
                   <AgricultureControlPanel

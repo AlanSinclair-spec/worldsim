@@ -457,7 +457,15 @@ export interface EconomicAnalysis {
  *   ],
  *   confidence_score: 0.85,
  *   generated_at: '2025-10-30T12:00:00Z',
- *   provider: 'openai'
+ *   provider: 'openai',
+ *   executiveSummary: 'Critical infrastructure investment needed...',
+ *   investmentRequired: { amount: 45, explanation: 'Based on stress levels...' },
+ *   economicLossPrevented: { amount: 120, explanation: 'Prevents economic disruption...' },
+ *   roi: { value: 3.2, explanation: '$3.20 returned per $1 invested' },
+ *   inputParametersImpact: 'Solar growth of 10% reduces stress...',
+ *   visualizationRecommendations: 'Display regional heatmap...',
+ *   regionalBreakdown: [...],
+ *   priorityActions: [...]
  * };
  */
 export interface AIExplanation {
@@ -481,6 +489,40 @@ export interface AIExplanation {
 
   /** AI provider used ('openai' | 'anthropic') */
   provider: 'openai' | 'anthropic';
+
+  // Enhanced financial metrics (v3.1+)
+  /** Executive summary specifically for policy makers */
+  executiveSummary?: string;
+
+  /** Total infrastructure investment required (USD millions) */
+  investmentRequired?: {
+    amount: number;
+    explanation: string;
+  };
+
+  /** Economic loss prevented by taking action (USD millions) */
+  economicLossPrevented?: {
+    amount: number;
+    explanation: string;
+  };
+
+  /** Return on investment calculation */
+  roi?: {
+    value: number;
+    explanation: string;
+  };
+
+  /** Analysis of how input parameters impacted results */
+  inputParametersImpact?: string;
+
+  /** Suggestions for data visualization to communicate findings */
+  visualizationRecommendations?: string;
+
+  /** Detailed breakdown of top stressed regions */
+  regionalBreakdown?: RegionalAnalysis[];
+
+  /** Ranked priority actions with specific details */
+  priorityActions?: PriorityAction[];
 }
 
 /**
@@ -506,4 +548,45 @@ export interface ActionItem {
 
   /** Expected impact or benefit (optional) */
   expected_impact?: string;
+}
+
+/**
+ * PriorityAction represents a top-level prioritized action
+ *
+ * Similar to ActionItem but with simplified structure for executive display.
+ */
+export interface PriorityAction {
+  /** Action description */
+  action: string;
+
+  /** Timeline for completion (e.g., 'Immediate', '30 days', '90 days') */
+  timeline: string;
+
+  /** Estimated cost in USD millions */
+  cost: number;
+}
+
+/**
+ * RegionalAnalysis provides detailed breakdown for a specific region
+ *
+ * Includes stress analysis, root causes, and specific recommendations.
+ */
+export interface RegionalAnalysis {
+  /** Region name (e.g., 'San Salvador') */
+  region: string;
+
+  /** Stress level as percentage (0-100) */
+  stressLevel: number;
+
+  /** Analysis of why this region is experiencing stress */
+  analysis: string;
+
+  /** Specific recommendation for this region */
+  recommendation: string;
+
+  /** Implementation timeline */
+  timeline: string;
+
+  /** Estimated cost in USD millions */
+  estimatedCost: number;
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import type { SimulationResponse, SimulationScenario } from '@/lib/types';
+import { useState } from 'react';
+import type { SimulationResponse } from '@/lib/types';
 import { LoadingSpinner } from './LoadingSpinner';
 
 /**
@@ -57,8 +57,6 @@ interface ControlPanelProps {
     start_date: string;
     end_date: string;
   }, executionTime?: number) => void;
-  /** Initial scenario to load (from PolicyScenarios) */
-  initialScenario?: SimulationScenario | null;
 }
 
 /**
@@ -82,7 +80,7 @@ interface ControlPanelProps {
  *   }}
  * />
  */
-export function ControlPanel({ language = 'en', onSimulationComplete, initialScenario }: ControlPanelProps) {
+export function ControlPanel({ language = 'en', onSimulationComplete }: ControlPanelProps) {
   // Calculate default dates (last 30 days)
   const today = new Date();
   const thirtyDaysAgo = new Date(today);
@@ -98,27 +96,6 @@ export function ControlPanel({ language = 'en', onSimulationComplete, initialSce
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [executionTime, setExecutionTime] = useState<number | null>(null);
-
-  /**
-   * Load scenario parameters when initialScenario changes
-   */
-  useEffect(() => {
-    if (initialScenario) {
-      setSolarGrowth(initialScenario.solar_growth_pct);
-      setRainfallChange(initialScenario.rainfall_change_pct);
-      setStartDate(initialScenario.start_date);
-      setEndDate(initialScenario.end_date);
-      setActivePreset(null); // Clear preset selection
-      setError(null);
-      setSuccessMessage('✅ Scenario loaded! Click "Run Simulation" to test.');
-      console.log('✅ Scenario loaded into ControlPanel:', initialScenario);
-
-      // Auto-clear success message after 5 seconds
-      setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
-    }
-  }, [initialScenario]);
 
   /**
    * Clear messages after timeout

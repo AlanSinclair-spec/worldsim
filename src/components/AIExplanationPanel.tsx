@@ -249,7 +249,7 @@ export function AIExplanationPanel({
                   <div className="text-xs text-gray-600 mb-1 uppercase tracking-wide">
                     {labels.investmentRequired[currentLanguage]}
                   </div>
-                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                  <div className="text-3xl font-bold text-blue-600 mb-2 break-all">
                     ${explanation.investmentRequired.amount}M
                   </div>
                   <p className="text-xs text-gray-600 leading-relaxed">
@@ -264,7 +264,7 @@ export function AIExplanationPanel({
                   <div className="text-xs text-gray-600 mb-1 uppercase tracking-wide">
                     {labels.economicLossPrevented[currentLanguage]}
                   </div>
-                  <div className="text-3xl font-bold text-green-600 mb-2">
+                  <div className="text-3xl font-bold text-green-600 mb-2 break-all">
                     ${explanation.economicLossPrevented.amount}M
                   </div>
                   <p className="text-xs text-gray-600 leading-relaxed">
@@ -279,7 +279,7 @@ export function AIExplanationPanel({
                   <div className="text-xs text-gray-600 mb-1 uppercase tracking-wide">
                     {labels.roi[currentLanguage]}
                   </div>
-                  <div className="text-3xl font-bold text-purple-600 mb-2">
+                  <div className="text-3xl font-bold text-purple-600 mb-2 break-all">
                     {explanation.roi.value.toFixed(1)}x
                   </div>
                   <p className="text-xs text-gray-600 leading-relaxed">

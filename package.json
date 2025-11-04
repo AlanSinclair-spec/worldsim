@@ -15,6 +15,8 @@
     "test:supabase": "tsx scripts/test-supabase.ts",
     "test:workflow": "tsx scripts/test-workflow.ts",
     "seed": "tsx scripts/seed-regions.ts",
+    "seed:baseline": "tsx scripts/seed-baseline-data.ts",
+    "generate:baseline": "tsx scripts/generate-baseline-data.ts",
     "diagnose": "tsx scripts/diagnose.ts"
   },
   "dependencies": {

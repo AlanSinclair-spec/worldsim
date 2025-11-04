@@ -189,14 +189,38 @@ export async function simulateScenario(
   const regionMap = new Map(regions.map(r => [r.id, r.name]));
   console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🗺️ Created region lookup map with ${regionMap.size} entries`);
 
-  // Step 2: Fetch energy demand data
+  // Step 2: Fetch energy demand data (with baseline fallback)
   console.log(`[${new Date().toISOString()}] [Model simulateScenario] ⚡ Step 2: Fetching energy data from ${start_date} to ${end_date}...`);
-  const { data: energyData, error: energyError } = await supabase
+
+  // Try to fetch custom (user-uploaded) data first
+  let { data: energyData, error: energyError } = await supabase
     .from('energy_daily')
-    .select('region_id, date, demand_kwh')
+    .select('region_id, date, demand_kwh, is_baseline, data_source')
+    .eq('is_baseline', false)
     .gte('date', start_date)
     .lte('date', end_date)
     .order('date', { ascending: true });
+
+  // If no custom data found, fall back to baseline data
+  if ((!energyData || energyData.length === 0) && !energyError) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🔄 No custom data found, falling back to baseline data...`);
+    const baselineResponse = await supabase
+      .from('energy_daily')
+      .select('region_id, date, demand_kwh, is_baseline, data_source')
+      .eq('is_baseline', true)
+      .gte('date', start_date)
+      .lte('date', end_date)
+      .order('date', { ascending: true });
+
+    energyData = baselineResponse.data;
+    energyError = baselineResponse.error;
+
+    if (energyData && energyData.length > 0) {
+      console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Using baseline energy data`);
+    }
+  } else if (energyData && energyData.length > 0) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Using custom (user-uploaded) energy data`);
+  }
 
   if (energyError) {
     console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ Failed to fetch energy data:`, energyError);
@@ -210,14 +234,38 @@ export async function simulateScenario(
     console.warn(`[${new Date().toISOString()}] [Model simulateScenario] ⚠️ No energy data found for date range`);
   }
 
-  // Step 3: Fetch rainfall data
+  // Step 3: Fetch rainfall data (with baseline fallback)
   console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🌧️ Step 3: Fetching rainfall data from ${start_date} to ${end_date}...`);
-  const { data: rainfallData, error: rainfallError } = await supabase
+
+  // Try to fetch custom (user-uploaded) data first
+  let { data: rainfallData, error: rainfallError } = await supabase
     .from('rain_daily')
-    .select('region_id, date, rainfall_mm')
+    .select('region_id, date, rainfall_mm, is_baseline, data_source')
+    .eq('is_baseline', false)
     .gte('date', start_date)
     .lte('date', end_date)
     .order('date', { ascending: true });
+
+  // If no custom data found, fall back to baseline data
+  if ((!rainfallData || rainfallData.length === 0) && !rainfallError) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] 🔄 No custom rainfall data found, falling back to baseline data...`);
+    const baselineResponse = await supabase
+      .from('rain_daily')
+      .select('region_id, date, rainfall_mm, is_baseline, data_source')
+      .eq('is_baseline', true)
+      .gte('date', start_date)
+      .lte('date', end_date)
+      .order('date', { ascending: true});
+
+    rainfallData = baselineResponse.data;
+    rainfallError = baselineResponse.error;
+
+    if (rainfallData && rainfallData.length > 0) {
+      console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Using baseline rainfall data`);
+    }
+  } else if (rainfallData && rainfallData.length > 0) {
+    console.log(`[${new Date().toISOString()}] [Model simulateScenario] ✅ Using custom (user-uploaded) rainfall data`);
+  }
 
   if (rainfallError) {
     console.error(`[${new Date().toISOString()}] [Model simulateScenario] ❌ Failed to fetch rainfall data:`, rainfallError);

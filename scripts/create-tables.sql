@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS energy_daily (
   demand_kwh DECIMAL(15, 2) NOT NULL,
   solar_kwh DECIMAL(15, 2) DEFAULT 0,
   grid_kwh DECIMAL(15, 2) DEFAULT 0,
+  is_baseline BOOLEAN DEFAULT false,
+  data_source TEXT DEFAULT 'user_upload' CHECK (data_source IN ('baseline', 'user_upload', 'admin_update')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(region_id, date)
 );
@@ -35,6 +37,8 @@ CREATE TABLE IF NOT EXISTS rain_daily (
   region_id TEXT NOT NULL REFERENCES regions(id) ON DELETE CASCADE,
   date DATE NOT NULL,
   rainfall_mm DECIMAL(10, 2) NOT NULL,
+  is_baseline BOOLEAN DEFAULT false,
+  data_source TEXT DEFAULT 'user_upload' CHECK (data_source IN ('baseline', 'user_upload', 'admin_update')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(region_id, date)
 );
@@ -49,6 +53,8 @@ CREATE TABLE IF NOT EXISTS agriculture_daily (
   rainfall_mm DECIMAL(10, 2) NOT NULL,
   temperature_avg_c DECIMAL(5, 2) NOT NULL,
   soil_moisture_pct DECIMAL(5, 2),
+  is_baseline BOOLEAN DEFAULT false,
+  data_source TEXT DEFAULT 'user_upload' CHECK (data_source IN ('baseline', 'user_upload', 'admin_update')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   UNIQUE(region_id, date, crop_type)
 );
@@ -65,8 +71,11 @@ CREATE TABLE IF NOT EXISTS runs (
 
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_energy_daily_region_date ON energy_daily(region_id, date);
+CREATE INDEX IF NOT EXISTS idx_energy_daily_baseline ON energy_daily(is_baseline, date);
 CREATE INDEX IF NOT EXISTS idx_rain_daily_region_date ON rain_daily(region_id, date);
+CREATE INDEX IF NOT EXISTS idx_rain_daily_baseline ON rain_daily(is_baseline, date);
 CREATE INDEX IF NOT EXISTS idx_agriculture_region_crop ON agriculture_daily(region_id, crop_type, date);
+CREATE INDEX IF NOT EXISTS idx_agriculture_baseline ON agriculture_daily(is_baseline, date);
 CREATE INDEX IF NOT EXISTS idx_runs_created_at ON runs(created_at DESC);
 
 -- Enable Row Level Security (RLS)

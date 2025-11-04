@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
+import { OpenAI } from 'openai';
 
 /**
  * POST /api/generate-scenario
@@ -46,16 +46,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Check API key
-    const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
-    if (!anthropicApiKey) {
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    if (!openaiApiKey) {
       return NextResponse.json(
-        { success: false, error: 'Anthropic API key not configured' },
+        { success: false, error: 'OpenAI API key not configured' },
         { status: 500 }
       );
     }
 
-    // Initialize Anthropic client
-    const anthropic = new Anthropic({ apiKey: anthropicApiKey });
+    // Initialize OpenAI client
+    const openai = new OpenAI({ apiKey: openaiApiKey });
 
     // Create prompt for Claude to generate realistic scenario data
     const prompt = `Generate a realistic infrastructure simulation scenario for El Salvador with these parameters:
@@ -89,17 +89,20 @@ export async function POST(req: NextRequest) {
     "high_risk_regions": [number 0-14]
   },
   "regions": [
-    {
-      "name": "San Salvador",
-      "stress": [realistic number based on parameters],
-      "demand_mwh": [realistic number ~660 base],
-      "supply_mwh": [realistic number based on parameters],
-      "deficit_mwh": [demand - supply],
-      "population": 1800000,
-      "color": "[#EF4444 for >60% stress, #F59E0B for 35-60%, #FBBF24 for 15-35%, #22C55E for <15%]",
-      "severity": "[critical/high/moderate/low/surplus]"
-    }
-    // ... include all 14 regions: San Salvador, Santa Ana, San Miguel, La Libertad, Sonsonate, La Paz, Usulután, Ahuachapán, Cuscatlán, Chalatenango, Morazán, La Unión, San Vicente, Cabañas
+    {"name": "San Salvador", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 1800000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Santa Ana", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 580000, "color": "[color]", "severity": "[severity]"},
+    {"name": "San Miguel", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 520000, "color": "[color]", "severity": "[severity]"},
+    {"name": "La Libertad", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 850000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Sonsonate", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 480000, "color": "[color]", "severity": "[severity]"},
+    {"name": "La Paz", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 350000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Usulután", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 380000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Ahuachapán", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 340000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Cuscatlán", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 260000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Chalatenango", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 220000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Morazán", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 195000, "color": "[color]", "severity": "[severity]"},
+    {"name": "La Unión", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 290000, "color": "[color]", "severity": "[severity]"},
+    {"name": "San Vicente", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 180000, "color": "[color]", "severity": "[severity]"},
+    {"name": "Cabañas", "stress": [number], "demand_mwh": [number], "supply_mwh": [number], "deficit_mwh": [number], "population": 160000, "color": "[color]", "severity": "[severity]"}
   ],
   "economics": {
     "investment_required_million": [realistic number],
@@ -151,35 +154,48 @@ export async function POST(req: NextRequest) {
 }
 
 **Important Rules:**
-1. Make stress levels realistic based on parameters (higher demand = more stress, more solar = less stress, less rainfall = more stress)
-2. San Salvador should have highest demand (~660 MWh baseline)
-3. Larger populations should have higher demand
-4. Calculate deficit_mwh = demand_mwh - supply_mwh
-5. Color coding: Red (#EF4444) for critical (>60%), Orange (#F59E0B) for high (35-60%), Yellow (#FBBF24) for moderate (15-35%), Green (#22C55E) for low (<15%)
-6. Economics should be proportional to the severity of the problem
-7. Return ONLY the JSON object, no other text`;
+1. MUST include all 14 regions in the exact order shown above - no shortcuts or abbreviations
+2. Make stress levels realistic based on parameters (higher demand = more stress, more solar = less stress, less rainfall = more stress)
+3. San Salvador should have highest demand (~660 MWh baseline + demand increase)
+4. Larger populations should have higher demand
+5. Calculate deficit_mwh = demand_mwh - supply_mwh
+6. Color coding: Red (#EF4444) for critical (>60%), Orange (#F59E0B) for high (35-60%), Yellow (#FBBF24) for moderate (15-35%), Green (#22C55E) for low (<15%)
+7. Economics should be proportional to the severity of the problem
+8. Include 3 priority actions and top 3 most stressed regions in regional_breakdown
+9. Return ONLY valid JSON, no comments, no markdown, no other text`;
 
-    console.log('🤖 Generating custom scenario with Claude...');
+    console.log('🤖 Generating custom scenario with GPT-4...');
 
-    // Call Claude API
-    const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 4096,
-      temperature: 0.7,
-      system: 'You are an expert infrastructure simulation analyst for El Salvador. Generate realistic, actionable policy scenarios based on input parameters. Always respond with valid JSON only.',
+    // Call OpenAI API
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4',
       messages: [
+        {
+          role: 'system',
+          content: 'You are an expert infrastructure simulation analyst for El Salvador. Generate realistic, actionable policy scenarios based on input parameters. Always respond with valid JSON only, no markdown code blocks.'
+        },
         {
           role: 'user',
           content: prompt,
         },
       ],
+      max_tokens: 4096,
+      temperature: 0.7,
     });
 
     // Extract JSON from response
-    let responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    let responseText = completion.choices[0].message.content || '';
 
     // Remove markdown code blocks if present
     responseText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+    // Remove comments from JSON (GPT-4 sometimes adds them)
+    responseText = responseText
+      .split('\n')
+      .filter(line => !line.trim().startsWith('//'))  // Remove lines starting with //
+      .join('\n')
+      .replace(/\/\*[\s\S]*?\*\//g, '')  // Remove /* */ comments
+      .replace(/,(\s*[}\]])/g, '$1');  // Remove trailing commas
 
     // Parse JSON
     let scenarioData;
@@ -202,8 +218,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       data: scenarioData,
-      provider: 'anthropic',
-      model: 'claude-3-5-sonnet-20241022',
+      provider: 'openai',
+      model: 'gpt-4',
     });
 
   } catch (error) {

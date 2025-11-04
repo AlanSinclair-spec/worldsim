@@ -133,9 +133,6 @@ export default function Page() {
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 text-center mt-4 pt-4 border-t">
-                  Currently available for El Salvador
-                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { MapView } from '@/components/MapView';
 
 /**
  * WorldSim Landing Page
@@ -177,17 +178,13 @@ export default function Page() {
               </div>
             </div>
 
-            {/* Right: Feature Image Placeholder */}
+            {/* Right: Map Preview */}
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-green-600 rounded-2xl blur-2xl opacity-20"></div>
               <div className="relative bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-                <div className="p-8">
-                  <div className="h-[300px] sm:h-[400px] lg:h-[500px] flex items-center justify-center bg-gradient-to-br from-blue-50 to-green-50 rounded-xl">
-                    <div className="text-center space-y-4">
-                      <div className="text-6xl">🌍</div>
-                      <h3 className="text-2xl font-bold text-gray-800">El Salvador Digital Twin</h3>
-                      <p className="text-gray-600 max-w-md">Complete infrastructure simulation for all 14 departments</p>
-                    </div>
+                <div className="p-2">
+                  <div className="h-[300px] sm:h-[400px] lg:h-[500px]">
+                    <MapView height="100%" />
                   </div>
                 </div>
               </div>

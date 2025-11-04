@@ -164,11 +164,11 @@ export async function POST(req: NextRequest) {
 8. Include 3 priority actions and top 3 most stressed regions in regional_breakdown
 9. Return ONLY valid JSON, no comments, no markdown, no other text`;
 
-    console.log('🤖 Generating custom scenario with GPT-4...');
+    console.log('🤖 Generating custom scenario with GPT-4o-mini...');
 
-    // Call OpenAI API
+    // Call OpenAI API (using gpt-4o-mini for speed and cost efficiency)
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
       success: true,
       data: scenarioData,
       provider: 'openai',
-      model: 'gpt-4',
+      model: 'gpt-4o-mini',
     });
 
   } catch (error) {

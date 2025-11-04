@@ -91,7 +91,8 @@ const scenarios = [
   { id: 'coal-phaseout', name: 'Coal Phase-Out', emoji: '⚡', color: 'from-blue-500 to-cyan-600' },
   { id: 'climate-refugees', name: 'Climate Refugees', emoji: '🌊', color: 'from-teal-500 to-green-600' },
   { id: 'bitcoin-mining', name: 'Bitcoin Mining', emoji: '₿', color: 'from-yellow-500 to-orange-600' },
-  { id: 'optimal-plan', name: 'Optimal Plan', emoji: '✨', color: 'from-purple-500 to-pink-600' }
+  { id: 'optimal-plan', name: 'Optimal Plan', emoji: '✨', color: 'from-purple-500 to-pink-600' },
+  { id: 'custom', name: 'Custom Scenario', emoji: '🎯', color: 'from-indigo-500 to-purple-600' }
 ];
 
 export default function InteractivePage() {
@@ -99,11 +100,24 @@ export default function InteractivePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [language, setLanguage] = useState<'en' | 'es'>('en');
+  const [showCustomForm, setShowCustomForm] = useState(false);
+  const [customParams, setCustomParams] = useState({
+    solar_growth_pct: 0,
+    rainfall_change_pct: 0,
+    demand_increase_pct: 0,
+    scenario_name: 'Custom Scenario',
+  });
 
   /**
    * Load pre-computed scenario from JSON file
    */
   const loadScenario = async (scenarioId: string) => {
+    // Handle custom scenario - open form instead of loading JSON
+    if (scenarioId === 'custom') {
+      setShowCustomForm(true);
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -134,6 +148,58 @@ export default function InteractivePage() {
     } catch (error) {
       console.error('Failed to load scenario:', error);
       alert('Failed to load scenario. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  /**
+   * Generate custom scenario using AI
+   */
+  const generateCustomScenario = async () => {
+    setIsLoading(true);
+    setShowCustomForm(false);
+
+    try {
+      const response = await fetch('/api/generate-scenario', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...customParams,
+          language,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate scenario');
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setSelectedScenario(result.data);
+
+        // Confetti celebration
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+
+        // Smooth scroll to results
+        setTimeout(() => {
+          document.getElementById('results')?.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }, 300);
+      } else {
+        throw new Error('Invalid response from API');
+      }
+
+    } catch (error) {
+      console.error('Failed to generate custom scenario:', error);
+      alert(error instanceof Error ? error.message : 'Failed to generate scenario. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -207,7 +273,7 @@ export default function InteractivePage() {
             : 'Haga clic en cualquier escenario para ver recomendaciones de políticas impulsadas por IA'}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {scenarios.map((scenario) => (
             <button
               key={scenario.id}
@@ -261,6 +327,152 @@ export default function InteractivePage() {
           </div>
         )}
       </div>
+
+      {/* Custom Scenario Form Modal */}
+      {showCustomForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-8">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="text-4xl">🎯</div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    {language === 'en' ? 'Create Custom Scenario' : 'Crear Escenario Personalizado'}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setShowCustomForm(false)}
+                  className="text-gray-400 hover:text-gray-600 transition"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Description */}
+              <p className="text-gray-600 mb-6">
+                {language === 'en'
+                  ? 'AI will generate a realistic scenario based on your inputs using Claude. Adjust the parameters below:'
+                  : 'La IA generará un escenario realista basado en sus entradas usando Claude. Ajuste los parámetros a continuación:'}
+              </p>
+
+              {/* Form */}
+              <div className="space-y-6">
+                {/* Scenario Name */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {language === 'en' ? 'Scenario Name' : 'Nombre del Escenario'}
+                  </label>
+                  <input
+                    type="text"
+                    value={customParams.scenario_name}
+                    onChange={(e) => setCustomParams({ ...customParams, scenario_name: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder={language === 'en' ? 'e.g., Extreme Weather Event' : 'ej., Evento Climático Extremo'}
+                  />
+                </div>
+
+                {/* Solar Growth */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {language === 'en' ? 'Solar Energy Growth' : 'Crecimiento de Energía Solar'}: {customParams.solar_growth_pct}%
+                  </label>
+                  <input
+                    type="range"
+                    min="-100"
+                    max="500"
+                    step="10"
+                    value={customParams.solar_growth_pct}
+                    onChange={(e) => setCustomParams({ ...customParams, solar_growth_pct: parseInt(e.target.value) })}
+                    className="w-full h-3 bg-gradient-to-r from-red-200 via-yellow-200 to-green-500 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>-100% {language === 'en' ? '(Major Decline)' : '(Gran Declive)'}</span>
+                    <span>+500% {language === 'en' ? '(Major Growth)' : '(Gran Crecimiento)'}</span>
+                  </div>
+                </div>
+
+                {/* Rainfall Change */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {language === 'en' ? 'Rainfall Change' : 'Cambio en Precipitación'}: {customParams.rainfall_change_pct}%
+                  </label>
+                  <input
+                    type="range"
+                    min="-100"
+                    max="100"
+                    step="5"
+                    value={customParams.rainfall_change_pct}
+                    onChange={(e) => setCustomParams({ ...customParams, rainfall_change_pct: parseInt(e.target.value) })}
+                    className="w-full h-3 bg-gradient-to-r from-orange-300 via-blue-200 to-blue-500 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>-100% {language === 'en' ? '(Severe Drought)' : '(Sequía Severa)'}</span>
+                    <span>+100% {language === 'en' ? '(Heavy Rainfall)' : '(Lluvia Intensa)'}</span>
+                  </div>
+                </div>
+
+                {/* Demand Increase */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    {language === 'en' ? 'Demand Increase' : 'Aumento de Demanda'}: +{customParams.demand_increase_pct}%
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="200"
+                    step="5"
+                    value={customParams.demand_increase_pct}
+                    onChange={(e) => setCustomParams({ ...customParams, demand_increase_pct: parseInt(e.target.value) })}
+                    className="w-full h-3 bg-gradient-to-r from-green-200 to-red-500 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0% {language === 'en' ? '(No Change)' : '(Sin Cambio)'}</span>
+                    <span>+200% {language === 'en' ? '(Triple Demand)' : '(Triple Demanda)'}</span>
+                  </div>
+                </div>
+
+                {/* Info Box */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="text-2xl">🤖</div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-blue-900 mb-1">
+                        {language === 'en' ? 'AI-Powered Generation' : 'Generación Impulsada por IA'}
+                      </h4>
+                      <p className="text-sm text-blue-800">
+                        {language === 'en'
+                          ? 'Claude will analyze your parameters and generate realistic stress levels, economic impacts, and policy recommendations for all 14 regions. This takes ~10 seconds.'
+                          : 'Claude analizará sus parámetros y generará niveles de estrés realistas, impactos económicos y recomendaciones de políticas para las 14 regiones. Esto toma ~10 segundos.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowCustomForm(false)}
+                    className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
+                  >
+                    {language === 'en' ? 'Cancel' : 'Cancelar'}
+                  </button>
+                  <button
+                    onClick={generateCustomScenario}
+                    disabled={!customParams.scenario_name.trim()}
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    <span className="text-xl">🚀</span>
+                    {language === 'en' ? 'Generate with AI' : 'Generar con IA'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Loading State */}
       {isLoading && (

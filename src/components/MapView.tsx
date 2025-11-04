@@ -963,31 +963,6 @@ function MapViewComponent({ onRegionClick, height = '600px', simulationResults, 
           </div>
         )}
 
-        {/* Department Colors Legend - shown when NO simulation */}
-        {!simulationResults && mapLoaded && (
-          <div className="absolute bottom-12 md:bottom-16 left-2 md:left-auto md:right-4 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200 p-3 md:p-4 max-w-[200px] md:max-w-[220px]">
-            <h4 className="text-[10px] md:text-xs font-bold text-gray-700 mb-3 uppercase tracking-wide">
-              🇸🇻 El Salvador Departments
-            </h4>
-            <div className="space-y-1.5 text-[9px] md:text-[10px] text-gray-600 max-h-[200px] overflow-y-auto">
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#3B82F6'}}></div><span>San Salvador</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#10B981'}}></div><span>La Libertad</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#F59E0B'}}></div><span>Santa Ana</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#6366F1'}}></div><span>Chalatenango</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#8B5CF6'}}></div><span>Sonsonate</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EC4899'}}></div><span>La Paz</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#14B8A6'}}></div><span>Usulutan</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EF4444'}}></div><span>San Miguel</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#F97316'}}></div><span>Morazan</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#06B6D4'}}></div><span>La Union</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#A855F7'}}></div><span>Cuscatlan</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#84CC16'}}></div><span>Cabañas</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#22C55E'}}></div><span>Ahuachapan</span></div>
-              <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-sm flex-shrink-0" style={{backgroundColor: '#EAB308'}}></div><span>San Vicente</span></div>
-            </div>
-          </div>
-        )}
-
         {/* Premium loading state */}
         {!mapLoaded && !error && (
           <div className="absolute inset-0 rounded-lg overflow-hidden">

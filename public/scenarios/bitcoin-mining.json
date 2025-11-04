@@ -1,0 +1,244 @@
+{
+  "id": "bitcoin-mining",
+  "name": "Bitcoin Mining",
+  "emoji": "₿",
+  "tagline": "+30% demand from cryptocurrency mining operations",
+  "description": "Large-scale Bitcoin mining facilities leverage El Salvador's geothermal and renewable energy, increasing national electricity demand by 30% with concentrated load in industrial zones.",
+  "parameters": {
+    "solar_growth_pct": 0,
+    "rainfall_change_pct": 0,
+    "demand_increase_pct": 30,
+    "period": "30 days"
+  },
+  "summary": {
+    "national_avg_stress": 71.3,
+    "peak_stress": 97.8,
+    "affected_population": 3800000,
+    "critical_regions": 5,
+    "high_risk_regions": 4
+  },
+  "regions": [
+    {
+      "name": "San Salvador",
+      "stress": 97.8,
+      "demand_mwh": 858,
+      "supply_mwh": 585,
+      "deficit_mwh": 273,
+      "population": 1800000,
+      "color": "#DC2626",
+      "severity": "critical"
+    },
+    {
+      "name": "La Libertad",
+      "stress": 89.5,
+      "demand_mwh": 325,
+      "supply_mwh": 229,
+      "deficit_mwh": 96,
+      "population": 850000,
+      "color": "#DC2626",
+      "severity": "critical"
+    },
+    {
+      "name": "Ahuachapán",
+      "stress": 84.2,
+      "demand_mwh": 198,
+      "supply_mwh": 137,
+      "deficit_mwh": 61,
+      "population": 340000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "Santa Ana",
+      "stress": 78.5,
+      "demand_mwh": 364,
+      "supply_mwh": 265,
+      "deficit_mwh": 99,
+      "population": 580000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "San Miguel",
+      "stress": 74.3,
+      "demand_mwh": 306,
+      "supply_mwh": 218,
+      "deficit_mwh": 88,
+      "population": 520000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "Sonsonate",
+      "stress": 62.8,
+      "demand_mwh": 243,
+      "supply_mwh": 177,
+      "deficit_mwh": 66,
+      "population": 480000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "La Paz",
+      "stress": 55.4,
+      "demand_mwh": 211,
+      "supply_mwh": 153,
+      "deficit_mwh": 58,
+      "population": 350000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "Usulután",
+      "stress": 51.2,
+      "demand_mwh": 230,
+      "supply_mwh": 164,
+      "deficit_mwh": 66,
+      "population": 380000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "Cuscatlán",
+      "stress": 46.8,
+      "demand_mwh": 191,
+      "supply_mwh": 132,
+      "deficit_mwh": 59,
+      "population": 260000,
+      "color": "#F59E0B",
+      "severity": "moderate"
+    },
+    {
+      "name": "Chalatenango",
+      "stress": 38.2,
+      "demand_mwh": 160,
+      "supply_mwh": 122,
+      "deficit_mwh": 38,
+      "population": 220000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "Morazán",
+      "stress": 34.5,
+      "demand_mwh": 147,
+      "supply_mwh": 111,
+      "deficit_mwh": 36,
+      "population": 195000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "La Unión",
+      "stress": 31.2,
+      "demand_mwh": 153,
+      "supply_mwh": 118,
+      "deficit_mwh": 35,
+      "population": 290000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "San Vicente",
+      "stress": 28.4,
+      "demand_mwh": 166,
+      "supply_mwh": 127,
+      "deficit_mwh": 39,
+      "population": 180000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Cabañas",
+      "stress": 24.7,
+      "demand_mwh": 140,
+      "supply_mwh": 106,
+      "deficit_mwh": 34,
+      "population": 160000,
+      "color": "#A3E635",
+      "severity": "low"
+    }
+  ],
+  "economics": {
+    "investment_required_million": 520,
+    "investment_breakdown": "Dedicated mining power plants ($220M), grid reinforcement ($150M), cooling infrastructure ($80M), renewable energy expansion ($70M)",
+    "economic_loss_prevented_million": 1450,
+    "economic_loss_explanation": "Bitcoin mining revenue ($950M annually), job creation ($180M), technology sector growth ($220M), avoided grid failure costs ($100M)",
+    "roi_multiplier": 2.8,
+    "roi_explanation": "Every $1 invested enables $2.80 in mining revenue, tech sector growth, and economic development over 5 years",
+    "timeline_days": 365,
+    "payback_period_years": 3.2
+  },
+  "ai_analysis": {
+    "executive_summary": "Bitcoin mining expansion creates severe infrastructure stress requiring massive capacity investment while generating substantial economic opportunity. Five regions face critical stress with potential for grid instability. Strategic approach needed: dedicated renewable capacity for mining operations separate from residential grid, ensuring mining revenue funds infrastructure expansion rather than competing with citizen needs.",
+    "priority_actions": [
+      {
+        "rank": 1,
+        "action": "Deploy dedicated geothermal power plant for mining operations",
+        "timeline": "270 days",
+        "cost_million": 220,
+        "impact": "Provides 200MW baseload capacity exclusively for mining, removes load from residential grid"
+      },
+      {
+        "rank": 2,
+        "action": "Construct Bitcoin City renewable energy hub",
+        "timeline": "540 days",
+        "cost_million": 150,
+        "impact": "Creates isolated mining infrastructure with solar+geothermal, protects national grid"
+      },
+      {
+        "rank": 3,
+        "action": "Mandate mining operations use 100% renewable energy",
+        "timeline": "180 days",
+        "cost_million": 70,
+        "impact": "Drives renewable investment, positions El Salvador as green Bitcoin leader"
+      }
+    ],
+    "regional_breakdown": [
+      {
+        "region": "San Salvador",
+        "stress": 97.8,
+        "severity": "critical",
+        "analysis": "Capital faces extreme stress with 273 MWh deficit - largest in nation. Major mining facilities located in industrial zones competing with residential and commercial demand. Near-constant brownouts during peak hours.",
+        "recommendation": "Immediately relocate or curtail mining operations during peak residential hours (6-9 PM). Deploy emergency generation capacity (100MW) within 60 days. Long-term: relocate mining to dedicated facilities outside capital region.",
+        "timeline": "30 days curtailment, 60 days emergency capacity",
+        "cost_million": 85
+      },
+      {
+        "region": "Ahuachapán",
+        "stress": 84.2,
+        "severity": "critical",
+        "analysis": "Geothermal resources attract mining operations but local grid inadequate. 61 MWh deficit impacts 340K residents. Opportunity: leverage geothermal for sustainable mining model.",
+        "recommendation": "Expand geothermal capacity by 150MW dedicated to mining. Upgrade local transmission to handle increased generation. Create regulatory framework ensuring residential priority during shortages.",
+        "timeline": "365 days",
+        "cost_million": 180
+      },
+      {
+        "region": "La Libertad & Santa Ana",
+        "stress": 89.5,
+        "severity": "critical",
+        "analysis": "Coastal and western industrial zones host major mining facilities. Combined deficit of 195 MWh affects 1.43M residents. Mining operations using 24/7 baseload not aligned with residential patterns.",
+        "recommendation": "Develop Bitcoin City concept in La Libertad with dedicated infrastructure. Implement dynamic pricing to incentivize mining during off-peak hours. Deploy battery storage to smooth residential demand.",
+        "timeline": "540 days for Bitcoin City, 120 days for pricing reform",
+        "cost_million": 220
+      }
+    ],
+    "risks": [
+      "Bitcoin price volatility affects mining profitability and infrastructure ROI",
+      "Residential electricity access compromised by mining competition",
+      "Political backlash if citizens face outages while miners operate",
+      "Environmental concerns over energy consumption despite renewable sources",
+      "Regulatory uncertainty - mining bans in other countries create precedent risk"
+    ],
+    "opportunities": [
+      "Position as world's first 100% renewable Bitcoin mining nation",
+      "Mining revenue funds national infrastructure expansion ($950M annually)",
+      "Create 3,000+ high-tech jobs in mining operations and maintenance",
+      "Attract blockchain companies and crypto startups to El Salvador",
+      "Leverage volcano-powered geothermal as unique competitive advantage",
+      "Export surplus renewable energy to neighbors when mining demand low",
+      "Demonstrate cryptocurrency adoption at national scale - global leadership",
+      "Use mining as flexible grid load - curtail during emergencies, ramp up when surplus"
+    ]
+  }
+}

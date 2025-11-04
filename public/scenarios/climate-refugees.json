@@ -1,0 +1,242 @@
+{
+  "id": "climate-refugees",
+  "name": "Climate Refugees",
+  "emoji": "🌊",
+  "tagline": "+20% demand from climate-induced migration",
+  "description": "Climate change drives population influx from neighboring countries and coastal regions, increasing energy demand by 20% and straining infrastructure in urban centers.",
+  "parameters": {
+    "solar_growth_pct": 0,
+    "rainfall_change_pct": 0,
+    "demand_increase_pct": 20,
+    "period": "30 days"
+  },
+  "summary": {
+    "national_avg_stress": 64.7,
+    "peak_stress": 94.2,
+    "affected_population": 5100000,
+    "critical_regions": 4,
+    "high_risk_regions": 6
+  },
+  "regions": [
+    {
+      "name": "San Salvador",
+      "stress": 94.2,
+      "demand_mwh": 792,
+      "supply_mwh": 565,
+      "deficit_mwh": 227,
+      "population": 2160000,
+      "color": "#DC2626",
+      "severity": "critical"
+    },
+    {
+      "name": "La Libertad",
+      "stress": 82.5,
+      "demand_mwh": 300,
+      "supply_mwh": 223,
+      "deficit_mwh": 77,
+      "population": 1020000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "Santa Ana",
+      "stress": 76.8,
+      "demand_mwh": 336,
+      "supply_mwh": 257,
+      "deficit_mwh": 79,
+      "population": 696000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "San Miguel",
+      "stress": 71.4,
+      "demand_mwh": 282,
+      "supply_mwh": 211,
+      "deficit_mwh": 71,
+      "population": 624000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "Sonsonate",
+      "stress": 58.3,
+      "demand_mwh": 224,
+      "supply_mwh": 172,
+      "deficit_mwh": 52,
+      "population": 576000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "La Paz",
+      "stress": 52.8,
+      "demand_mwh": 194,
+      "supply_mwh": 149,
+      "deficit_mwh": 45,
+      "population": 420000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "Usulután",
+      "stress": 48.2,
+      "demand_mwh": 212,
+      "supply_mwh": 164,
+      "deficit_mwh": 48,
+      "population": 456000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "Ahuachapán",
+      "stress": 44.5,
+      "demand_mwh": 182,
+      "supply_mwh": 137,
+      "deficit_mwh": 45,
+      "population": 408000,
+      "color": "#F59E0B",
+      "severity": "moderate"
+    },
+    {
+      "name": "Cuscatlán",
+      "stress": 38.7,
+      "demand_mwh": 176,
+      "supply_mwh": 131,
+      "deficit_mwh": 45,
+      "population": 312000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "Chalatenango",
+      "stress": 34.2,
+      "demand_mwh": 148,
+      "supply_mwh": 122,
+      "deficit_mwh": 26,
+      "population": 264000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "Morazán",
+      "stress": 30.5,
+      "demand_mwh": 136,
+      "supply_mwh": 111,
+      "deficit_mwh": 25,
+      "population": 234000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "La Unión",
+      "stress": 27.8,
+      "demand_mwh": 142,
+      "supply_mwh": 118,
+      "deficit_mwh": 24,
+      "population": 348000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "San Vicente",
+      "stress": 24.3,
+      "demand_mwh": 154,
+      "supply_mwh": 127,
+      "deficit_mwh": 27,
+      "population": 216000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Cabañas",
+      "stress": 21.2,
+      "demand_mwh": 130,
+      "supply_mwh": 106,
+      "deficit_mwh": 24,
+      "population": 192000,
+      "color": "#22C55E",
+      "severity": "low"
+    }
+  ],
+  "economics": {
+    "investment_required_million": 285,
+    "investment_breakdown": "Emergency generation capacity ($120M), transmission infrastructure expansion ($85M), urban electrification programs ($50M), social housing energy systems ($30M)",
+    "economic_loss_prevented_million": 890,
+    "economic_loss_explanation": "Prevented humanitarian crisis, maintained economic productivity, avoided social instability costs, preserved business continuity",
+    "roi_multiplier": 3.1,
+    "roi_explanation": "Every $1 invested prevents $3.10 in economic and social costs while enabling productive integration of climate migrants",
+    "timeline_days": 180,
+    "payback_period_years": 4.2
+  },
+  "ai_analysis": {
+    "executive_summary": "Climate-induced migration creates severe infrastructure stress requiring urgent capacity expansion and social integration programs. Four regions face critical stress with combined population of 4.5M including 800K climate migrants. Immediate action needed to prevent humanitarian crisis and maintain economic stability.",
+    "priority_actions": [
+      {
+        "rank": 1,
+        "action": "Emergency capacity deployment in San Salvador metropolitan area",
+        "timeline": "45 days",
+        "cost_million": 95,
+        "impact": "Reduces critical stress from 94.2% to 65%, prevents cascading grid failures"
+      },
+      {
+        "rank": 2,
+        "action": "Rapid electrification of settlement areas in La Libertad",
+        "timeline": "60 days",
+        "cost_million": 50,
+        "impact": "Provides basic electricity access to 200K migrants, prevents informal connections"
+      },
+      {
+        "rank": 3,
+        "action": "Expand transmission capacity between urban centers",
+        "timeline": "120 days",
+        "cost_million": 85,
+        "impact": "Enables load balancing, improves system resilience by 40%"
+      }
+    ],
+    "regional_breakdown": [
+      {
+        "region": "San Salvador",
+        "stress": 94.2,
+        "severity": "critical",
+        "analysis": "Capital faces extreme stress with 360K climate migrants (20% population increase). Current deficit of 227 MWh represents near-total system failure during peak hours. Informal settlements drawing power unsafely.",
+        "recommendation": "Deploy emergency diesel generators (50MW) within 15 days as stopgap. Accelerate solar farm deployment (100MW) within 45 days. Implement load shedding protocols for non-critical areas. Launch migrant electrification program with subsidized connections.",
+        "timeline": "15 days emergency, 45 days sustainable",
+        "cost_million": 95
+      },
+      {
+        "region": "La Libertad",
+        "stress": 82.5,
+        "severity": "critical",
+        "analysis": "Coastal department absorbs 170K climate refugees fleeing rising seas. Unplanned settlement expansion overwhelms existing infrastructure. 77 MWh deficit affects both existing residents and newcomers.",
+        "recommendation": "Establish planned settlement with integrated solar microgrids. Deploy mobile substations to serve temporary housing. Partner with UNHCR for infrastructure financing. Implement pay-as-you-go solar systems for refugee households.",
+        "timeline": "60 days",
+        "cost_million": 50
+      },
+      {
+        "region": "Santa Ana & San Miguel",
+        "stress": 76.8,
+        "severity": "critical",
+        "analysis": "Secondary cities absorbing overflow from capital region. Combined 150K migrants strain systems designed for stable populations. Agricultural job opportunities attract climate refugees but infrastructure inadequate.",
+        "recommendation": "Expand urban power distribution networks. Deploy community solar programs linked to agricultural cooperatives. Create employment programs for migrants in renewable energy installation.",
+        "timeline": "90 days",
+        "cost_million": 65
+      }
+    ],
+    "risks": [
+      "Continued migration waves could exceed infrastructure capacity",
+      "Social tensions between existing residents and migrants over resources",
+      "Informal electrical connections create safety hazards and grid instability",
+      "Funding constraints delay critical infrastructure deployment",
+      "Climate events in origin countries accelerate migration beyond projections"
+    ],
+    "opportunities": [
+      "International humanitarian funding available ($150M+ from UN agencies)",
+      "Climate migrants bring labor force for infrastructure projects",
+      "Regional cooperation agreements for burden-sharing with Honduras/Guatemala",
+      "Demonstrate climate adaptation leadership - attract development financing",
+      "Build resilient infrastructure that serves growing population long-term",
+      "Create inclusive economy integrating migrants into productive sectors"
+    ]
+  }
+}

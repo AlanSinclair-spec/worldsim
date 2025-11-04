@@ -1,0 +1,236 @@
+{
+  "id": "optimal-plan",
+  "name": "Optimal Plan",
+  "emoji": "✨",
+  "tagline": "+100% solar + 10% rainfall = balanced sustainable growth",
+  "description": "Best-case scenario combining aggressive renewable energy deployment with favorable climate conditions, achieving energy surplus, grid stability, and positioning El Salvador as a regional clean energy leader.",
+  "parameters": {
+    "solar_growth_pct": 100,
+    "rainfall_change_pct": 10,
+    "period": "30 days"
+  },
+  "summary": {
+    "national_avg_stress": 8.2,
+    "peak_stress": 18.5,
+    "affected_population": 0,
+    "critical_regions": 0,
+    "high_risk_regions": 0
+  },
+  "regions": [
+    {
+      "name": "San Salvador",
+      "stress": 18.5,
+      "demand_mwh": 660,
+      "supply_mwh": 742,
+      "deficit_mwh": -82,
+      "population": 1800000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Santa Ana",
+      "stress": 12.3,
+      "demand_mwh": 280,
+      "supply_mwh": 325,
+      "deficit_mwh": -45,
+      "population": 580000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "La Libertad",
+      "stress": 10.8,
+      "demand_mwh": 250,
+      "supply_mwh": 289,
+      "deficit_mwh": -39,
+      "population": 850000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "San Miguel",
+      "stress": 9.5,
+      "demand_mwh": 235,
+      "supply_mwh": 270,
+      "deficit_mwh": -35,
+      "population": 520000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Sonsonate",
+      "stress": 8.2,
+      "demand_mwh": 187,
+      "supply_mwh": 214,
+      "deficit_mwh": -27,
+      "population": 480000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "La Paz",
+      "stress": 7.4,
+      "demand_mwh": 162,
+      "supply_mwh": 186,
+      "deficit_mwh": -24,
+      "population": 350000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Usulután",
+      "stress": 6.8,
+      "demand_mwh": 177,
+      "supply_mwh": 203,
+      "deficit_mwh": -26,
+      "population": 380000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Ahuachapán",
+      "stress": 6.2,
+      "demand_mwh": 152,
+      "supply_mwh": 175,
+      "deficit_mwh": -23,
+      "population": 340000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Cuscatlán",
+      "stress": 5.5,
+      "demand_mwh": 147,
+      "supply_mwh": 168,
+      "deficit_mwh": -21,
+      "population": 260000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Chalatenango",
+      "stress": 4.8,
+      "demand_mwh": 123,
+      "supply_mwh": 141,
+      "deficit_mwh": -18,
+      "population": 220000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Morazán",
+      "stress": 4.2,
+      "demand_mwh": 113,
+      "supply_mwh": 130,
+      "deficit_mwh": -17,
+      "population": 195000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "La Unión",
+      "stress": 3.8,
+      "demand_mwh": 118,
+      "supply_mwh": 136,
+      "deficit_mwh": -18,
+      "population": 290000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "San Vicente",
+      "stress": 3.2,
+      "demand_mwh": 128,
+      "supply_mwh": 147,
+      "deficit_mwh": -19,
+      "population": 180000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    },
+    {
+      "name": "Cabañas",
+      "stress": 2.8,
+      "demand_mwh": 108,
+      "supply_mwh": 124,
+      "deficit_mwh": -16,
+      "population": 160000,
+      "color": "#22C55E",
+      "severity": "surplus"
+    }
+  ],
+  "economics": {
+    "investment_required_million": 680,
+    "investment_breakdown": "Utility-scale solar expansion ($320M), distributed rooftop programs ($140M), grid-scale battery storage ($120M), smart grid infrastructure ($60M), transmission modernization ($40M)",
+    "economic_loss_prevented_million": 2400,
+    "economic_loss_explanation": "Energy independence savings ($1200M over 10 years), exported surplus revenue ($480M), avoided fossil fuel costs ($420M), health benefits from pollution reduction ($180M), climate resilience value ($120M)",
+    "roi_multiplier": 3.5,
+    "roi_explanation": "Every $1 invested generates $3.50 in energy savings, export revenue, health benefits, and economic growth over 10 years",
+    "timeline_days": 720,
+    "payback_period_years": 4.8
+  },
+  "ai_analysis": {
+    "executive_summary": "Optimal scenario demonstrates El Salvador's potential to achieve complete energy independence with surplus renewable capacity. Zero regions experiencing stress, national average stress at 8.2% represents comfortable operating margins. This transformation positions El Salvador as Central America's clean energy leader while creating economic opportunities through energy exports and technology leadership.",
+    "priority_actions": [
+      {
+        "rank": 1,
+        "action": "Deploy 500MW utility-scale solar across optimal sites",
+        "timeline": "540 days",
+        "cost_million": 320,
+        "impact": "Provides 60% of national baseload capacity from clean sources"
+      },
+      {
+        "rank": 2,
+        "action": "Implement national rooftop solar program (100,000 installations)",
+        "timeline": "720 days",
+        "cost_million": 140,
+        "impact": "Distributes generation, reduces transmission losses by 15%, creates 2,000 jobs"
+      },
+      {
+        "rank": 3,
+        "action": "Install 200MWh grid-scale battery storage network",
+        "timeline": "450 days",
+        "cost_million": 120,
+        "impact": "Enables 24/7 renewable power, smooths intermittency, provides grid stability"
+      }
+    ],
+    "regional_breakdown": [
+      {
+        "region": "All Regions - National Strategy",
+        "stress": 8.2,
+        "severity": "surplus",
+        "analysis": "Every region achieves energy surplus ranging from 12% (San Salvador) to 15% (rural departments). National grid operates with comfortable margins allowing for demand growth, resilience to disruptions, and export opportunities. Favorable rainfall (+10%) enhances hydroelectric output while massive solar deployment (100% growth) provides distributed clean capacity.",
+        "recommendation": "Focus shifts from crisis management to optimization and opportunity capture. Priorities: (1) Develop regional energy export agreements with Honduras and Guatemala ($480M potential revenue), (2) Attract energy-intensive industries with competitive clean energy pricing, (3) Implement vehicle electrification programs leveraging surplus capacity, (4) Deploy smart grid systems for demand optimization, (5) Create climate-resilient infrastructure for sustained performance.",
+        "timeline": "Ongoing optimization over 24 months",
+        "cost_million": 680
+      },
+      {
+        "region": "Export Corridors - Honduras & Guatemala",
+        "stress": 0,
+        "severity": "opportunity",
+        "analysis": "Surplus capacity of 480 MWh daily enables regional energy export. Neighboring countries face energy deficits and higher costs. El Salvador positioned to become net energy exporter for first time in history.",
+        "recommendation": "Negotiate power purchase agreements with ENEE (Honduras) and INDE (Guatemala). Upgrade international transmission interconnections. Establish pricing structure that generates revenue while remaining competitive. Deploy smart meters and billing systems for cross-border transactions.",
+        "timeline": "270 days for interconnection upgrades",
+        "cost_million": 85
+      }
+    ],
+    "risks": [
+      "High upfront capital requirement ($680M) - financing critical",
+      "Solar intermittency despite storage - cloudy periods affect generation",
+      "Grid modernization complexity - requires skilled workforce and management",
+      "Rainfall variability - 10% increase may not be sustainable long-term",
+      "Technology obsolescence - rapid solar/battery advancement could depreciate assets"
+    ],
+    "opportunities": [
+      "Export 400+ MWh daily to neighbors - $480M revenue over 10 years",
+      "Attract data centers and green industries with cheap clean power",
+      "Eliminate fossil fuel imports - save $1.2B over 10 years",
+      "Create 8,000+ jobs in renewable energy sector",
+      "Position as Central America's clean tech hub and innovation leader",
+      "Access $500M+ in climate financing from World Bank, IDB, Green Climate Fund",
+      "Achieve carbon neutrality by 2035 - international recognition",
+      "Implement electric vehicle infrastructure - leverage surplus capacity",
+      "Develop energy storage manufacturing - create domestic industry",
+      "Climate resilience - reduced vulnerability to fossil fuel price shocks"
+    ]
+  }
+}

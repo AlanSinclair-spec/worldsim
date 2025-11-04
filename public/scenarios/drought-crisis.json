@@ -1,0 +1,238 @@
+{
+  "id": "drought-crisis",
+  "name": "Drought Crisis",
+  "emoji": "🌵",
+  "tagline": "-25% rainfall impacts hydroelectric capacity",
+  "description": "Extended drought reduces rainfall by 25%, significantly impacting hydroelectric generation and stressing the grid across El Salvador.",
+  "parameters": {
+    "solar_growth_pct": 0,
+    "rainfall_change_pct": -25,
+    "period": "30 days"
+  },
+  "summary": {
+    "national_avg_stress": 58.3,
+    "peak_stress": 89.5,
+    "affected_population": 4200000,
+    "critical_regions": 3,
+    "high_risk_regions": 5
+  },
+  "regions": [
+    {
+      "name": "San Salvador",
+      "stress": 89.5,
+      "demand_mwh": 660,
+      "supply_mwh": 490,
+      "deficit_mwh": 170,
+      "population": 1800000,
+      "color": "#EF4444",
+      "severity": "critical"
+    },
+    {
+      "name": "Santa Ana",
+      "stress": 72.8,
+      "demand_mwh": 280,
+      "supply_mwh": 223,
+      "deficit_mwh": 57,
+      "population": 580000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "San Miguel",
+      "stress": 68.2,
+      "demand_mwh": 235,
+      "supply_mwh": 183,
+      "deficit_mwh": 52,
+      "population": 520000,
+      "color": "#F59E0B",
+      "severity": "high"
+    },
+    {
+      "name": "La Libertad",
+      "stress": 54.3,
+      "demand_mwh": 250,
+      "supply_mwh": 193,
+      "deficit_mwh": 57,
+      "population": 850000,
+      "color": "#F59E0B",
+      "severity": "moderate"
+    },
+    {
+      "name": "Sonsonate",
+      "stress": 42.1,
+      "demand_mwh": 187,
+      "supply_mwh": 149,
+      "deficit_mwh": 38,
+      "population": 480000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "La Paz",
+      "stress": 38.5,
+      "demand_mwh": 162,
+      "supply_mwh": 129,
+      "deficit_mwh": 33,
+      "population": 350000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "Usulután",
+      "stress": 35.2,
+      "demand_mwh": 177,
+      "supply_mwh": 142,
+      "deficit_mwh": 35,
+      "population": 380000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Ahuachapán",
+      "stress": 32.8,
+      "demand_mwh": 152,
+      "supply_mwh": 119,
+      "deficit_mwh": 33,
+      "population": 340000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Cuscatlán",
+      "stress": 28.4,
+      "demand_mwh": 147,
+      "supply_mwh": 114,
+      "deficit_mwh": 33,
+      "population": 260000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Chalatenango",
+      "stress": 25.1,
+      "demand_mwh": 123,
+      "supply_mwh": 106,
+      "deficit_mwh": 17,
+      "population": 220000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Morazán",
+      "stress": 22.3,
+      "demand_mwh": 113,
+      "supply_mwh": 96,
+      "deficit_mwh": 17,
+      "population": 195000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "La Unión",
+      "stress": 19.8,
+      "demand_mwh": 118,
+      "supply_mwh": 102,
+      "deficit_mwh": 16,
+      "population": 290000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "San Vicente",
+      "stress": 18.2,
+      "demand_mwh": 128,
+      "supply_mwh": 110,
+      "deficit_mwh": 18,
+      "population": 180000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Cabañas",
+      "stress": 15.7,
+      "demand_mwh": 108,
+      "supply_mwh": 92,
+      "deficit_mwh": 16,
+      "population": 160000,
+      "color": "#22C55E",
+      "severity": "low"
+    }
+  ],
+  "economics": {
+    "investment_required_million": 45,
+    "investment_breakdown": "Emergency solar deployment ($15M), transmission upgrades ($20M), grid modernization ($10M)",
+    "economic_loss_prevented_million": 156,
+    "economic_loss_explanation": "Prevented power outages, business disruption, and agricultural losses",
+    "roi_multiplier": 3.5,
+    "roi_explanation": "Every $1 invested prevents $3.50 in economic losses over 5 years",
+    "timeline_days": 90,
+    "payback_period_years": 2.8
+  },
+  "ai_analysis": {
+    "executive_summary": "Critical infrastructure investment needed across 3 departments to prevent widespread power failures during drought conditions. Immediate action required in San Salvador, Santa Ana, and San Miguel to stabilize grid and prevent economic disruption affecting 2.9 million residents.",
+    "priority_actions": [
+      {
+        "rank": 1,
+        "action": "Deploy emergency solar capacity in Santa Ana",
+        "timeline": "30 days",
+        "cost_million": 15,
+        "impact": "Reduces peak stress from 72.8% to 45%, stabilizes western grid"
+      },
+      {
+        "rank": 2,
+        "action": "Upgrade transmission infrastructure in San Salvador",
+        "timeline": "90 days",
+        "cost_million": 20,
+        "impact": "Improves grid resilience by 35%, prevents cascading failures"
+      },
+      {
+        "rank": 3,
+        "action": "Install battery storage in San Miguel",
+        "timeline": "60 days",
+        "cost_million": 10,
+        "impact": "Provides 4-hour backup capacity during peak demand"
+      }
+    ],
+    "regional_breakdown": [
+      {
+        "region": "San Salvador",
+        "stress": 89.5,
+        "severity": "critical",
+        "analysis": "Capital city faces critical stress due to high population density (1.8M residents) and limited local generation capacity. Current 170 MWh deficit represents 26% supply shortfall during peak demand.",
+        "recommendation": "Deploy 100MW emergency capacity within 30 days. Upgrade 3 major substations to handle distributed generation. Implement demand response program targeting commercial sector.",
+        "timeline": "30 days critical, 90 days full implementation",
+        "cost_million": 25
+      },
+      {
+        "region": "Santa Ana",
+        "stress": 72.8,
+        "severity": "high",
+        "analysis": "Western hub experiencing high stress due to reduced hydroelectric output from nearby Cerron Grande reservoir. 57 MWh deficit impacts 580,000 residents and agricultural operations.",
+        "recommendation": "Install 75MW solar farm with 25MWh battery storage. Leverage existing land near industrial zones. Connect to high-voltage transmission for grid stability.",
+        "timeline": "45 days",
+        "cost_million": 15
+      },
+      {
+        "region": "San Miguel",
+        "stress": 68.2,
+        "severity": "high",
+        "analysis": "Eastern region experiencing high stress with 52 MWh deficit affecting 520,000 residents. Limited interconnection with western grid compounds vulnerability.",
+        "recommendation": "Deploy 50MW solar + 20MWh storage system. Strengthen transmission links to San Salvador. Establish microgrid capability for critical infrastructure.",
+        "timeline": "60 days",
+        "cost_million": 12
+      }
+    ],
+    "risks": [
+      "Prolonged drought beyond 30 days could exhaust reservoir capacity",
+      "Agricultural sector water needs compete with hydroelectric generation",
+      "Grid instability increases during peak evening demand (6-9 PM)",
+      "Limited backup capacity for critical infrastructure (hospitals, water treatment)"
+    ],
+    "opportunities": [
+      "Accelerate renewable transition - reduce hydro dependency",
+      "International climate financing available for drought resilience",
+      "Regional interconnection with Honduras/Guatemala for load balancing",
+      "Smart grid deployment improves long-term efficiency"
+    ]
+  }
+}

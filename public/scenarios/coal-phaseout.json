@@ -1,0 +1,240 @@
+{
+  "id": "coal-phaseout",
+  "name": "Coal Phase-Out",
+  "emoji": "⚡",
+  "tagline": "+50% solar accelerates renewable transition",
+  "description": "Rapid deployment of solar infrastructure to phase out coal and thermal generation, reducing emissions while maintaining grid stability across El Salvador.",
+  "parameters": {
+    "solar_growth_pct": 50,
+    "rainfall_change_pct": 0,
+    "period": "30 days"
+  },
+  "summary": {
+    "national_avg_stress": 24.8,
+    "peak_stress": 42.5,
+    "affected_population": 1200000,
+    "critical_regions": 0,
+    "high_risk_regions": 1
+  },
+  "regions": [
+    {
+      "name": "San Salvador",
+      "stress": 42.5,
+      "demand_mwh": 660,
+      "supply_mwh": 612,
+      "deficit_mwh": 48,
+      "population": 1800000,
+      "color": "#F59E0B",
+      "severity": "moderate"
+    },
+    {
+      "name": "Santa Ana",
+      "stress": 35.2,
+      "demand_mwh": 280,
+      "supply_mwh": 262,
+      "deficit_mwh": 18,
+      "population": 580000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "La Libertad",
+      "stress": 32.8,
+      "demand_mwh": 250,
+      "supply_mwh": 233,
+      "deficit_mwh": 17,
+      "population": 850000,
+      "color": "#FBBF24",
+      "severity": "moderate"
+    },
+    {
+      "name": "San Miguel",
+      "stress": 28.4,
+      "demand_mwh": 235,
+      "supply_mwh": 218,
+      "deficit_mwh": 17,
+      "population": 520000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "Sonsonate",
+      "stress": 24.1,
+      "demand_mwh": 187,
+      "supply_mwh": 173,
+      "deficit_mwh": 14,
+      "population": 480000,
+      "color": "#A3E635",
+      "severity": "low"
+    },
+    {
+      "name": "La Paz",
+      "stress": 21.5,
+      "demand_mwh": 162,
+      "supply_mwh": 150,
+      "deficit_mwh": 12,
+      "population": 350000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Usulután",
+      "stress": 19.8,
+      "demand_mwh": 177,
+      "supply_mwh": 164,
+      "deficit_mwh": 13,
+      "population": 380000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Ahuachapán",
+      "stress": 18.2,
+      "demand_mwh": 152,
+      "supply_mwh": 141,
+      "deficit_mwh": 11,
+      "population": 340000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Cuscatlán",
+      "stress": 16.5,
+      "demand_mwh": 147,
+      "supply_mwh": 136,
+      "deficit_mwh": 11,
+      "population": 260000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Chalatenango",
+      "stress": 14.8,
+      "demand_mwh": 123,
+      "supply_mwh": 114,
+      "deficit_mwh": 9,
+      "population": 220000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Morazán",
+      "stress": 12.4,
+      "demand_mwh": 113,
+      "supply_mwh": 105,
+      "deficit_mwh": 8,
+      "population": 195000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "La Unión",
+      "stress": 11.2,
+      "demand_mwh": 118,
+      "supply_mwh": 110,
+      "deficit_mwh": 8,
+      "population": 290000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "San Vicente",
+      "stress": 9.8,
+      "demand_mwh": 128,
+      "supply_mwh": 119,
+      "deficit_mwh": 9,
+      "population": 180000,
+      "color": "#22C55E",
+      "severity": "low"
+    },
+    {
+      "name": "Cabañas",
+      "stress": 8.5,
+      "demand_mwh": 108,
+      "supply_mwh": 100,
+      "deficit_mwh": 8,
+      "population": 160000,
+      "color": "#22C55E",
+      "severity": "low"
+    }
+  ],
+  "economics": {
+    "investment_required_million": 380,
+    "investment_breakdown": "Utility-scale solar farms ($180M), rooftop solar programs ($80M), battery storage systems ($70M), grid integration ($50M)",
+    "economic_loss_prevented_million": 825,
+    "economic_loss_explanation": "Avoided fossil fuel costs, reduced emissions penalties, health benefits from cleaner air, grid stability improvements",
+    "roi_multiplier": 2.2,
+    "roi_explanation": "Every $1 invested generates $2.20 in combined energy savings, health benefits, and economic growth over 10 years",
+    "timeline_days": 540,
+    "payback_period_years": 6.5
+  },
+  "ai_analysis": {
+    "executive_summary": "Ambitious renewable energy transition demonstrates feasibility of coal phase-out with 50% solar capacity increase. Significant reductions in grid stress across all regions, with only San Salvador requiring moderate attention. This scenario positions El Salvador as a regional climate leader while achieving energy independence and economic benefits.",
+    "priority_actions": [
+      {
+        "rank": 1,
+        "action": "Deploy 250MW utility-scale solar farms in Usulután and La Paz",
+        "timeline": "180 days",
+        "cost_million": 180,
+        "impact": "Provides baseload renewable capacity, reduces fossil fuel dependency by 40%"
+      },
+      {
+        "rank": 2,
+        "action": "Implement residential rooftop solar program nationwide",
+        "timeline": "360 days",
+        "cost_million": 80,
+        "impact": "Distributes generation across grid, reduces peak demand by 15%"
+      },
+      {
+        "rank": 3,
+        "action": "Install grid-scale battery storage (100MWh capacity)",
+        "timeline": "270 days",
+        "cost_million": 70,
+        "impact": "Smooths solar intermittency, enables 24/7 renewable power"
+      }
+    ],
+    "regional_breakdown": [
+      {
+        "region": "San Salvador",
+        "stress": 42.5,
+        "severity": "moderate",
+        "analysis": "Capital benefits significantly from distributed solar deployment but still experiences moderate stress during peak evening hours. 48 MWh deficit down from baseline 95 MWh - represents 50% improvement.",
+        "recommendation": "Prioritize battery storage deployment near major substations. Accelerate commercial building solar mandates. Implement smart grid systems for demand response.",
+        "timeline": "120 days",
+        "cost_million": 45
+      },
+      {
+        "region": "Santa Ana",
+        "stress": 35.2,
+        "severity": "moderate",
+        "analysis": "Western region sees substantial benefits from new solar capacity. Industrial zone solar installations provide daytime generation aligned with demand patterns.",
+        "recommendation": "Continue solar farm expansion in agricultural areas. Partner with coffee cooperatives for agrivoltaic projects combining farming and solar generation.",
+        "timeline": "180 days",
+        "cost_million": 35
+      },
+      {
+        "region": "All Other Regions",
+        "stress": 28.4,
+        "severity": "low",
+        "analysis": "Remaining 12 regions operate well within safe parameters. Distributed solar deployment has successfully reduced transmission losses and improved local resilience.",
+        "recommendation": "Focus on maintenance and optimization. Deploy community solar programs for rural electrification. Monitor for opportunities to export surplus generation.",
+        "timeline": "Ongoing",
+        "cost_million": 20
+      }
+    ],
+    "risks": [
+      "Solar intermittency requires robust storage and backup systems",
+      "Initial capital investment high - financing critical",
+      "Skilled workforce needed for installation and maintenance",
+      "Grid modernization essential to handle distributed generation"
+    ],
+    "opportunities": [
+      "Position El Salvador as renewable energy leader in Central America",
+      "Export surplus solar capacity to neighboring countries",
+      "Attract green industry and data centers with cheap renewable power",
+      "Access international climate financing ($200M+ available)",
+      "Create 5,000+ jobs in renewable energy sector",
+      "Reduce air pollution - health benefits worth $120M annually"
+    ]
+  }
+}
